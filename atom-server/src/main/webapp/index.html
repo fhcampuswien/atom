@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<head>
+	<title>DIA</title>
+	<meta charset=UTF-8>
+	
+	<!-- make browsers without canvas and/or nav support know those elements -->
+	<script> 
+	document.createElement("nav");
+	</script>
+	
+	<style type="text/css">
+		body, html {
+			overflow: auto;
+			margin: 0px !important;
+			width: 100%;
+			height: 100%;
+			position: relative;
+			min-width: 950px;
+			min-height: 600px;
+			
+			font-family: Arial Unicode MS, Arial, sans-serif;
+			font-size: small;
+		}
+		
+		nav {
+			position: absolute;
+			top: 6px;
+			right: 0;
+			left: 0;
+			height: 165px;
+		}
+		
+		#mycanvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+		
+		#navigation {
+			margin-right: 15px;
+		}
+		
+		#header1 {
+			background-color: #266a54;
+			color: white;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 12px;
+			font-weight: bold;
+			padding: 8px 0 0 12px;
+			height: 21px; /*29 - 8*/
+			display: inline-block;
+			zoom: 1;  *display: inline;  /* IE7 Hack */
+			-moz-border-radius: 0px 15px 0px 0px;
+			border-radius: 0px 15px 0px 0px;
+			behavior: url(pie/PIE.htc);
+			padding-right: 22px;
+		}
+		
+		#login-pan {
+			position: absolute;
+			right: 0;
+			left: 395px;
+			color: #666352;
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 12px;
+			text-align: right;
+			margin-top: 9px;
+			margin-right: 36px;
+			margin-bottom: 5px;
+		}
+		
+		#nav-pan2 {
+			background-color: #a6d0c3;
+			width: 100%;
+			-moz-border-radius: 0px 15px 15px 0px;
+			border-radius: 0px 15px 15px 0px;
+			behavior: url(pie/PIE.htc);
+			
+			position: relative;
+			top: 1px;
+			height: 110px;
+		}
+		
+		#menu-bar {
+			position: relative;
+			height: 49px;
+			top: 20px;
+			z-index: 300;
+		}
+		
+		#home-logo {
+			-moz-border-radius: 0px 4px 4px 0px;
+			border-radius: 0px 4px 4px 0px;
+			behavior: url(pie/PIE.htc);
+			
+			cursor: pointer;
+			
+			height: 49px;
+			width: 110px;
+			background:url(images.png) 0 0;
+			display: inline-block;
+			zoom: 1;  *display: inline;  /* IE7 Hack */
+		}
+		
+		.menu-item {
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+			behavior: url(pie/PIE.htc);
+			height: 49px;
+			width: 110px;
+			margin-left: 2px;
+			display: inline-block;
+			zoom: 1;  *display: inline;  /* IE7 Hack */
+		}
+		
+		#app-logo {
+			background:url(images.png) 0 -49px;
+		}
+		
+		#app-logo:hover {
+			background:url(images.png) 0 -148px;
+		}
+		
+		#help-logo {
+			background:url(images.png) 0 -98px;
+		}
+		
+		#help-logo:hover {
+			background:url(images.png) 0 -197px;
+			cursor: pointer;
+		}
+		
+		#search-box {
+			position: absolute;
+			top: 22px;
+			right: 43px;
+			
+			width: 120px;
+			height: 14px;
+			color: #575A5F;
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 10px;
+			padding: 4px 4px 0;
+			border: 1px solid #c9d5e0;
+		}
+		
+		#search-arrow {
+			position: absolute;
+			top: 27px;
+			right: 25px;
+			
+			background:url(images.png) -13px -272px;
+			width: 11px;
+			height: 9px;
+			cursor: pointer;
+		}
+		
+		#search-simple-panel {
+			position: absolute;
+			top: 46px;
+			right: 90px;
+		}
+		
+		#search-simple-label {
+			position: relative;
+			top: -3px;
+			color: #575A5F;
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 10px;
+		}
+		
+		#search-simple-check {
+		}
+		
+		.clear-x {
+			position: absolute;
+			top: 3px;
+			right: 28px;
+			
+			background:url(images.png) -1px -247px;
+			width: 24px;
+			height: 24px;
+			cursor: pointer;
+		}
+		
+		.collapse-arrow {
+			position: absolute;
+			top: 3px;
+			right: 2px;
+			
+			background:url(images.png) -26px -247px;
+			width: 24px;
+			height: 24px;
+			cursor: pointer;
+		}
+		
+		.collapse-arrow.restore {
+			background:url(images.png) -51px -247px;
+		}
+		
+		#side-panel-restore {
+			background:url(images.png) -76px -247px;
+			top: 19px;
+			z-index:47;
+			display: none;
+		}
+		
+		#content {
+			background-color: #d8eae4;
+			width: 100%;
+			position: absolute;
+			top: 184px;
+			bottom: 0;
+		}
+		
+		#frame-area {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 205px;
+			z-index: 30;
+		}
+		
+		#frame {
+			position: absolute;
+			top: 20px;
+			bottom: 0;
+			right: 0;
+			left: 0;
+			z-index: 32;
+		}
+		
+		#noscript {
+			position: absolute;
+			top: 50px;
+			left: 22px;
+			right: 30px;
+		}
+		
+		#frame-title {
+			background-color: #266a54;
+			
+			color: white;
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 14px;
+			font-weight: bold;
+			padding-left: 10px;
+			padding-top: 10px;
+			
+			-moz-border-radius: 0px 15px 15px 0px;
+			border-radius: 0px 15px 15px 0px;
+			-moz-box-shadow: 2px 2px 3px #aab3bc;
+			-webkit-box-shadow: 2px 2px 3px #aab3bc;
+			box-shadow: 2px 2px 3px #aab3bc;
+			behavior: url(pie/PIE.htc);
+			
+			height: 28px; /* 27 = 37 - 10*/
+			
+			position: absolute;
+			top: -19px;
+			left: 20px;
+			right: 10px;
+			
+			z-index: 40;
+		}
+		
+		#side-panel-container {
+			position: absolute;
+			right: 0;
+			height: 100%;
+			width: 200px;
+			overflow: hidden;
+		}
+		
+		.side-panel-half {
+			position: relative;
+			height: 50%;
+		}
+		
+		
+		.side-label {
+			background-color: #fcfcfd;
+			-moz-border-radius: 7px 0px 0px 7px;
+			border-radius: 7px 0px 0px 7px;
+			behavior: url(pie/PIE.htc);
+			
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 14px;
+			padding-top: 6px;
+			padding-left: 5px;
+			padding-bottom: 7px;
+			color: #475765;
+			
+			position: relative;
+		}
+		
+		#clipboard-label {
+			top: 13px;
+		}
+		
+		#history-label {
+			top: 4px;
+		}
+		
+		.side-panel {
+			background-color: #fcfcfd;
+			-moz-border-radius: 7px 0px 0px 7px;
+			border-radius: 7px 0px 0px 7px;
+			behavior: url(pie/PIE.htc);
+			
+			position: absolute;
+			left: 0;
+			right: 0;
+		}
+		
+		#clipboard {
+			top: 46px;
+			bottom: 4px;
+		}
+		
+		#history {
+			top: 37px;
+			bottom: 10px;
+		}
+		
+		#sliderNS {
+			border-top: 1px solid #9ab0c5; /*5e809c;*/
+			border-bottom: 1px solid #9ab0c5;
+			height: 1px;
+			width: 20px;
+			margin-left:auto;
+			margin-right:auto;
+			cursor: ns-resize;
+			z-index:47;
+		}
+		
+		#sliderEW {
+			position: absolute;
+			top: 47%;
+			right: 207px;
+			
+			height: 20px;
+			width: 1px;
+			
+			margin-left:auto;
+			margin-right:auto;
+			
+			border-right: 1px solid #9ab0c5; /*5e809c;*/
+			border-left: 1px solid #9ab0c5;
+			
+			cursor: ew-resize;
+			z-index:47;
+		}
+		
+		.dateBoxPopup {
+			z-index: 45;
+		}
+		
+	</style>
+</head>
+
+<body>
+    <!-- gwt browser-history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+
+	<nav>
+		<div id="navigation">
+			<div id="nav-pan1">
+				<div id="login-pan">bitte warten..</div>
+				<div id="header1">Welcome to ATOM - Advanced Transparent Object Manager</div>
+			</div>
+			<div id="nav-pan2">
+				<div id="menu-bar">
+					<script type="text/javascript">
+					function searchBlur(box) {
+						if(box.value == "")
+							box.value = "Suche";
+					}
+					function searchFocus(box) {
+						if(box.value == "Suche")
+							box.value = "";
+					}
+					</script>
+					<input id="search-box" value="Suche" onblur="searchBlur(this)" onfocus="searchFocus(this)"></input>
+					<div id="search-arrow"></div>
+					<div id="search-simple-panel">
+						<input id="search-simple-check" type="checkbox" name="search-simple-check" checked="checked"></input><label id="search-simple-label">Schnellsuche</label>
+					</div>
+					<div id="home-logo">
+					</div><div class="menu-item" id="app-logo">
+					</div><div class="menu-item" id="help-logo"></div>
+				</div>
+				<span id="testarea"></span>
+			</div>
+		</div>
+	</nav>
+
+	<div id="content">
+		<div id="side-panel-restore" class="collapse-arrow restore"></div>
+		<div id="side-panel-container">
+			<div class="side-panel-half" id="clipboard-pan">
+				<div id="clipboard-label" class="side-label">ZWISCHENABLAGE
+					<div id="clipboard-collapse" class="collapse-arrow"></div>
+				</div>
+				<div id="clipboard" class="side-panel"></div>
+			</div>
+			<div id="sliderNS"></div>
+			<div class="side-panel-half" id="history-pan">
+				<div id="history-label" class="side-label">VERLAUF
+					<div id="history-clear" title="Verlauf löschen" class="clear-x"></div>
+					<div id="history-collapse" class="collapse-arrow"></div>
+				</div>
+				<div id="history" class="side-panel"></div>
+			</div>
+		</div>
+		
+		<div id="sliderEW"></div>
+
+		<div id="frame-area">
+			<div id="frame-title">Seite lädt, bitte warten..</div>
+			<div id="frame">
+				<noscript id="noscript">Da ATOM keine statische Webseite, sondern 
+				eine dynamische Web-Applikation ist, funktioniert es leider nur 
+				in Browsern mit aktiviertem Javascript-Support. Ihr Browser hat
+				entweder keinen Javascript-Support, oder dieser wurde deaktiviert.
+				<br/><br/>
+				Bitte aktivieren Sie Javascript, oder wechseln in einen anderen Browser! </noscript>
+			</div>
+		</div>
+	</div>
+
+	<!-- main gwt script -->
+    <script type="text/javascript" src="app/app.nocache.js"></script>
+</body>

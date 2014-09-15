@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Tests" verbose="5" data-provider-thread-count="1">
+	<test name="TestChrome" preserve-order="true">
+		<!-- <parameter name="path" value="/"/> -->
+		<parameter name="url" value="https://127.0.0.1:8443/?gwt.codesvr=127.0.0.1:9997"/>
+		<!-- https://127.0.0.1:8888/ATOM.html?gwt.codesvr=127.0.0.1:9997/ -->
+		<parameter name="browserName" value="chrome"/>
+		<classes>
+		    <class name="at.ac.fhcampuswien.atom.selenium.AtomSeleniumTests">
+		    	<methods>
+		    	    <include name="loginMaxMustermann" />
+		    	    <include name="displayListOf" />
+		    	    <include name="openFirstListElement" />
+		    	    <include name="openAndRefreshList" />
+		    	    <include name="exportDomainObjectList" />
+		    	    <!-- <include name="logoutCurrentUser" /> -->
+		    	</methods>
+		    </class>
+		</classes>
+	</test>
+</suite>

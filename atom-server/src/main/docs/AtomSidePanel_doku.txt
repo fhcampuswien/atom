@@ -1,0 +1,16 @@
+
+AtomSidePanel = UiBinder xml styled
+
+Aufbau:
+Titel
+ScrollPanel
+  FlexTable
+
+rebuildElements: updated FlexTable mit lablesList (=ArrayList<CloseableLabel>)
+
+======================================
+Ableitungen von AtomSidePanel (einfache Java-Klassen):
+
+HistoryPanel
+
+ClipBoard

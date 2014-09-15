@@ -1,0 +1,46 @@
+
+.space {
+	width: 100%;
+	height: 100%;
+}
+
+.attributeViewGeneral {
+	width: 100%;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	
+	border-top: 1px solid #CCC;
+	border-right: 1px solid #999;
+	border-bottom: 1px solid #999;
+	border-left: 1px solid #999;
+	
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.insensitiveAttributeView {
+	background-color: #f0ebe2 !important;
+	color: #848284;
+	text-shadow: 0.7px 1.4px 0px white;
+}
+
+.sensitiveAttributeView {
+	background-color: #ffffff;
+	color: #575A5F;
+	text-shadow: none;
+}
+
+.insensitiveBorder {
+	border-color: #f0ebe2;
+}
+
+.sensitiveBorder {
+	border-color: #dcffdc;
+}
+
+.attributeViewValidationError {
+	background-color: #ffffff;
+	color: #B00; /* #f9cbcb; */
+	text-shadow: none;
+}

@@ -1,0 +1,7 @@
+pom.version = ${pom.version}
+svn.revision = ${svn.revision}
+project.version = ${project.version}
+maven.build.timestamp = ${maven.build.timestamp}
+buildNumber = ${buildNumber}
+buildRevision = ${buildRevision}
+buildDateTime = ${buildDateTime}

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>at.ac.fhcampuswien.atom</groupId>
+		<artifactId>atom</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>atom-client</artifactId>
+	<packaging>war</packaging>
+
+	<prerequisites>
+		<maven>${mavenVersion}</maven>
+	</prerequisites>
+
+	<properties>
+		<gwt.module>at.ac.fhcampuswien.atom.App</gwt.module>
+		<gwt.draftCompile>false</gwt.draftCompile>
+		<gwt.style>OBF</gwt.style>
+		<gwt.genParam>false</gwt.genParam>
+		<!-- keep in sync with atom-server -->
+		<runTarget>https://127.0.0.1:8443/</runTarget>
+		<!-- <runTarget>https://localhost:8443/</runTarget> -->
+		<!-- <runTarget>http://localhost:8080/</runTarget> -->
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-domain</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-domain</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-core</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-core</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+		</dependency>
+
+		<!-- Drag'n'Drop Library; Verwendung siehe Package at.ac.fhcampuswien.atom.client.gu.dnd -->
+		<dependency>
+			<groupId>com.allen-sauer.gwt.dnd</groupId>
+			<artifactId>gwt-dnd</artifactId>
+			<!-- <version>3.2.3</version> -->
+
+			<!-- use for GWT 2.6.0 => <version>3.3.0</version> -->
+			<version>3.3.0</version>
+			<!-- <version>3.2.3</version> -->
+
+			<!-- <version>[3.1.2,)</version> -->
+			<!-- <version>3.2.0</version> -->
+		</dependency>
+
+		<!-- Widget-Library, Verwendung siehe at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectListWidget" -->
+		<dependency>
+			<groupId>com.sencha.gxt</groupId>
+			<artifactId>gxt</artifactId>
+			<!-- <version>[3.0.0b,)</version> -->
+			<!-- <version>3.0.1</version> -->
+			<!-- <version>3.1.0-beta</version> -->
+			<version>3.1.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<configuration>
+					<module>${gwt.module}</module>
+					<strict>true</strict>
+					<draftCompile>${gwt.draftCompile}</draftCompile>
+					<style>${gwt.style}</style>
+					<genParam>${gwt.genParam}</genParam>
+					<noserver>true</noserver>
+					<runTarget>${runTarget}</runTarget>
+		          <cssFiles>
+		            <cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
+		          </cssFiles>
+				</configuration>
+		        <executions>
+		          <execution>
+		            <id>css-generation</id>
+		            <phase>generate-sources</phase>
+		            <goals>
+		              <goal>css</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<packagingExcludes>WEB-INF/**</packagingExcludes>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat6-maven-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>draft</id>
+			<activation>
+				<property>
+					<name>draft</name>
+				</property>
+			</activation>
+			<properties>
+				<gwt.module>at.ac.fhcampuswien.atom.App_dev</gwt.module>
+				<gwt.draftCompile>true</gwt.draftCompile>
+				<gwt.style>PRETTY</gwt.style>
+			</properties>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<property>
+					<name>dev</name>
+				</property>
+			</activation>
+			<build>
+				<!-- FIXME: workaround for MGWT-332 -->
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>add-shared-sources-to-classpath</id>
+								<!-- After 'process-resources' so they're not copied to ${project.build.outputDirectory} -->
+								<!-- But before 'compile' to make them available to 'gwt:run' -->
+								<phase>compile</phase>
+								<goals>
+									<goal>add-resource</goal>
+								</goals>
+								<configuration>
+									<resources>
+										<!-- Only sources, resources are already in the classpath, by definition -->
+										<resource>
+											<directory>${basedir}/../atom-shared/src/main/java</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

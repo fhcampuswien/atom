@@ -1,0 +1,58 @@
+
+====================================================================================================
+======================================= Entwicklungsumgebung =======================================
+====================================================================================================
+
+Eclipse IDE for Java EE Developers --> http://www.eclipse.org/downloads/
+
+Google Eclipse Plugin, via Update Site in Eclipse installieren --> http://code.google.com/intl/de-DE/eclipse/docs/download.html
+<-- GWT-SDK muss nicht mit dem Google Eclipse Plugin gedownloaded werden, dieses beziehen wir über Maven
+
+m2eclipse = maven eclipse integration --> http://www.eclipse.org/m2e/download/
+
+
+
+====================================================================================================
+========================================== Abhängigkeiten ==========================================
+====================================================================================================
+
+Die Abhängigkeiten von ATOM werden mit Maven verwaltet. Die meisten Abhängigkeiten werden daher aus öffentlich zugänglichen
+Maven Repositories heruntergeladen. Die folgenden Abhängigkeiten sind jedoch nicht aus öffentlichen Repositories abrufbar:
+
+
+http://code.google.com/p/gwt-ent/ ; GWT-2.2 version nur als Attachment in einem Issue:
+http://code.google.com/p/gwt-ent/issues/detail?id=40
+
+mvn install:install-file -DgroupId=gwtent                       -DartifactId=gwtent   -Dversion=2.0_GWT2.2 -DgeneratePom=true -Dfile="gwtent.jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=gwtent                       -DartifactId=gwtent   -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dfile=gwtent2.0_RC1(GWT2.3).jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=gwtent                       -DartifactId=gwtent   -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dfile="gwtent.jar"  -Dpackaging=jar
+
+===============================================================
+
+http://www.microsoft.com/downloads/en/details.aspx?FamilyID=a737000d-68d0-4531-b65d-da0f2a735707 --> 1033\sqljdbc_3.0.1301.101_enu.tar.gz
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=2.0        -DgeneratePom=true -Dfile="/home/thomas/Downloads/sqljdbc4.jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=2.0        -DgeneratePom=true -Dfile="/home/kaefert/Arbeitsfläche/Userdata/Development/libraries/sqljdbc4.jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.0.2206.100   -DgeneratePom=true -Dfile="/home/kaefert/Development/libs/sqljdbc_4.0/enu/sqljdbc4.jar"         -Dpackaging=jar
+
+
+
+
+====================================================================================================
+============================================ Datenbank =============================================
+====================================================================================================
+
+-) Erstellen einer Datenbank
+-) Erstellen einer Rolle mit dba_owner Rechten auf obige datenbank.
+-) Erstellen einer "Anmeldung"
+-) Erstellung eines Users dem diese Anmeldung und die erstellte Rolle zugeordnet wird.
+
+
+====================================================================================================
+
+GWT + Jetty + Hibernate + Eclipse hosted Mode - BUG
+http://code.google.com/p/google-web-toolkit/issues/detail?id=3496
+https://groups.google.com/group/google-web-toolkit/msg/74f8cf4628f84eda?hl=kyJf8cf4628f84eda&pli=1
+
+====================================================================================================
+
+

@@ -1,0 +1,18 @@
+/* ATOM - Advanced Transparent Object Manager
+ * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+ * Some rights reserved. See COPYING, AUTHORS.
+ */
+
+@sprite 
+.centerBorderRight {
+	gwt-image: "centerBorderRight";
+	background-repeat: repeat-y;
+	height: 100%;
+}
+
+@sprite 
+.centerBorderBottom {
+	gwt-image: "centerBorderBottom";
+	background-repeat: repeat-x;
+	width: 100%;
+}

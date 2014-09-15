@@ -1,0 +1,45 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- ATOM - Advanced Transparent Object Manager
+   * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+   * Some rights reserved. See COPYING, AUTHORS. -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:dnd="urn:import:at.ac.fhcampuswien.atom.client.gui.dnd">
+
+	<ui:with field='res'
+		type='at.ac.fhcampuswien.atom.client.gui.AtomClientBundle' />
+		
+	<ui:style field="panelStyle" type='at.ac.fhcampuswien.atom.client.gui.attributes.DomainObjectView.PanelStyle'>
+			.space {
+				height: 26px;
+				width: 100%;
+			}
+			
+			.textBox {
+				height: 26px;
+				padding-left: 3px;
+			}
+	</ui:style>
+		
+	<g:DockLayoutPanel styleName='{panelStyle.space}'
+		unit='PX'>
+		
+		<g:east size="26"> <!-- delete button -->
+			<g:PushButton ui:field="deleteButton">
+				<g:upFace image="{res.muelltonne}" />
+			</g:PushButton>
+		</g:east>
+		<g:east size="26"> <!-- search button -->
+			<g:PushButton ui:field="searchButton">
+				<g:upFace image="{res.lupe}" />
+			</g:PushButton>
+		</g:east>
+		<g:east size="2">
+			<g:HTML />
+		</g:east>
+
+		<g:center>
+			<dnd:DndTextBox ui:field="textBox" styleName='{res.css.attributeViewGeneral} {panelStyle.textBox}' />
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder> 

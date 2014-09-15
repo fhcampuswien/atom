@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<!-- dummy scm so that buildnumber plugin will work -->
+	<scm>
+		<connection>scm:svn:http://127.0.0.1/dummy</connection>
+		<developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
+		<tag>HEAD</tag>
+		<url>http://127.0.0.1/dummy</url>
+	</scm>
+
+	<parent>
+		<groupId>at.ac.fhcampuswien.atom</groupId>
+		<artifactId>atom</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>atom-server</artifactId>
+	<packaging>war</packaging>
+
+	<prerequisites>
+		<maven>${mavenVersion}</maven>
+	</prerequisites>
+
+	<properties>
+		<webappDirectory>${project.build.directory}/ATOM</webappDirectory>
+	</properties>
+
+	<dependencies>
+	
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-core</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+	
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-domain</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-client</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+
+		<!-- Hibernate c3p0 connection pool -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.5</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
+		</dependency>
+
+		<!-- für den Zugriff auf das Campus Authentifizierungs-Webservice verwendet 
+			von at.ac.fhcampuswien.atom.server.AtomServiceImpl -->
+		<dependency>
+			<groupId>axis</groupId>
+			<artifactId>axis</artifactId>
+			<version>1.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+
+		<!-- Datenbankzugriff Microsoft SQL -->
+		<dependency>
+			<groupId>com.microsoft.sqlserver.jdbc</groupId>
+			<artifactId>sqljdbc4</artifactId>
+			<version>[2.0,)</version>
+			<!-- <version>3.0</version> -->
+			<type>jar</type>
+			<scope>runtime</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.27.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.opera</groupId>
+			<artifactId>operadriver</artifactId>
+			<version>0.16.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
+			<version>4.7</version> <scope>test</scope> </dependency> -->
+
+	</dependencies>
+	
+	
+	<!-- =================================================== -->
+	<!-- those repositories are necessary to make the plugin -->
+	<!-- com.edugility jpa-maven-plugin 3-SNAPSHOT work      -->
+	<!-- =================================================== -->
+	
+	<repositories>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-public</id>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>eclipselink</id>
+			<url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- =================================================== -->
+	<!-- =================================================== -->
+	<!-- =================================================== -->
+
+	<build>
+		<!-- Generate compiled stuff in the folder used for developing mode -->
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+		<finalName>ATOM</finalName>
+
+		<plugins>
+
+			<plugin>
+				<groupId>com.edugility</groupId>
+				<artifactId>jpa-maven-plugin</artifactId>
+				<version>3-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<id>Generate entityClassnames.properties</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>list-entity-classnames</goal>
+						</goals>
+						<configuration>
+							<outputFile>${project.build.directory}/generated-sources/${file.separator}</outputFile>
+							<encoding>UTF-8</encoding>
+							<urls>
+								<url>file://${basedir}/../atom-core/target/atom-core-${project.version}.jar</url>
+								<url>file://${basedir}/../atom-domain/target/atom-domain-${project.version}.jar</url>
+							</urls>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- get build time as property into ${buildNumber} for use in war-file-name -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<id>generate-buildnumber</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+						<configuration>
+							<!-- warning, doUpdate might be a problem, since it fetches all updates 
+								from the svn-server and incoperates them into the working copy. But its the 
+								only way I found to get the true last revision number (for using it in the 
+								build name) -->
+							<doUpdate>false</doUpdate>
+							<buildNumberPropertyName>buildRevision</buildNumberPropertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-timestamp</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+						<configuration>
+							<format>{0,date,yyyy-MM-dd_HHmm-ss}</format>
+							<revisionOnScmFailure>fetchDateFailed</revisionOnScmFailure>
+							<items>
+								<item>timestamp</item>
+							</items>
+							<buildNumberPropertyName>buildDateTime</buildNumberPropertyName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>Copy persistence.xml filtered with generated entityClassnames.properties file</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<filters>
+								<filter>${project.build.directory}/generated-sources/entityClassnames.properties</filter>
+							</filters>
+							<outputDirectory>${project.build.OutputDirectory}/META-INF</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>true</filtering>
+									<directory>src/main/resources/META-INF</directory>
+									<includes>
+										<include>persistence.xml</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>create version.txt</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>src/main/webapp/</outputDirectory>
+							<resources>
+								<resource>
+									<filtering>true</filtering>
+									<directory>src/main/resources/</directory>
+									<includes>
+										<include>version.txt</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<!-- Managed version 1.3 doesn't provide the functionality we require 
+					below, suppressing warning with no-man-ver -->
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<target>
+						<!-- <rename src="ATOM-SNAPSHOT_.war" dest="ATOM-SNAPSHOT_x_${buildNumber}.war"/> -->
+						<echo message="buildNumber='${buildNumber}'" />
+						<move file="${project.build.directory}/${project.build.finalName}.war"
+							tofile="${project.build.directory}/ATOM_build_${buildDateTime}_rev${buildRevision}.war" />
+					</target>
+				</configuration>
+
+			</plugin>
+
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.edugility</groupId>
+										<artifactId>jpa-maven-plugin</artifactId>
+										<versionRange>
+											[3-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>list-entity-classnames</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute></execute>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<property>
+					<name>dev</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.mortbay.jetty</groupId>
+							<artifactId>jetty-maven-plugin</artifactId>
+							<configuration>
+								<scanIntervalSeconds>1</scanIntervalSeconds>
+								<webApp>
+									<baseResource
+										implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+										<resourcesAsCSV>src/main/webapp,${basedir}/../atom-client/target/atom-client-${project.version}/</resourcesAsCSV>
+									</baseResource>
+									<extraClasspath>${basedir}/../atom-shared/target/classes/</extraClasspath>
+								</webApp>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.tomcat.maven</groupId>
+							<artifactId>tomcat6-maven-plugin</artifactId>
+							<configuration>
+								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
+								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
+								<path>/</path>
+								<httpsPort>8443</httpsPort>
+								<uriEncoding>UTF-8</uriEncoding>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.tomcat.maven</groupId>
+							<artifactId>tomcat7-maven-plugin</artifactId>
+							<configuration>
+								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
+								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
+								<path>/</path>
+								<!-- <port>8888</port> -->
+								<httpsPort>8443</httpsPort>
+								<uriEncoding>UTF-8</uriEncoding>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+
+</project>

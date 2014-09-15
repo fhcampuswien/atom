@@ -1,0 +1,97 @@
+echo("bla");
+"".equals("");
+
+"".equals(null);
+
+sessions.get(cookie)
+
+d.hashCode()
+
+
+
+		searchBox.addDomHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				AtomTools.log(Log.LOG_LEVEL_INFO, "hello FocusEvent - " + event.toDebugString(), this);
+				String searchText = searchBox.getElement().getPropertyString("value");
+				
+				if ("Suche".equals(searchText)) {
+					searchBox.getElement().setPropertyString("value", "");
+				}
+			}
+		}, FocusEvent.getType());
+		
+		searchBox.addDomHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				AtomTools.log(Log.LOG_LEVEL_INFO, "hello BlurEvent - " + event.toDebugString(), this);
+				String searchText = searchBox.getElement().getPropertyString("value");
+				
+				if ("".equals(searchText)) {
+					searchBox.getElement().setPropertyString("value", "Suche");
+				}
+			}
+		}, BlurEvent.getType());
+		
+		searchBox.addDomHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(com.google.gwt.event.dom.client.ChangeEvent event) {
+				AtomTools.log(Log.LOG_LEVEL_INFO, "hello ChangeEvent - " + event.toDebugString(), this);
+			}
+		}, ChangeEvent.getType());
+		
+		searchBox.addHandler(handler, type)
+		
+		
+		
+		
+		 Use RootPanel.get() to get the entire body element
+		RootPanel.get("nameFieldContainer").add(nameField);
+		RootPanel.get("sendButtonContainer").add(sendButton);
+		RootPanel.get("errorLabelContainer").add(errorLabel);
+		
+		
+		AtomGUI.getSinglton().callAfterAddToRootPanel();
+		
+		
+		//preload DomainTree:
+		ObjectSelectorMenue.getSinglton();
+		
+		
+
+//		RootLayoutPanel rootLayoutPanel = RootLayoutPanel.get();
+
+//		rootLayoutPanel.add(AtomGUI.getSinglton());
+		
+		
+
+
+		// load domainTree and history & clipboard
+//		RPCCaller.getSinglton().getDomainTree(new WaitingFor<DomainClass>() {
+//			
+//			@Override
+//			public void requestFailed(String reason) {
+//			}
+//			
+//			@Override
+//			public void recieve(DomainClass instance) {
+//				verlauf.loadEntriesFromServer(instance.getDomainClassNamed(FrameVisit.class.getName()));
+//				clipBoard.loadEntriesFromServer(instance.getDomainClassNamed(ClipBoardEntry.class.getName()));
+//			}
+//		});
+//		
+//
+//		if (!processCommand(History.getToken()))
+//			onClick_logoButton(null);
+		
+		
+		
+		
+		
+		frameVisits.inverse().keySet().iterator().next().hashCode()
+		frameVisits.inverse().keySet().iterator().next().equals(fv)
+		
+		

@@ -1,0 +1,49 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- ATOM - Advanced Transparent Object Manager
+   * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+   * Some rights reserved. See COPYING, AUTHORS. -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:with field='msg' type='at.ac.fhcampuswien.atom.shared.AtomMessages'/>
+	<ui:style>
+		.space {
+			width: 100%;
+			height: 100%;
+			background-color: #dce4eb;
+		}
+		
+		.textBox {
+			color: #575A5F;
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 11px;
+			border: 1px solid #C9D5E0;
+			height: 21px;
+			margin-bottom: 6px;
+		}
+		
+		.errorLabel {
+			margin-top: 7px;
+			height: 100%;
+			width: 100%;
+		}
+	</ui:style>
+	
+	<g:DockLayoutPanel unit="PX" styleName='{style.space}'>
+		<g:west size="31"> <!-- Abstand links -->
+			<g:HTML styleName='{style.space}' />
+		</g:west>
+		<g:north size="30"> <!-- Abstand oben -->
+			<g:HTML styleName='{style.space}' />
+		</g:north>
+		<g:center>
+			<g:VerticalPanel>
+				<g:Label text="{msg.waehleImportFile}" />
+				<g:FormPanel ui:field="formPanel" >
+					<g:FileUpload ui:field="fileUpload" />
+				</g:FormPanel>
+				<g:Button ui:field="uploadButton" text="{msg.uploadImportFileButtonLabel}" />
+				<g:HTML styleName="{style.errorLabel}" ui:field="errorLabel" />
+			</g:VerticalPanel>
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder> 

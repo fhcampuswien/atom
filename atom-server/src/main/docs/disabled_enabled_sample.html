@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<HTML> 
+<HEAD> 
+<style type="text/css">
+.mystyle
+{
+ background-color: blue;
+ color: #575A5F;
+ font: bold 2em courier;
+}
+.mystyle[disabled='disabled']
+{
+ background-color: blue;
+ color: #848284;
+ font: bold 2em courier;
+ text-shadow: 0.7px 1.4px 0px white; 
+}
+</style> 
+</HEAD> 
+<BODY> 
+<input type="text" class="mystyle" value="Enabled" /> 
+<br/> 
+<input type="text" class="mystyle" disabled="disabled" value="Disabled" /> 
+<p/> 
+<textarea class="mystyle"          >This is the content of an enabled textarea</textarea> 
+<br/> 
+<textarea class="mystyle" disabled="disabled" >This is the content of a disabled textarea</textarea> 
+</BODY> 
+</HTML> 

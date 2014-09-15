@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+  version="2.5">
+
+	<!-- Servlets -->
+
+
+	<!-- Servlets -->
+	<servlet>
+		<servlet-name>atomServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.AtomServiceImpl</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>exportServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadExportServlet</servlet-class>
+	</servlet>
+	
+	<servlet>
+		<servlet-name>importServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.UploadImportServlet</servlet-class>
+	</servlet>
+
+	<servlet>
+		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+		<!-- symbolMaps param provides for stack trace deobfuscation -->
+		<init-param>
+			<param-name>symbolMaps</param-name>
+			<!-- This value assumes a GWT compile with '-deploy war/WEB-INF/deploy/' -->
+			<param-value>WEB-INF/deploy/ATOM/symbolMaps/</param-value>
+		</init-param>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>atomServlet</servlet-name>
+		<url-pattern>/app/rpc</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>exportServlet</servlet-name>
+		<url-pattern>/app/export</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>importServlet</servlet-name>
+		<url-pattern>/app/import</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+		<url-pattern>/app/gwt-log</url-pattern>
+	</servlet-mapping>
+
+
+	<!-- Default page to serve -->
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+	<!-- Auto Redirect from http to https -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Protected Context</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<!-- auth-constraint goes here if you requre authentication -->
+		<user-data-constraint>
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
+</web-app>

@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- ATOM - Advanced Transparent Object Manager
+   * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+   * Some rights reserved. See COPYING, AUTHORS. -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:dnd="urn:import:at.ac.fhcampuswien.atom.client.gui.dnd">
+
+	<ui:with field='res'
+		type='at.ac.fhcampuswien.atom.client.gui.AtomClientBundle' />
+
+	<ui:style field="panelStyle"
+		type='at.ac.fhcampuswien.atom.client.gui.attributes.BooleanView.PanelStyle'>
+			.space {
+				height: 21px;
+				width: 100%;
+			}
+			
+			.textBox {
+				width: 100%;
+			}
+			
+			.button {
+				margin-right: 10px;
+			}
+		</ui:style>
+
+	<g:HorizontalPanel>
+		<g:RadioButton styleName='{panelStyle.button}' name="booleanSelection" ui:field="trueButton" text="Ja" />
+		<g:RadioButton styleName='{panelStyle.button}' name="booleanSelection" ui:field="falseButton" text="Nein" />
+		<g:RadioButton styleName='{panelStyle.button}' name="booleanSelection" ui:field="nullButton" text="k.A." />
+		
+		<!-- <g:Label ui:field="trueLabel">Ja</g:Label>
+		<g:Label ui:field="falseLabel">Nein</g:Label>
+		<g:Label ui:field="nullLabel">k.A.</g:Label> -->
+	</g:HorizontalPanel>
+
+	<!-- <g:DockLayoutPanel unit="PX" styleName='{panelStyle.space}'>
+		<g:east size="0">
+			<g:HTML />
+		</g:east>
+		<g:center>
+			<g:TextBox ui:field="textBox" styleName='{panelStyle.textBox}' />
+		</g:center>
+	</g:DockLayoutPanel> -->
+
+
+</ui:UiBinder> 

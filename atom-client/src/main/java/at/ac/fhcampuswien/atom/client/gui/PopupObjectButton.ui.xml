@@ -1,0 +1,77 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- ATOM - Advanced Transparent Object Manager
+   * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+   * Some rights reserved. See COPYING, AUTHORS. -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:with field='res'
+		type='at.ac.fhcampuswien.atom.client.gui.AtomClientBundle' />
+	
+	<ui:style field="popupObjectButtonStyle"
+		type='at.ac.fhcampuswien.atom.client.gui.PopupObjectButton.PopupObjectButtonStyle'>
+		.activeSpace {
+			width: 100%;
+			height: 100%;
+			cursor: pointer;
+		}
+		
+		.inActiveSpace {
+			width: 100%;
+			height: 100%;
+		}
+		
+		.text {
+			color: white;
+			font-family: Verdana, Arial, Helvetica, sans-serif;
+			font-size: 12px;
+			padding-top: 3px;
+			padding-left: 3px;
+			letter-spacing: -0.5pt;
+		}
+		
+		.normal .text {
+			background-color: #656351;
+		}
+		
+		.over .text {
+			background-color: #413f32;
+		}
+		
+		.white {
+			background-color: white;
+		}
+		
+		.transparent {
+			background-color: transparent;
+		}
+		
+	</ui:style>
+	<g:DockLayoutPanel unit='PX'>
+		<g:north size="1">
+			<g:DockLayoutPanel unit='PX'>
+				<g:east size="5">
+					<g:HTML styleName='{popupObjectButtonStyle.transparent}' />
+				</g:east>
+				<g:center>
+					<g:HTML styleName='{popupObjectButtonStyle.white}' />
+				</g:center>
+			</g:DockLayoutPanel>
+		</g:north>
+		<g:center>
+			<g:FocusPanel styleName='{popupObjectButtonStyle.normal}'  ui:field="popupObjectButton">
+				<g:DockLayoutPanel ui:field="panel" styleName='{popupObjectButtonStyle.inActiveSpace}' unit='PX'>
+					<g:east size="5">
+						<g:Image ui:field="borderImage" resource='{res.menuPopupNormal}' />
+					</g:east>
+					<g:center>
+						<g:HTML styleName='{popupObjectButtonStyle.text}' ui:field="contentField">
+							ObjectName
+						</g:HTML>
+					</g:center>
+				</g:DockLayoutPanel>
+			</g:FocusPanel>
+		</g:center>
+	</g:DockLayoutPanel>
+	
+</ui:UiBinder> 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "gwt-module.dtd">
+
+<module rename-to='ATOM'>
+	<!-- Inherit the core Web Toolkit stuff. -->
+	<inherits name='com.google.gwt.user.User' />
+
+	<!-- Inherit the default GWT style sheet. You can change -->
+	<!-- the theme of your GWT application by uncommenting -->
+	<!-- any one of the following lines. -->
+	<inherits name='com.google.gwt.user.theme.standard.Standard' />
+	<!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/> -->
+
+	<!-- Other module inherits -->
+	
+	<inherits name='com.extjs.gxt.ui.GXT'/>
+
+	<!-- Specify the app entry point class. -->
+	<entry-point class='at.ac.fhcampuswien.atom.client.ATOM' />
+
+	<!-- Specify the paths for translatable code -->
+	<source path='client' />
+	<source path='shared' />
+	<inherits name="com.google.gwt.junit.JUnit" />
+
+	<!-- Add gwt-log support, default level `DEBUG` -->
+	<inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
+
+	<!-- configure gwt-log -->
+	<set-property name="log_ConsoleLogger" value="ENABLED" />
+	<set-property name="log_DivLogger" value="DISABLED" />
+	<!-- <set-property name="log_FirebugLogger" value="ENABLED" /> -->
+	<set-property name="log_GWTLogger" value="DISABLED" />
+	<set-property name="log_SystemLogger" value="ENABLED" />
+
+	<!-- Inherit the GWT Reflection stuff. (client side reflection) <inherits 
+		name="pl.rmalinowski.gwtreflect.GWTReflect" /> -->
+	<!-- 
+	
+	<inherits name="com.gwtent.reflection.Reflection" />
+	-->
+	<inherits name='com.gwtent.GwtEnt' />
+
+	<!-- Inherit gwt-dnd support -->
+	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
+
+	<!-- <inherits name='com.extjs.gxt.ui.GXT' />
+	<inherits name="com.smartgwt.SmartGwt"/> -->
+
+	
+
+</module>

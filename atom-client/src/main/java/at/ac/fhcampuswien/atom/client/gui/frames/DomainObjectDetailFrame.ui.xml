@@ -1,0 +1,118 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- ATOM - Advanced Transparent Object Manager
+   * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+   * Some rights reserved. See COPYING, AUTHORS. -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:gui="urn:import:at.ac.fhcampuswien.atom.client.gui"
+	xmlns:frames="urn:import:at.ac.fhcampuswien.atom.client.gui.frames">
+
+	<ui:with field='res'
+		type='at.ac.fhcampuswien.atom.client.gui.AtomClientBundle' />
+
+	<ui:style field='style' src="../SpriteImagesForFrames.css"
+		type="at.ac.fhcampuswien.atom.client.gui.SpriteImagesForFrames.SpriteImagesForFramesStyle" />
+
+	<ui:image field="centerBorderBottom" src='../images/centerBorderBottom.png' />
+	<ui:image field="centerBorderRight" src='../images/centerBorderRight.png' />
+
+	<ui:style field="panelStyle"
+		type='at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectDetailFrame.PanelStyle'>
+			.space {
+				width: 100%;
+				height: 100%;
+			}
+			
+			.whiteSpace {
+				background-color: white;
+				width: 100%;
+				height: 100%;
+			}
+			
+			.invisibleBorder {
+				border-color: white;
+				border-style: solid;
+				border-width: 2px;
+				border-spacing: 14px;
+				width: 100%;
+				height: 100%;
+			}
+
+			.avLabel {
+				/* height: 100%; */
+				vertical-align: middle;
+				/* margin-top: 7px; */
+			}
+		</ui:style>
+	<g:DockLayoutPanel styleName='{panelStyle.space}'
+		unit='PX'>
+		<g:west size="20"> <!-- empty space on the left -->
+			<g:HTML styleName='{panelStyle.space}' />
+		</g:west>
+		<g:east size="10"> <!-- empty space on the right -->
+			<g:HTML styleName='{panelStyle.space}' />
+		</g:east>
+		<g:north size="10"> <!-- empty space on the top -->
+			<g:HTML styleName='{panelStyle.space}' />
+		</g:north>
+		<g:north size="19"> <!-- space on the top -->
+			<g:SimplePanel ui:field="northPanel" styleName='{panelStyle.space}' />
+		</g:north>
+		<g:south size="5"> <!-- empty space on the bottom -->
+			<g:HTML styleName='{panelStyle.space}' />
+		</g:south>
+
+		<g:east size="8"> <!-- shadow of white content sheet on right side -->
+			<g:DockLayoutPanel unit="PX">
+				<g:north size="15"> <!-- top corner right 8 pixels -->
+					<g:Image resource='{res.centerCornerTopRight_r8}' />
+				</g:north>
+				<g:south size="17"> <!-- bottom corner right 8 pixels -->
+					<g:Image resource='{res.centerCornerBottomRight_r8}' />
+				</g:south>
+				<g:east size="4"> <!-- repeating shaddow right -->
+					<g:HTML styleName='{style.centerBorderRight}' />
+				</g:east>
+				<g:center> <!-- space left of repeating shaddow -->
+					<g:HTML styleName='{panelStyle.whiteSpace}' />
+				</g:center>
+			</g:DockLayoutPanel>
+		</g:east>
+		
+		<g:north size="5">
+			<g:DockLayoutPanel unit="PX">
+				<g:east size="11"> <!-- centerCornerTopRight top 5 pixels -->
+					<g:Image resource='{res.centerCornerTopRight_t5}' />
+				</g:east>
+				<g:center> <!-- space left of right top corner -->
+					<g:HTML styleName='{panelStyle.whiteSpace}' />
+				</g:center>
+			</g:DockLayoutPanel>
+		</g:north>
+		
+		<g:south size="9"> <!-- shadow of white content sheet on the bottom -->
+			<g:DockLayoutPanel unit="PX">
+				<g:east size="11"> <!-- centerCornerBottomRight bottom 9 pixels -->
+					<g:Image resource='{res.centerCornerBottomRight_b9}' />
+				</g:east>
+				<g:north size="4"> <!-- north of the bottom shadow -->
+					<g:HTML styleName='{panelStyle.whiteSpace}' />
+				</g:north>
+				<g:west size="3">
+					<g:Image resource='{res.centerCornerBottomLeft}' />
+				</g:west>
+				<g:center>
+					<g:HTML styleName='{style.centerBorderBottom}' />
+				</g:center>
+			</g:DockLayoutPanel>
+		</g:south>
+		<g:center>
+			<g:SimplePanel ui:field="center" styleName='{panelStyle.space}' />
+			<!-- <g:TabLayoutPanel ui:field="tabPanel" barHeight="20" barUnit="PX" 
+				stylePrimaryName='{panelStyle.space}' /> <frames:DomainObjectDetailView.TabPanel 
+				barUnit="PX" barHeight="20" ui:field="tabLayoutPanel" stylePrimaryName='{panelStyle.groupTab}' 
+				/> <g:TabLayoutPanel barUnit="PX" barHeight="20" ui:field="tabLayoutPanel" 
+				stylePrimaryName='{panelStyle.groupTab}' /> styleName='{panelStyle.groupTab}' 
+				stylePrimaryName='{panelStyle.groupTab}' -->
+		</g:center>
+	</g:DockLayoutPanel>
+</ui:UiBinder> 

@@ -1,0 +1,63 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<!-- ATOM - Advanced Transparent Object Manager
+   * Copyright © Vienna, Austria 2014 by FH Campus Wien 
+   * Some rights reserved. See COPYING, AUTHORS. -->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:dnd="urn:import:at.ac.fhcampuswien.atom.client.gui.dnd">
+
+	<ui:with field='res'
+		type='at.ac.fhcampuswien.atom.client.gui.AtomClientBundle' />
+
+	<ui:style field="panelStyle"
+		type='at.ac.fhcampuswien.atom.client.gui.attributes.CollectionView.PanelStyle'>
+			.space {
+				height: 88px;
+				width: 100%;
+			}
+			
+			.listBox {
+				height: 86px;
+				padding: 2px 2px 2px 2px;
+				
+				border-top: 1px solid #CCC !important;
+				border-right: 1px solid #999 !important;
+				border-bottom: 1px solid #999 !important;
+				border-left: 1px solid #999 !important;
+				
+				-moz-box-sizing:border-box;
+    			-webkit-box-sizing:border-box;
+				box-sizing: border-box; 
+			}
+			
+			.buttonPanel {
+				width: 24px;
+				height: 48px;
+			}
+		</ui:style>
+<!-- #b6b6b6 -->
+
+	<g:DockLayoutPanel unit="PX" styleName='{panelStyle.space}'>
+		<g:east size="24">
+			<g:VerticalPanel styleName='{panelStyle.buttonPanel}'>
+				<g:PushButton ui:field="searchButton" visible="false">
+					<g:upFace image="{res.lupe12}" />
+				</g:PushButton>
+				<g:PushButton ui:field="addButton">
+					<g:upFace image="{res.blackPlus}" />
+				</g:PushButton>
+				<g:PushButton ui:field="removeButton">
+					<g:upFace image="{res.blackMinus}" />
+				</g:PushButton>
+			</g:VerticalPanel>
+		</g:east>
+		<g:east size="2">
+			<g:HTML />
+		</g:east>
+		<g:center>
+			<dnd:DndPanel ui:field="listBoxPanel" styleName='{panelStyle.space}' />
+			<!-- <g:ListBox ui:field="listBox" styleName='{panelStyle.listBox}' multipleSelect="true" visibleItemCount="5" /> -->
+		</g:center>
+	</g:DockLayoutPanel>
+
+
+</ui:UiBinder> 

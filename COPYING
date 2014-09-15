@@ -1,0 +1,38 @@
+ATOM - Advanced Transparent Object Manager
+Copyright © Vienna, Austria 2014 by FH Campus Wien 
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License, version 3, 
+as published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+We grant an exception to the necessity of publishing the sources of your 
+modifications for the following 3 cases:
+
+1.) Java-Classes inside the package at.ac.fhcampuswien.atom.shared.domain
+    inside the sub-project atom-domain whose only purpose is to represent
+    the structure of your domain data and express the domain-specific logic.
+
+2.) Java-Classes inside the package at.ac.fhcampuswien.atom.server.auth with
+    the purpose of authenticating your users, or helping other Classes in 
+    doing so.
+
+3.) The index.html file, as long as your modifications are only concerned
+    with styling the output of the application. You may also split
+    it into multiple html, css and js files.
+
+NOTE: This software makes use of a few Widgets from Sencha's GXT library, which
+is licensed under GPL. If you plan to do more with your modified version of
+this software then just running it on your own webservers (or depending on
+interpretation even allowing users outside of your organization access to such
+a webserver), you might need to buy a commercial software license from them,
+remove/replace the widgets, or open-source even the source-files listed above.
+
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License, version 3, for more details.
+ 
+You should have received a copy of the GNU Affero General Public License, version 3, 
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
