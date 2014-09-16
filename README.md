@@ -7,4 +7,7 @@ The motivation of this project is to allow easy data management of data with qui
 
 This is achieved by eliminating the need to manually propagating changing metadata through all tiers.
 The developer only needs to change the structure in one place, the "domain object" classes.
-Hibernate will take care of adapting the database model, and the GUI is designed to adapt to changing data structures by the use of reflection (enabled by the project gwt-ent https://code.google.com/p/gwt-ent/) 
+Hibernate will take care of adapting the database model, and the GUI is designed to adapt to changing data structures by the use of reflection (enabled by the project gwt-ent https://code.google.com/p/gwt-ent/)
+
+I've wrote up a developer setup guide you can find in the wiki tab here on this github page:
+https://github.com/fhcampuswien/atom/wiki/Developer-Setup-Guide 
