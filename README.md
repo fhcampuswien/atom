@@ -14,8 +14,11 @@ The GWT web-frontend can work with arbritary data-structures through the help of
 ====
 
 The motivation of this project is to allow easy data management of data with quickly evolving data structures.
-This is achieved by eliminating the need to manually propagating changing metadata through all tiers.
+This is achieved by eliminating the need to manually propagate changing metadata through all tiers.
 The developer only needs to change the structure in one place, the "domain object" classes.
 
 I've wrote up a developer setup guide you can find in the wiki tab here on this github page:
-https://github.com/fhcampuswien/atom/wiki/Developer-Setup-Guide 
+https://github.com/fhcampuswien/atom/wiki/Developer-Setup-Guide
+
+If you've got any questions, feel free to contact me by email: <br\>
+thomas dot kaefer at fh minus campuswien dot ac dot at
