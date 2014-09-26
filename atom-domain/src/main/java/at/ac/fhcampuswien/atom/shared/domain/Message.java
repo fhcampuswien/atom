@@ -20,6 +20,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.AttributeDisplayName;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributePlacement;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidator;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNamePlural;
+import at.ac.fhcampuswien.atom.shared.annotations.FileAttribute;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromListGui;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
@@ -60,6 +61,9 @@ public class Message extends FeaturedObject {
 	private String senderAddress;
 
 	private String typ;
+
+	@FileAttribute
+	private String binaryContent;
 
 	public Message() {
 	}
@@ -147,6 +151,14 @@ public class Message extends FeaturedObject {
 
 	public String getLongText() {
 		return longText;
+	}
+	
+	public String getBinaryContent() {
+		return binaryContent;
+	}
+
+	public void setBinaryContent(String binaryContent) {
+		this.binaryContent = binaryContent;
 	}
 	
 	@Override

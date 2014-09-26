@@ -28,7 +28,9 @@
 			<version>16.0.1</version>
 		</dependency>
 		
-		<!-- Unsere Entities werden mit Hibernate Annotation persistiert (at.ac.fhcampuswien.atom.shared.domain) -->
+		<!-- Our entities (domain classes) are persited by using hibernate annotations -->
+		<!-- see package (at.ac.fhcampuswien.atom.shared.domain) -->
+		<!-- atom-core is dependend on hibernate since the root domain class "DomainObject" which needs hibernate annoation is located here -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
@@ -38,7 +40,7 @@
 				assigned to a different entity." ) -->
 		</dependency>
 		
-		<!-- wird zum Loggen verwendet in at.ac.fhcampuswien.atom.shared.AtomTools.log(..) -->
+		<!--used for logging in method at.ac.fhcampuswien.atom.shared.AtomTools.log(..) -->
 		<dependency>
 			<groupId>com.allen-sauer.gwt.log</groupId>
 			<artifactId>gwt-log</artifactId>
@@ -47,10 +49,10 @@
 			<!-- <version>3.1.8</version> -->
 		</dependency>
 		
-		<!-- Client Side Reflection Library, wird benötigt, dass wir obwohl wir 
-			nur gegen das allgemeine DomainObject programmieren, trotzdem spezielle attribute 
-			der Childclasses lesen und setzen können. Verwendung in: at.ac.fhcampuswien.atom.client.ClientTools.getAttributeValue(..) 
-			und setAttributeValue(..) -->
+		<!-- Client Side Reflection Library - is used to be able to read and write attributes
+		    of all domain classes although we only program against the generic top-lvl domainclass "DomainObject".
+		    Required in atom-core because @DomainObject needs to be marked with an annotation for the reflection to work.
+			Used in: at.ac.fhcampuswien.atom.client.ClientTools.getAttributeValue(..) and setAttributeValue(..) -->
 		<dependency>
 			<groupId>gwtent</groupId>
 			<artifactId>gwtent</artifactId>
