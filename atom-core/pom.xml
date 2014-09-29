@@ -1,108 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>at.ac.fhcampuswien.atom</groupId>
-    <artifactId>atom</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>at.ac.fhcampuswien.atom</groupId>
+		<artifactId>atom</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>atom-core</artifactId>
+	<artifactId>atom-core</artifactId>
+	<packaging>jar</packaging>
 
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
+	<dependencies>
 
-  <dependencies>
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>provided</scope>
-    </dependency>
-		
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava-gwt</artifactId>
-			<version>16.0.1</version>
-		</dependency>
-		
 		<!-- Our entities (domain classes) are persited by using hibernate annotations -->
 		<!-- see package (at.ac.fhcampuswien.atom.shared.domain) -->
-		<!-- atom-core is dependend on hibernate since the root domain class "DomainObject" which needs hibernate annoation is located here -->
+		<!-- atom-core is dependend on hibernate since the root domain class "DomainObject" 
+			which needs hibernate annoations is located here -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
+			<scope>compile</scope>
 			<!-- BUG: cascade deletion, present in: 4.2.0.CR2, 4.1.10.Final, 3.6.10.Final -->
 			<!-- 4.1.7.Final has bug: IllegalStateException( "An entity copy was already 
 				assigned to a different entity." ) -->
 		</dependency>
-		
-		<!--used for logging in method at.ac.fhcampuswien.atom.shared.AtomTools.log(..) -->
+
+		<!-- Client Side Reflection Library - is used to be able to read and write 
+			attributes of all domain classes although we only program against the generic 
+			top-lvl domainclass "DomainObject". Required in atom-core because @DomainObject 
+			needs to be marked with an annotation for the reflection to work. Because 
+			of this required annotation on @DomainObject it also needs to transverse 
+			into the server side. Used in: at.ac.fhcampuswien.atom.client.ClientTools.getAttributeValue(..) 
+			and setAttributeValue(..) -->
 		<dependency>
-			<groupId>com.allen-sauer.gwt.log</groupId>
-			<artifactId>gwt-log</artifactId>
-			<version>3.3.0</version>
-			<!-- <version>[3.2.1,)</version> -->
-			<!-- <version>3.1.8</version> -->
-		</dependency>
-		
-		<!-- Client Side Reflection Library - is used to be able to read and write attributes
-		    of all domain classes although we only program against the generic top-lvl domainclass "DomainObject".
-		    Required in atom-core because @DomainObject needs to be marked with an annotation for the reflection to work.
-			Used in: at.ac.fhcampuswien.atom.client.ClientTools.getAttributeValue(..) and setAttributeValue(..) -->
-		<dependency>
+			<type>jar</type>
+			<scope>compile</scope>
 			<groupId>gwtent</groupId>
 			<artifactId>gwtent</artifactId>
 			<version>2.0_RC1_GWT2.3</version>
 			<!-- <version>2.0_GWT2.2</version> -->
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
-		
-		<!-- <dependency>
-			<groupId>com.teklabs.gwt-i18n-server</groupId>
-			<artifactId>gwt-i18n-server</artifactId>
-			<version>0.17</version>
-			<type>jar</type>
+
+
+		<!--used for logging in method at.ac.fhcampuswien.atom.shared.AtomTools.log(..) 
+			which is located here in the atom-core subproject -->
+		<dependency>
+			<groupId>com.allen-sauer.gwt.log</groupId>
+			<artifactId>gwt-log</artifactId>
 			<scope>compile</scope>
-		</dependency> -->
-		
-		<!-- <dependency>
-			<groupId>net.lightoze.gwt-i18n-server</groupId>
-			<artifactId>gwt-i18n-server</artifactId>
-			<version>0.22</version>
-		</dependency> -->
-		
+			<version>3.3.0</version>
+			<!-- <version>[3.2.1,)</version> -->
+			<!-- <version>3.1.8</version> -->
+		</dependency>
+
+		<!-- for universal access to the i18n message class, in the same exact 
+			way from both client and server this library is used and since the access 
+			would be different for both there is AtomTools.getMessages() which checks 
+			for the execution environment and does what is necessary. -->
 		<dependency>
 			<groupId>net.lightoze.gwt-i18n-server</groupId>
 			<artifactId>gwt-i18n-server</artifactId>
 			<classifier>original</classifier>
 			<version>0.22</version>
 		</dependency>
-		
+
+		<!-- the dateformat code taken from George Georgovassilis located in package 
+			at.ac.fhcampuswien.atom.shared.dateformat depends on code from the gwt-user 
+			package. It is used in AtomTools DateFormat constants -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
-	
+
 		<!-- cotains: gwt-i18n-server -->
 		<repository>
 			<id>gwt-i18n-server</id>
 			<name>gwt-i18n-server Releases</name>
 			<url>https://service.teklabs.com/nexus/content/repositories/public-releases/</url>
 		</repository>
-	
+
 	</repositories>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-source-plugin</artifactId>
-      </plugin>
+
+	<build>
+		<plugins>
+			<!-- provide source-code to atom-client, required for gwt's java to javascript 
+				compiler -->
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
 
 			<!-- GWT Maven Plugin -->
+			<!-- controls code generation for i18n and async RPC service interface 
+				hint: maybe async thing can be moved to client, server doesn't need it I 
+				think -> cant because gwt-maven-plugin needs Service in same project for generation to work -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -122,14 +122,15 @@
 					<i18nMessagesBundle>at.ac.fhcampuswien.atom.shared.AtomMessages</i18nMessagesBundle>
 					<detail>true</detail>
 					<!-- <excludes>*.png</excludes> -->
-					
-					<!-- tell gwt-compile that there are no modules in the shared project (prevents warning) -->
+
+					<!-- tell gwt-compile that there are no modules in the shared project 
+						(prevents warning) -->
 					<modules></modules>
 				</configuration>
 
 			</plugin>
 		</plugins>
-		
+
 		<!-- Generated by Eclipse m2e by clicking on QuickFix for error "plugin 
 			execution not covered by lifecycle configuration" See https://bugs.launchpad.net/querydsl/+bug/761674 
 			and http://wiki.eclipse.org/M2E_plugin_execution_not_covered -->
@@ -170,30 +171,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-  </build>
+	</build>
 
-  <profiles>
-    <profile>
-      <id>m2e</id>
-      <activation>
-        <property>
-          <name>m2e.version</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>com.google.gwt</groupId>
-          <artifactId>gwt-user</artifactId>
-        </dependency>
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>

@@ -7,7 +7,6 @@ package at.ac.fhcampuswien.atom.shared.domain;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -24,9 +23,9 @@ import at.ac.fhcampuswien.atom.shared.annotations.AnalyzerIgnore;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeLoadingPolicy;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNamePlural;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromGui;
+import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.Searchable;
 import at.ac.fhcampuswien.atom.shared.annotations.SortColumn;
-import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 @Entity
@@ -47,14 +46,14 @@ public class ClipBoardEntry extends FeaturedObject implements Serializable {
 	//cascade = { CascadeType.ALL }, 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
-	@Nonnull @JoinColumn(nullable = false)
+	@JoinColumn(nullable = false)
 	@AttributeLoadingPolicy(requiredForStringRepresentation=true, whenNotPrimary=true, withLists=true)
 	private StoreableUser owner;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 //	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
-	@Nonnull @JoinColumn(nullable = false)
+	@JoinColumn(nullable = false)
 	private DomainObject instance;
 
 	private Date added;

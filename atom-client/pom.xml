@@ -10,11 +10,9 @@
 	</parent>
 
 	<artifactId>atom-client</artifactId>
-	<packaging>war</packaging>
 
-	<prerequisites>
-		<maven>${mavenVersion}</maven>
-	</prerequisites>
+	<!-- atom-server needs a war file of atom-client -->
+	<packaging>war</packaging>
 
 	<properties>
 		<gwt.module>at.ac.fhcampuswien.atom.App</gwt.module>
@@ -29,16 +27,14 @@
 
 	<dependencies>
 
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-domain</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
+		<!-- all dependecies in atom-client have scope provided because: -->
+		<!--) atom-client is translated to javascript during compile time -->
+		<!--) at compile time 'provided' dependencies are available anyway -->
+		<!--) those dependencies do not need to be transversed into atom-server -->
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-domain</artifactId>
+			<artifactId>atom-core</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 			<scope>provided</scope>
@@ -46,14 +42,7 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-core</artifactId>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-core</artifactId>
+			<artifactId>atom-domain</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 			<scope>provided</scope>
@@ -62,32 +51,41 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+			<version>${gwt.version}</version>
 		</dependency>
 
-		<!-- Drag'n'Drop Library; Verwendung siehe Package at.ac.fhcampuswien.atom.client.gu.dnd -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-gwt</artifactId>
+			<version>16.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- Drag'n'Drop Library; usage in Package at.ac.fhcampuswien.atom.client.gu.dnd -->
 		<dependency>
 			<groupId>com.allen-sauer.gwt.dnd</groupId>
 			<artifactId>gwt-dnd</artifactId>
-			<!-- <version>3.2.3</version> -->
+			<version>3.3.0</version>
+			<scope>provided</scope>
 
 			<!-- use for GWT 2.6.0 => <version>3.3.0</version> -->
-			<version>3.3.0</version>
 			<!-- <version>3.2.3</version> -->
-
+			<!-- <version>3.2.3</version> -->
 			<!-- <version>[3.1.2,)</version> -->
 			<!-- <version>3.2.0</version> -->
 		</dependency>
 
-		<!-- Widget-Library, Verwendung siehe at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectListWidget" -->
+		<!-- Widget-Library, usage in at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectListWidget" -->
 		<dependency>
 			<groupId>com.sencha.gxt</groupId>
 			<artifactId>gxt</artifactId>
+			<type>jar</type>
+			<scope>provided</scope>
+			<version>3.1.0</version>
 			<!-- <version>[3.0.0b,)</version> -->
 			<!-- <version>3.0.1</version> -->
 			<!-- <version>3.1.0-beta</version> -->
-			<version>3.1.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
 
 	</dependencies>
@@ -105,19 +103,32 @@
 					<genParam>${gwt.genParam}</genParam>
 					<noserver>true</noserver>
 					<runTarget>${runTarget}</runTarget>
-		          <cssFiles>
-		            <cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
-		          </cssFiles>
+					<cssFiles>
+						<cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
+					</cssFiles>
+
+					<deploy>${project.build.directory}/gwtc/extra</deploy>
+					<extra>${project.build.directory}/gwtc/extra</extra>
+					<gen>${project.build.directory}/gwtc/gen</gen>
+					<workDir>${project.build.directory}/gwtc/work</workDir>
 				</configuration>
-		        <executions>
-		          <execution>
-		            <id>css-generation</id>
-		            <phase>generate-sources</phase>
-		            <goals>
-		              <goal>css</goal>
-		            </goals>
-		          </execution>
-		        </executions>
+				<executions>
+					<execution>
+						<id>generate-css-and-async</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>css</goal>
+							<goal>generateAsync</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>gwt-compile</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
@@ -174,6 +185,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.9.1</version>
 						<executions>
 							<execution>
 								<id>add-shared-sources-to-classpath</id>

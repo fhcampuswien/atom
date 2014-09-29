@@ -23,7 +23,6 @@ import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 
 public class AtomTools {
@@ -68,15 +67,6 @@ public class AtomTools {
 		// AtomTools.log(Log.LOG_LEVEL_TRACE, "rounding " + d + " to " +
 		// rounded, null);
 		// return rounded;
-	}
-
-	@SuppressWarnings("deprecation")
-	public static String getCurrentTimeStamp() {
-		Date currentDate = new Date();
-		if (GWT.isClient())
-			return DateTimeFormat.getFormat("yyyy-MM-dd HH:mm:ss.SSS").format(currentDate);
-		else
-			return currentDate.toLocaleString() + "." + fillStringLeading(Long.toString((currentDate.getTime()) % 1000), '0', 3);
 	}
 	
 	public static String removeHtmlTags(String html) {
@@ -346,6 +336,7 @@ public class AtomTools {
 	// return false;
 	// }
 
+	private static SimpleDateFormatGwt dateWithTimeMS  = new SimpleDateFormatGwt("dd.MM.yyyy HH:mm:ss.SSS");
 	private static SimpleDateFormatGwt dateWithTimeSec = new SimpleDateFormatGwt("dd.MM.yyyy HH:mm:ss");
 	private static SimpleDateFormatGwt dateWithTimeMin = new SimpleDateFormatGwt("dd.MM.yyyy HH:mm");
 	private static SimpleDateFormatGwt dateWithoutTime = new SimpleDateFormatGwt("dd.MM.yyyy");
@@ -366,6 +357,10 @@ public class AtomTools {
 		if (date != null)
 			return dateWithTimeSec.format(date);
 		return "";
+	}
+
+	public static String getCurrentTimeStamp() {
+		return dateWithTimeMS.format(new Date());
 	}
 
 	@SuppressWarnings("deprecation")

@@ -11,6 +11,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FileUpload;
 
+// use this:
+// https://code.google.com/p/gwtupload/wiki/GwtUpload_GettingStarted
+// FIXME: continue here
+
 public class FileView extends AttributeView<String, FileView, String> {
 
 	FileUpload fileUpload;

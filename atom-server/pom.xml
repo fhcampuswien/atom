@@ -3,14 +3,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<!-- dummy scm so that buildnumber plugin will work -->
-	<scm>
-		<connection>scm:svn:http://127.0.0.1/dummy</connection>
-		<developerConnection>scm:svn:https://127.0.0.1/dummy</developerConnection>
-		<tag>HEAD</tag>
-		<url>http://127.0.0.1/dummy</url>
-	</scm>
-
 	<parent>
 		<groupId>at.ac.fhcampuswien.atom</groupId>
 		<artifactId>atom</artifactId>
@@ -19,10 +11,6 @@
 
 	<artifactId>atom-server</artifactId>
 	<packaging>war</packaging>
-
-	<prerequisites>
-		<maven>${mavenVersion}</maven>
-	</prerequisites>
 
 	<properties>
 		<webappDirectory>${project.build.directory}/ATOM</webappDirectory>
@@ -55,10 +43,15 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
+			<version>${gwt.version}</version>
+           	<scope>compile</scope>
 		</dependency>
+			
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
+           	<scope>provided</scope>
+			<version>2.5</version>
 		</dependency>
 
 		<!-- Hibernate c3p0 connection pool -->
@@ -143,6 +136,7 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
@@ -186,6 +180,12 @@
 	<!-- =================================================== -->
 	<!-- =================================================== -->
 
+	<!-- scm -> git connection - so that buildnumber plugin will work -->
+	<scm>
+		<connection>scm:git:git://github.com/fhcampuswien/atom.git</connection>
+		<url>https://github.com/fhcampuswien/atom</url>
+	</scm>
+	
 	<build>
 		<!-- Generate compiled stuff in the folder used for developing mode -->
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
@@ -220,7 +220,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.2</version>
+				<version>1.3</version>
 				<executions>
 					<execution>
 						<id>generate-buildnumber</id>
@@ -233,8 +233,11 @@
 								from the svn-server and incoperates them into the working copy. But its the 
 								only way I found to get the true last revision number (for using it in the 
 								build name) -->
+							<detail>true</detail>
 							<doUpdate>false</doUpdate>
-							<buildNumberPropertyName>buildRevision</buildNumberPropertyName>
+          					<doCheck>false</doCheck>
+          					<shortRevisionLength>7</shortRevisionLength>
+							<buildNumberPropertyName>buildNumber</buildNumberPropertyName>
 						</configuration>
 					</execution>
 					<execution>
@@ -323,7 +326,7 @@
 						<!-- <rename src="ATOM-SNAPSHOT_.war" dest="ATOM-SNAPSHOT_x_${buildNumber}.war"/> -->
 						<echo message="buildNumber='${buildNumber}'" />
 						<move file="${project.build.directory}/${project.build.finalName}.war"
-							tofile="${project.build.directory}/ATOM_build_${buildDateTime}_rev${buildRevision}.war" />
+							tofile="${project.build.directory}/ATOM_build_${buildDateTime}_${buildNumber}.war" />
 					</target>
 				</configuration>
 

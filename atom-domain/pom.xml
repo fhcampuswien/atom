@@ -10,23 +10,26 @@
 	</parent>
 
 	<artifactId>atom-domain</artifactId>
-
-	<prerequisites>
-		<maven>${mavenVersion}</maven>
-	</prerequisites>
+	<packaging>jar</packaging>
 
 	<dependencies>
 
+		<!-- all domain classes extend DomainObject, which is part of the atom-core 
+			project -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-core</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
+			<scope>compile</scope>
 		</dependency>
 
+		<!-- DomainObject implements com.google.gwt.user.client.rpc.IsSerializable 
+			which causes 'The hierarchy of the type * is incosistent' errors for all 
+			DomainObject sub-classes if neither gwt-user nor gwt-servlet is present -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-servlet</artifactId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -34,10 +37,12 @@
 
 	<build>
 		<plugins>
+			<!-- provide source-code to atom-client, required for gwt's java to javascript 
+				compiler -->
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
-	
+
 </project>
