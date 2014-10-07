@@ -11,7 +11,7 @@
 
 	<artifactId>atom-client</artifactId>
 
-	<!-- atom-server needs a war file of atom-client -->
+	<!-- atom-server needs a war file of atom-client, since a jar would simply be copied to the lib folder.. -->
 	<packaging>war</packaging>
 
 	<properties>
@@ -92,6 +92,7 @@
 
 	<build>
 		<plugins>
+			<!-- controling gwt-compile & css interface generation -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -114,11 +115,10 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>generate-css-and-async</id>
+						<id>generate-css</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>css</goal>
-							<goal>generateAsync</goal>
 						</goals>
 					</execution>
 					<execution>

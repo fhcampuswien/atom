@@ -37,7 +37,7 @@
 
 	<build>
 		<plugins>
-			<!-- provide source-code to atom-client, required for gwt's java to javascript 
+			<!-- provide source-code to atom-client, required for gwt's java-to-javascript 
 				compiler -->
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>

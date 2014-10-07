@@ -37,7 +37,6 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-			
 				<plugin> <!-- globally setting java version here -->
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.1</version>
@@ -49,7 +48,7 @@
 				
 				<plugin>
 					<!-- this plugin is used in atom-core and atom-domain to provide
-						 their source-code to the gwt java to javascript compiler -->
+						 their source-code to the gwt java-to-javascript compiler -->
 					<artifactId>maven-source-plugin</artifactId>
 					<version>2.2</version>
 					<executions>
@@ -65,5 +64,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	
 </project>

@@ -17,40 +17,44 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-	
+		
+		<!-- shared code, domain depends on core, so core will be imported through 
+			domain -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-domain</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
+		<!-- client side code after java-to-javascript compilation -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-client</artifactId>
 			<version>${project.version}</version>
-			<type>war</type>
-			<scope>runtime</scope>
+			<scope>runtime</scope> <!-- only required for deployment -->
+			<type>war</type> <!-- packaged as war, since a jar file would be put into lib instead of extracted -->
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
 			<version>${gwt.version}</version>
-           	<scope>compile</scope>
+			<scope>compile</scope>
 		</dependency>
-			
+
+		<!-- basic servlet classes that are provided by tomcat / putty application-server -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-           	<scope>provided</scope>
+			<scope>provided</scope>
 			<version>2.5</version>
 		</dependency>
 
@@ -143,16 +147,16 @@
 			<version>4.7</version> <scope>test</scope> </dependency> -->
 
 	</dependencies>
-	
-	
+
+
 	<!-- =================================================== -->
 	<!-- those repositories are necessary to make the plugin -->
 	<!-- com.edugility jpa-maven-plugin 3-SNAPSHOT work      -->
 	<!-- =================================================== -->
-	
+
 	<repositories>
 	</repositories>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>sonatype-public</id>
@@ -185,7 +189,7 @@
 		<connection>scm:git:git://github.com/fhcampuswien/atom.git</connection>
 		<url>https://github.com/fhcampuswien/atom</url>
 	</scm>
-	
+
 	<build>
 		<!-- Generate compiled stuff in the folder used for developing mode -->
 		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
@@ -235,8 +239,8 @@
 								build name) -->
 							<detail>true</detail>
 							<doUpdate>false</doUpdate>
-          					<doCheck>false</doCheck>
-          					<shortRevisionLength>7</shortRevisionLength>
+							<doCheck>false</doCheck>
+							<shortRevisionLength>7</shortRevisionLength>
 							<buildNumberPropertyName>buildNumber</buildNumberPropertyName>
 						</configuration>
 					</execution>
@@ -395,6 +399,7 @@
 						<plugin>
 							<groupId>org.apache.tomcat.maven</groupId>
 							<artifactId>tomcat6-maven-plugin</artifactId>
+							<version>2.0</version>
 							<configuration>
 								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
 								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
@@ -406,6 +411,7 @@
 						<plugin>
 							<groupId>org.apache.tomcat.maven</groupId>
 							<artifactId>tomcat7-maven-plugin</artifactId>
+							<version>2.0</version>
 							<configuration>
 								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
 								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>

@@ -93,7 +93,7 @@
 
 	<build>
 		<plugins>
-			<!-- provide source-code to atom-client, required for gwt's java to javascript 
+			<!-- provide source-code to atom-client, required for gwt's java-to-javascript 
 				compiler -->
 			<plugin>
 				<artifactId>maven-source-plugin</artifactId>
@@ -102,7 +102,8 @@
 			<!-- GWT Maven Plugin -->
 			<!-- controls code generation for i18n and async RPC service interface 
 				hint: maybe async thing can be moved to client, server doesn't need it I 
-				think -> cant because gwt-maven-plugin needs Service in same project for generation to work -->
+				think -> can't because gwt-maven-plugin needs the Service Interface in same 
+				project for generation to work -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
