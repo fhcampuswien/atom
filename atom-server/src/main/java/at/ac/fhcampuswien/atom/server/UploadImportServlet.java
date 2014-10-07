@@ -167,7 +167,7 @@ public class UploadImportServlet extends HttpServlet {
 
 		} else {
 			AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost isMultipartContent = false", this);
-			resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Request contents type is not supported by the servlet.");
+			resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Request contents type is not supported by this servlet.");
 		}
 
 		AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost end of method", this);

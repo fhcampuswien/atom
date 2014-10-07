@@ -17,7 +17,7 @@
 	<properties>
 		<gwt.module>at.ac.fhcampuswien.atom.App</gwt.module>
 		<gwt.draftCompile>false</gwt.draftCompile>
-		<gwt.style>OBF</gwt.style>
+		<gwt.style>OBFUSCATED</gwt.style>
 		<gwt.genParam>false</gwt.genParam>
 		<!-- keep in sync with atom-server -->
 		<runTarget>https://127.0.0.1:8443/</runTarget>
@@ -48,6 +48,7 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- GWT client side APIs -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
@@ -55,6 +56,7 @@
 			<version>${gwt.version}</version>
 		</dependency>
 
+		<!-- at.ac.fhcampuswien.atom.client.gui.HistoryPanel uses BiMap from guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
@@ -138,24 +140,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat6-maven-plugin</artifactId>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.tomcat.maven</groupId>
-					<artifactId>tomcat7-maven-plugin</artifactId>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<profiles>

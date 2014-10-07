@@ -17,13 +17,6 @@
 	</properties>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-core</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
 		
 		<!-- shared code, domain depends on core, so core will be imported through 
 			domain -->
@@ -43,6 +36,7 @@
 			<type>war</type> <!-- packaged as war, since a jar file would be put into lib instead of extracted -->
 		</dependency>
 
+		<!-- GWT RPC framework -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
@@ -54,28 +48,31 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<scope>provided</scope>
+			<scope>provided</scope> <!-- already exist on any java application server -->
 			<version>2.5</version>
 		</dependency>
 
-		<!-- Hibernate c3p0 connection pool -->
+		<!-- using Hibernate c3p0 connection pool, because default is not suited for production -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
 
+		<!-- used by at.ac.fhcampuswien.atom.server.UploadImportServlet -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-		<dependency>
+		
+		<!-- <dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.2</version>
-		</dependency>
+		</dependency> -->
 
+		<!-- used by at.ac.fhcampuswien.atom.server.PoolableEntityManagerFactory -->
 		<dependency>
 			<groupId>commons-pool</groupId>
 			<artifactId>commons-pool</artifactId>
@@ -124,12 +121,14 @@
 			<version>6.7</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>2.27.0</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.opera</groupId>
 			<artifactId>operadriver</artifactId>

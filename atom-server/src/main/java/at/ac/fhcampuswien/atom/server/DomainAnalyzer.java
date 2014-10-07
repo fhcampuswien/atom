@@ -89,39 +89,49 @@ public class DomainAnalyzer {
 
 		// Get a File object for the package
 		URL url = DomainObject.class.getResource("/" + domainPackagePath);
-		AtomTools.log(Log.LOG_LEVEL_INFO, "Launcher found url '" + url
+		
+		if (url != null) {
+		
+			AtomTools.log(Log.LOG_LEVEL_INFO, "Launcher found url '" + url
 				+ "' for package '" + domainPackagePath + "'", null);
 		// (new File(url.getFile().replace("%20", " "))).list()
-		if (url != null) {
-			String domainPackage = url.toString().replace("/atom-core", "/atom-domain");
-			URL domainPackageURL = null;
+			
+			handleResource(url);
+			
+			//find and analyze "the other" project that contains domain classes (atom-core & atom-domain)
+			String foundTextUrl = url.toString();
 			try {
-				domainPackageURL = new URL(domainPackage);
+				if(foundTextUrl.contains("/atom-core")) {
+					handleResource(new URL(foundTextUrl.replace("/atom-core", "/atom-domain")));
+				}
+				else {
+					handleResource(new URL(foundTextUrl.replace("/atom-domain", "/atom-core")));
+				}
+					
 			} catch (MalformedURLException e1) {
 				e1.printStackTrace();
 				AtomTools.log(Log.LOG_LEVEL_ERROR,
-						"could not open atom-domain URL='" + domainPackage + "'", null);
+						"could not open atom-domain URL='" + foundTextUrl + "'", null);
 			}
-			if (url.getProtocol().equals("jar")) {
-				handleJarUrl(url);
-				if(domainPackageURL != null)
-					handleJarUrl(domainPackageURL);
-			} else {
-				handleDirectoryOrFile(new File(url.getFile()
-						.replace("%20", " ")));
-				if(domainPackageURL != null)
-					handleDirectoryOrFile(new File(domainPackageURL.getFile()
-							.replace("%20", " ")));
-			}
+			
 			AtomTools.log(Log.LOG_LEVEL_INFO, "finished building DomainTree",
 					null);
 		} else {
-			// TO-DO: check if and when url is null
+			// please report a github issue if and when url is null
 			AtomTools.log(Log.LOG_LEVEL_FATAL,
 					"could not find url for package '" + domainPackagePath + "'", null);
 		}
 		// handleDirectoryOrFile(new
 		// File("/var/lib/tomcat6/webapps/ATOM_v7/WEB-INF/classes" + name));
+	}
+	
+	private static void handleResource(URL url) {
+		if (url.getProtocol().equals("jar")) {
+			handleJarUrl(url);
+		} else {
+			handleDirectoryOrFile(new File(url.getFile()
+					.replace("%20", " ")));
+		}
 	}
 
 	private static void handleJarUrl(URL url) {

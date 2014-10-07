@@ -953,14 +953,16 @@ public class App implements EntryPoint {
 					@Override
 					public void recieve(DomainClass domainTree) {
 						DomainClass domainClass = domainTree.getDomainClassNamed(className);
-						if (domainClass != null)
+						if (domainClass != null) {
 							if (!singleton.history.activateFrameIfExists(null, domainClass, null, null, AtomConfig.FrameType.IMPORT)) {
 								singleton.centerHeader.setLoading(true);
 								singleton.history.addFrame(new ImportFrame(domainClass));
-							} else {
-								Window.alert("No class with name '" + className + "' found.");
-								singleton.history.addFrame(new WelcomeFrame());
 							}
+						}
+						else {
+							Window.alert("No class with name '" + className + "' found.");
+							singleton.history.addFrame(new WelcomeFrame());
+						}
 					}
 				});
 				return true;

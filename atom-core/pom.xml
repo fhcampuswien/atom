@@ -100,16 +100,17 @@
 			</plugin>
 
 			<!-- GWT Maven Plugin -->
-			<!-- controls code generation for i18n and async RPC service interface 
-				hint: maybe async thing can be moved to client, server doesn't need it I 
-				think -> can't because gwt-maven-plugin needs the Service Interface in same 
-				project for generation to work -->
+			<!-- controls code generation for i18n and async RPC service interface.
+				i18n is required in atom-core because it's used in AtomTools
+				gwt-maven-plugin can only generate the async RPC interface in the same
+				project that holds the normal RPC interface, which makes sense to have
+				in atom-core since both atom-client and atom-server need it. -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>my_code_generation</id>
+						<id>code_generation</id>
 						<goals>
 							<goal>i18n</goal>
 							<goal>generateAsync</goal>
