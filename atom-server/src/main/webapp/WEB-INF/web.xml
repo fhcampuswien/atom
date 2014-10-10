@@ -1,22 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-  version="2.5">
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
 
-	<!-- Servlets -->
+	<!-- ================================================================== -->
+	<!-- ======================= GWT Upload library ======================= -->
+	<!-- ================================================================== -->
+	<context-param>
+		<!-- max size of the upload request -->
+		<param-name>maxSize</param-name>
+		<param-value>3145728</param-value>
+	</context-param>
+	<context-param>
+		<!-- Useful in development mode to slow down the uploads in fast networks. 
+			Put the number of milliseconds to sleep in each block received in the server. 
+			false or 0, means don't use slow uploads -->
+		<param-name>slowUploads</param-name>
+		<param-value>200</param-value>
+	</context-param>
 
-
+	<servlet>
+		<servlet-name>uploadServlet</servlet-name>
+		<!-- This is the default servlet, it puts files in session -->
+		<servlet-class>gwtupload.server.UploadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>uploadServlet</servlet-name>
+		<url-pattern>*.gupld</url-pattern>
+	</servlet-mapping>
+	<!-- ================================================================== -->
+	<!-- ================================================================== -->
+	
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>atomServlet</servlet-name>
 		<servlet-class>at.ac.fhcampuswien.atom.server.AtomServiceImpl</servlet-class>
 	</servlet>
-	
+
 	<servlet>
 		<servlet-name>exportServlet</servlet-name>
 		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadExportServlet</servlet-class>
 	</servlet>
-	
+
 	<servlet>
 		<servlet-name>importServlet</servlet-name>
 		<servlet-class>at.ac.fhcampuswien.atom.server.UploadImportServlet</servlet-class>
@@ -55,10 +81,9 @@
 
 
 	<!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-  </welcome-file-list>
-
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
 	<!-- Auto Redirect from http to https -->
 	<security-constraint>
 		<web-resource-collection>

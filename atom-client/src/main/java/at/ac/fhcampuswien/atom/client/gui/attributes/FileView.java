@@ -4,12 +4,14 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes;
 
+import gwtupload.client.IUploader;
+import gwtupload.client.IUploader.OnChangeUploaderHandler;
+import gwtupload.client.IUploader.OnFinishUploaderHandler;
+import gwtupload.client.IUploader.OnStatusChangedHandler;
+import gwtupload.client.MultiUploader;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.FileUpload;
 
 // use this:
 // https://code.google.com/p/gwtupload/wiki/GwtUpload_GettingStarted
@@ -17,17 +19,33 @@ import com.google.gwt.user.client.ui.FileUpload;
 
 public class FileView extends AttributeView<String, FileView, String> {
 
-	FileUpload fileUpload;
+	MultiUploader fileUpload;
 	
 	public FileView() {
-		fileUpload = new FileUpload();
-		fileUpload.addChangeHandler(new ChangeHandler() {
+		fileUpload = new MultiUploader();
+		fileUpload.setMaximumFiles(1);
+		fileUpload.addOnFinishUploadHandler(new OnFinishUploaderHandler() {
 			
 			@Override
-			public void onChange(ChangeEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "file upload changed; eventDebugString='" + event.toDebugString() + "', fileUpload.filename='" + fileUpload.getFilename() + "'", this);
+			public void onFinish(IUploader uploader) {
+				AtomTools.log(Log.LOG_LEVEL_DEBUG, "SingleUploaderModal.onFinish, getInputName = '" + uploader.getInputName() + "'", this);
 			}
 		});
+		fileUpload.addOnChangeUploadHandler(new OnChangeUploaderHandler() {
+			
+			@Override
+			public void onChange(IUploader uploader) {
+				AtomTools.log(Log.LOG_LEVEL_DEBUG, "SingleUploaderModal.onChange " + "'", this);
+			}
+		});
+		fileUpload.addOnStatusChangedHandler(new OnStatusChangedHandler() {
+			
+			@Override
+			public void onStatusChanged(IUploader uploader) {
+				AtomTools.log(Log.LOG_LEVEL_DEBUG, "SingleUploaderModal.onStatusChanged " + "'", this);
+			}
+		});
+		
 		initWidget(fileUpload);
 	}
 	

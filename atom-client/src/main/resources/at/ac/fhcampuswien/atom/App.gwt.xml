@@ -3,7 +3,7 @@
 
 <module rename-to="app">
 	<inherits name="com.google.gwt.user.User" />
-	
+
 	<inherits name="com.google.gwt.user.theme.clean.Clean" />
 
 	<source path="client" />
@@ -19,7 +19,7 @@
 	<inherits name="com.google.common.collect.Collect" />
 	<inherits name="com.sencha.gxt.ui.GXT" />
 	<!-- <inherits name="com.teklabs.gwt.i18n.GwtI18nServer" /> -->
-	<inherits name="net.lightoze.gwt.i18n.GwtI18nServer"/>
+	<inherits name="net.lightoze.gwt.i18n.GwtI18nServer" />
 
 	<inherits name="com.google.gwt.resources.Resources" />
 
@@ -30,6 +30,12 @@
 	<set-property name="log_GWTLogger" value="ENABLED" />
 	<set-property name="log_SystemLogger" value="ENABLED" />
 
-	<inherits name="com.google.gwt.user.Debug"/> 
-	
+	<!-- Include GWTUpload library -->
+	<inherits name="gwtupload.GWTUpload" />
+	<!-- Load dinamically predefined styles in the library when the application 
+		starts -->
+	<stylesheet src="Upload.css" />
+
+	<inherits name="com.google.gwt.user.Debug" />
+
 </module>
