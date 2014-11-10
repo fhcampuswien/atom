@@ -250,6 +250,8 @@ public class DomainObjectDetailFrame extends Frame {
 							@Override
 							public void doNotify(Object reason) {
 								if(representedObject != null) {
+									if("java.lang.Integer".equals(attribute.getType()))
+										reason = Integer.parseInt((String) reason);
 									ClientTools.setAttributeValue(representedClass, attribute, representedObject, reason);
 								}
 							}

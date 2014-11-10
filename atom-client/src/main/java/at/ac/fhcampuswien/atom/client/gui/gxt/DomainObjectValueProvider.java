@@ -91,7 +91,7 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 				}
 
 			} else if (listBoxMapped != null && listBoxMapped.size() > 0) {
-					val = (T) listBoxMapped.get(val);
+					val = (T) listBoxMapped.get(val.toString());
 			}
 			
 			if(val instanceof String) {
