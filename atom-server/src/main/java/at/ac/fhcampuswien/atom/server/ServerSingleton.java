@@ -4,7 +4,9 @@
  */
 package at.ac.fhcampuswien.atom.server;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.lightoze.gwt.i18n.server.LocaleProxy;
 
+import org.apache.commons.fileupload.FileItem;
+import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.engine.jdbc.LobCreator;
 import org.hibernate.jdbc.Work;
+import org.hibernate.jpa.HibernateEntityManager;
 
 import at.ac.fhcampuswien.atom.server.auth.Authenticator;
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
@@ -35,6 +42,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.DomainObjectSearchResult;
+import at.ac.fhcampuswien.atom.shared.FileAttributeRepresentation;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.domain.ClipBoardEntry;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
@@ -42,6 +50,7 @@ import at.ac.fhcampuswien.atom.shared.domain.FeaturedObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
+import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -98,6 +107,8 @@ public class ServerSingleton {
 		
 		if(AtomConfig.updateAllStringRepresentationsOnApplicationStartup)
 			updateAllStringRepresentations();
+		
+		//updateStringRepresentationsOnce("at.ac.fhcampuswien.atom.shared.domain.Publikation");
 		
 		AtomTools.log(Log.LOG_LEVEL_INFO, "Atom ServerSingleton Startup Finished - " + AtomTools.getMessages().willkommen_in_app(), this);
 		
@@ -236,23 +247,22 @@ public class ServerSingleton {
 			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated) {
 
 		Set<String> requiredRelations = AtomTools.getRequiredRelations(AtomConfig.accessLinkage, domainClass.getAccessHandler().getAccess(session));
-		Collection<RelationDefinition> reqRelDefs;
+		Collection<RelationDefinition> reqRelDefs = null;
 		
-		if(onlyRelated) {
-			reqRelDefs = domainClass.getRelationDefinitions().values();
+		if(requiredRelations.contains(RelationDefinition.noRelationRequired)) {
+			if(onlyRelated) {
+				//user wishes too see related instances, but he has rights to see anything. use any and all relations that we know of.
+				reqRelDefs = domainClass.getRelationDefinitions().values();
+			}
 		}
 		else {
+			//user does not have the permission to see unrelated, but only those related with one of the listed relations: 
 			reqRelDefs = domainClass.getRelationDefinitions(requiredRelations);
-		}
-		
-		if(reqRelDefs.size() <= 0) {
-			if(!requiredRelations.contains(RelationDefinition.noRelationRequired))
-				throw new AuthenticationException("no relation definitions found and user has no unrelated-access allowance!");
-			
-			onlyRelated = false;
-		}
-		else if(!requiredRelations.contains(RelationDefinition.noRelationRequired)) {
 			onlyRelated = true;
+			
+			if(reqRelDefs.size() <= 0) {
+				throw new AuthenticationException("no relation definitions found and user has no unrelated-access allowance!");
+			}
 		}
 		
 		//AtomTools.checkPermissionMatch(AtomConfig.accessLinkage, domainClass.getAccessHandler().getAllAccessTypes(session));
@@ -486,6 +496,7 @@ public class ServerSingleton {
 
 			ServerTools.replaceRelatedObjects(em, domainObject, requestedClass, false);
 			domainObject = em.merge(domainObject);
+			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 
 			tx.commit();
 
@@ -511,6 +522,125 @@ public class ServerSingleton {
 			return null;
 	}
 
+	
+	private void handleFileAttributesForSaveAction(EntityManager em, DomainObject domainObject, DomainClass requestedClass) {
+		if(domainObject == null)
+			return;
+		HashSet<DomainClassAttribute> fas = requestedClass.getAllFileAttributes();
+		if(fas != null && fas.size() > 0) {
+			Class<?> rc = domainObject.getClass();
+			for(DomainClassAttribute a : fas) {
+				try {
+					Method getAttribute = rc.getMethod("get" + AtomTools.upperFirstChar(a.getName()), new Class[] {});
+					String val = (String) getAttribute.invoke(domainObject, new Object[] {});
+					FileAttributeRepresentation far = new FileAttributeRepresentation(val);
+					PersistedFileAttribute pfa = em.find(PersistedFileAttribute.class, far.getFileID());
+					
+					if(!pfa.getForClassName().equals(requestedClass.getName()) || 
+							!pfa.getForAttributeName().equals(a.getName()) || 
+							(pfa.getForInstance() != null && !domainObject.equals(pfa.getForInstance()))
+					  )
+						throw new ValidationError("user is trying to link a file from a different attribute, denying - potential permission problem");
+					
+					pfa.setForInstanceSaved(true);
+					pfa.setForInstance(domainObject);
+					em.merge(pfa);
+					
+				} catch(NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public PersistedFileAttribute getFileAttribute(HttpServletRequest request, Integer id) {
+		ClientSession cs = auth.getSessionFromCookie(request, false);
+		
+		EntityManager em = null;
+		try {
+			em = emFactory.makeObject();
+			PersistedFileAttribute pfa = em.find(PersistedFileAttribute.class, id);
+			
+			if(pfa == null)
+				return null;
+			
+			DomainObject fi = pfa.getForInstance();
+			if(fi == null) {
+				if(pfa.getUploader() != null && pfa.getUploader().equals(cs.getUser())) {
+					AtomTools.log(Log.LOG_LEVEL_INFO, "user downloading file that he has uploaded himself - allowing although it has not yet been saved into an object instance", this);
+					return pfa;
+				}
+				else
+					throw new AuthenticationException("PersistedFileAttribute does not have a instance that it's for yet. Can't determine permissions, assuming no permission.");
+			}
+				
+			
+			DomainClass dc = DomainAnalyzer.getDomainClass(fi.getConcreteClass());
+			Set<String> accessTypes = dc.getAccessHandler().getAccessTypes(cs, fi);
+			
+			if(!(accessTypes.contains(AtomConfig.accessReadOnly) || accessTypes.contains(AtomConfig.accessReadWrite)))
+				throw new AuthenticationException("User does not have full ReadOnly || ReadWrite access to the instance of this file. Attribute Permissions not implemented.");
+			
+			return pfa;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			em.close();
+		}
+		return null;
+	}
+	
+	public PersistedFileAttribute saveFileAttribute(ClientSession session, FileItem fileItem, String forClassName, String forAttributeName, Integer forInstanceID) {
+		
+		PersistedFileAttribute pfa = null;
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		
+		try {
+			em = emFactory.makeObject();
+			tx = em.getTransaction();
+			tx.begin();
+			
+			DomainObject forInstance = null;
+			if(forInstanceID != null) {
+				//forInstance = getDomainObject(session, forInstanceID, forClassName);
+				forInstance = (DomainObject) em.find(ServerTools.getClassForName(forClassName), forInstanceID);
+			}
+
+			HibernateEntityManager hem = em.unwrap(HibernateEntityManager.class);
+			Session hibernateSession = hem.getSession();
+			LobCreator lobCreator = Hibernate.getLobCreator(hibernateSession);
+			Blob blob = lobCreator.createBlob(fileItem.getInputStream(), fileItem.getSize());
+			
+			pfa = new PersistedFileAttribute(blob, fileItem.getName(), fileItem.getContentType(), forClassName, forAttributeName, forInstance, session.getUser());
+			pfa = em.merge(pfa);
+
+			tx.commit();
+
+		} catch (Throwable t) {
+			if(tx != null && tx.isActive())
+				tx.rollback();
+			if (t instanceof AtomException) {
+				throw (AtomException) t;
+			} else {
+				AtomTools.log(Log.LOG_LEVEL_ERROR, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
+				AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, this);
+			}
+		} finally {
+			if (em != null)
+				em.close();
+		}
+		
+		return pfa;
+	}
+
 	public boolean deleteDomainObject(HttpServletRequest request, DomainObject domainObject) {
 
 		if (domainObject == null)
@@ -520,7 +650,7 @@ public class ServerSingleton {
 		return deleteDomainObject(session, domainObject);
 	}
 
-	public boolean deleteDomainObject(ClientSession session, DomainObject domainObject) {
+	protected boolean deleteDomainObject(ClientSession session, DomainObject domainObject) {
 
 		DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
 

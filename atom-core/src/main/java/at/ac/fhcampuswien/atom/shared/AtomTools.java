@@ -287,7 +287,7 @@ public class AtomTools {
 	}
 	
 	public static void checkPermissionMatch(String requiredPermission, Collection<String> accessTypes) {
-		if (accessTypes == null)
+		if (accessTypes == null || accessTypes.size() == 0)
 			throw new AuthenticationException("no permissions assigned! (requested: '" + requiredPermission + "')");
 		else if (accessTypes.contains(AtomConfig.accessDenied))
 			throw new AuthenticationException("permission denied!");

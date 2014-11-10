@@ -211,6 +211,15 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 		return allAttributes;
 	}
 	
+	public HashSet<DomainClassAttribute> getAllFileAttributes() {
+		HashSet<DomainClassAttribute> returnValue = new HashSet<DomainClassAttribute>();
+		for(DomainClassAttribute a : getAllAttributes().values()) {
+			if(a.getAnnotation("FileAttribute") != null)
+				returnValue.add(a);
+		}
+		return returnValue;
+	}
+	
 	private static final DomainClassAttribute deepSearch = new DomainClassAttribute(null, AtomConfig.specialFilterDeepSearch, AtomConfig.specialFilterDeepSearch, true, false);
 	static {
 		deepSearch.setDisplayName(AtomTools.getMessages().specialFilterDeepSearch());

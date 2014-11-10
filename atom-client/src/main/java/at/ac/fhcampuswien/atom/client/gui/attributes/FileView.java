@@ -4,51 +4,94 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes;
 
+import java.util.EnumSet;
+
+import gwtupload.client.IFileInput.FileInputType;
+import gwtupload.client.IUploadStatus;
+import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
 import gwtupload.client.IUploader.OnChangeUploaderHandler;
 import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.OnStatusChangedHandler;
+import gwtupload.client.IUploader.UploadedInfo;
 import gwtupload.client.MultiUploader;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.FileAttributeRepresentation;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 
 // use this:
 // https://code.google.com/p/gwtupload/wiki/GwtUpload_GettingStarted
-// FIXME: continue here
+// https://code.google.com/p/gwtupload/wiki/Servlets
+// FIXME: continue here FileAttribute
 
 public class FileView extends AttributeView<String, FileView, String> {
 
-	MultiUploader fileUpload;
-	
-	public FileView() {
-		fileUpload = new MultiUploader();
+	HorizontalPanel panel = null;
+	MultiUploader fileUpload = null;
+	Anchor downLink = null;
+
+	public FileView(String className, String attributeName, Integer instanceID) {
+		fileUpload = new MultiUploader(FileInputType.BROWSER_INPUT);
+		fileUpload.setMultipleSelection(false);
 		fileUpload.setMaximumFiles(1);
+		fileUpload.add(new Hidden("className", className), 0);
+		fileUpload.add(new Hidden("attributeName", attributeName), 0);
+		fileUpload.add(new Hidden("instanceID", instanceID == null ? "null"
+				: instanceID.toString()), 0);
+		
 		fileUpload.addOnFinishUploadHandler(new OnFinishUploaderHandler() {
-			
+
 			@Override
 			public void onFinish(IUploader uploader) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "SingleUploaderModal.onFinish, getInputName = '" + uploader.getInputName() + "'", this);
+				AtomTools.log(Log.LOG_LEVEL_DEBUG,
+						"SingleUploaderModal.onFinish, getInputName = '"
+								+ uploader.getInputName() + "'", this);
+
+				if (uploader.getStatus() == Status.SUCCESS) {
+					UploadedInfo info = uploader.getServerInfo();
+					AtomTools.log(Log.LOG_LEVEL_INFO, "File name " + info.name, this);
+					AtomTools.log(Log.LOG_LEVEL_INFO, "File content-type " + info.ctype, this);
+					AtomTools.log(Log.LOG_LEVEL_INFO, "File size " + info.size, this);
+
+					// Here is the string returned in your servlet
+					AtomTools.log(Log.LOG_LEVEL_INFO, "Server message = " + uploader.getServerMessage().getMessage(), this);
+					FileView.this.value = uploader.getServerMessage().getMessage();
+					showValue(); 
+				}
 			}
 		});
 		fileUpload.addOnChangeUploadHandler(new OnChangeUploaderHandler() {
-			
+
 			@Override
 			public void onChange(IUploader uploader) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "SingleUploaderModal.onChange " + "'", this);
+				AtomTools.log(Log.LOG_LEVEL_DEBUG,
+						"SingleUploaderModal.onChange " + "'", this);
 			}
 		});
 		fileUpload.addOnStatusChangedHandler(new OnStatusChangedHandler() {
-			
+
 			@Override
 			public void onStatusChanged(IUploader uploader) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "SingleUploaderModal.onStatusChanged " + "'", this);
+				AtomTools.log(Log.LOG_LEVEL_DEBUG,
+						"SingleUploaderModal.onStatusChanged " + "'", this);
+				//uploader.getStatus()
+				if(Status.DELETED.equals(uploader.getStatus()) && downLink != null && !FileView.this.readOnly) {
+					downLink.setHTML("");
+				}
 			}
 		});
+
+		panel = new HorizontalPanel();
+		panel.add(fileUpload);
 		
-		initWidget(fileUpload);
+		initWidget(panel);
 	}
-	
+
 	@Override
 	protected boolean createFieldWidget() {
 		this.field = this;
@@ -57,16 +100,40 @@ public class FileView extends AttributeView<String, FileView, String> {
 
 	@Override
 	protected void showValue() {
-		// TODO Auto-generated method stub
-		
+		//FIXME: This doesn't work as hoped. The Link doesn't show.
+		//link to the servlet "getfile" to retrieve the file. for servlet config see web.xml in AtomServer project
+		AtomTools.log(Log.LOG_LEVEL_INFO, "FileView.showValue() - value = " + FileView.this.value, this);
+		//fileUpload.getFileInput()
+		FileAttributeRepresentation far = new FileAttributeRepresentation(value);
+		//String linkTargetHTML = "<a rel=\"external\" download=\"" + far.getFileName() + "\" target=\"_blank\" href=\"app/getfile?id=" + far.getFileIDString() + "\">" + far.getFileName() + "</a>";
+		String linkTargetHTML = "<a target=\"_blank\" href=\"app/getfile?id=" + far.getFileIDString() + "\">" + far.getFileName() + "</a>";
+		if(downLink == null) {
+			downLink = new Anchor();
+			downLink.getElement().getStyle().setMarginLeft(3, Unit.EM);
+			panel.add(downLink);
+			//fileUpload.clear();
+			//fileUpload.add(downLink);
+		}
+		downLink.setHTML(linkTargetHTML);
 	}
 
 	@Override
 	protected void readValue() {
-		// TODO Auto-generated method stub
-		
+		// don't need to do anything here, the value is directly set after an successful upload by our OnFinishUploadHandler
 	}
 
-	
-
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		
+		super.setReadOnly(readOnly);
+		
+		if(fileUpload != null) {
+			fileUpload.setEnabled(!readOnly);
+			if(readOnly) {
+				fileUpload.getStatusWidget().setCancelConfiguration(EnumSet.of(IUploadStatus.CancelBehavior.DISABLED));
+			} else {
+				fileUpload.getStatusWidget().setCancelConfiguration(IUploadStatus.DEFAULT_CANCEL_CFG);
+			}
+		}
+	}
 }

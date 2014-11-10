@@ -76,7 +76,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 			returnValue = new DomainObjectView(type, attributeName, forFrame);
 		} else if ("java.lang.String".equals(type)) {
 			if (attribute.getAnnotation("FileAttribute") != null) {
-				returnValue = new FileView();
+				returnValue = new FileView(forFrame.getRepresentedClass().getName(), attributeName, forFrame.getRepresentedObject().getObjectID());
 			}
 			else if (attribute.getAnnotation("javax.persistence.Lob") != null) // Langtext
 				if (attribute.getAnnotation("StringFormattedLob") != null)
