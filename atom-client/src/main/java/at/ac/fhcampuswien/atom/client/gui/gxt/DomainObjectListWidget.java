@@ -57,6 +57,7 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.filters.BooleanFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.DateFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
+import com.sencha.gxt.widget.core.client.grid.filters.ListFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.NumericFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.StringFilter;
 
@@ -412,9 +413,34 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 							oneAttribute);
 					ColumnConfig<DomainObject, String> column = new ColumnConfig<DomainObject, String>(valueProvider);
 					genericColumn = column;
-					StringFilter<DomainObject> filter = new StringFilter<DomainObject>(valueProvider);
-					gridFilters.addFilter(filter);
+					
+					//look for @ListBoxDefinition annotation and create specific filter for it.
+					final String[] listValues = oneAttribute.getListBoxDisplay();
+					final String[] listKeys = oneAttribute.getListBoxKeys();
+					if(listKeys != null && listKeys.length > 0) {
+						ListStore<String> store = new ListStore<String>(new ModelKeyProvider<String>() {
 
+							@Override
+							public String getKey(String item) {
+								if(item == null) return null;
+								for(int i=0 ; i < listValues.length ; i++) {
+									if(item.equals(listValues[i]))
+										return listKeys[i];
+								}
+								return null;
+							}
+						});
+						for(String s : listValues) {
+							store.add(s);
+						}
+						ListFilter<DomainObject, String> filter = new ListFilter<DomainObject, String>(valueProvider, store);
+						gridFilters.addFilter(filter);
+					}
+					else {
+						StringFilter<DomainObject> filter = new StringFilter<DomainObject>(valueProvider);
+						gridFilters.addFilter(filter);
+					}
+					
 					// StringFilter stringFilter = new
 					// StringFilter(attributeName);
 					// gridFilters.addFilter(stringFilter);
