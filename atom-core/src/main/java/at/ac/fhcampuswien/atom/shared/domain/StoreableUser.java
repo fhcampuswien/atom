@@ -18,9 +18,14 @@ import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
  * @author kaefert
  *
  *
+
 	INSERT INTO Atom.dbo.StoreableUser (objectID)
 	SELECT p.Per_Atom_ID
-	FROM [Campus_Daten].[dbo].[tbl_Personen] p;
+	FROM [Campus_Daten].[dbo].[tbl_Personen] p
+	WHERE NOT EXISTS(
+		SELECT objectID FROM Atom.dbo.StoreableUser
+		WHERE p.Per_Atom_ID = objectID
+	);
 	
 	SELECT * FROM Atom.dbo.StoreableUser
 	
