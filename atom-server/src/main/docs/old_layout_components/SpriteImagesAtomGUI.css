@@ -1,0 +1,14 @@
+
+@sprite 
+.centerHeaderLowerEdge {
+	gwt-image: "centerHeaderLowerEdge";
+	background-repeat: repeat-x;
+	width: 100%;
+}
+
+@sprite 
+.searchArrow {
+	gwt-image: "searchArrow";
+	background-color: #9ab0c5;
+	cursor: pointer;
+}
