@@ -4,8 +4,6 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes;
 
-import java.util.EnumSet;
-
 import gwtupload.client.IFileInput.FileInputType;
 import gwtupload.client.IUploadStatus;
 import gwtupload.client.IUploadStatus.Status;
@@ -15,14 +13,21 @@ import gwtupload.client.IUploader.OnFinishUploaderHandler;
 import gwtupload.client.IUploader.OnStatusChangedHandler;
 import gwtupload.client.IUploader.UploadedInfo;
 import gwtupload.client.MultiUploader;
+
+import java.util.EnumSet;
+
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.FileAttributeRepresentation;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 
 // use this:
 // https://code.google.com/p/gwtupload/wiki/GwtUpload_GettingStarted
@@ -34,6 +39,18 @@ public class FileView extends AttributeView<String, FileView, String> {
 	HorizontalPanel panel = null;
 	MultiUploader fileUpload = null;
 	Anchor downLink = null;
+	Image preview = null;
+	String fileLink = null;
+	
+	ClickHandler clickHandler = new ClickHandler() {
+		
+		@Override
+		public void onClick(ClickEvent event) {
+			if(fileLink != null) {
+				Window.open(fileLink.replace("app/", ""),"_blank","");
+			}
+		}
+	};
 
 	public FileView(String className, String attributeName, Integer instanceID) {
 		fileUpload = new MultiUploader(FileInputType.BROWSER_INPUT);
@@ -82,6 +99,7 @@ public class FileView extends AttributeView<String, FileView, String> {
 				//uploader.getStatus()
 				if(Status.DELETED.equals(uploader.getStatus()) && downLink != null && !FileView.this.readOnly) {
 					downLink.setHTML("");
+					fileLink = null;
 				}
 			}
 		});
@@ -106,15 +124,23 @@ public class FileView extends AttributeView<String, FileView, String> {
 		//fileUpload.getFileInput()
 		FileAttributeRepresentation far = new FileAttributeRepresentation(value);
 		//String linkTargetHTML = "<a rel=\"external\" download=\"" + far.getFileName() + "\" target=\"_blank\" href=\"app/getfile?id=" + far.getFileIDString() + "\">" + far.getFileName() + "</a>";
-		String linkTargetHTML = "<a target=\"_blank\" href=\"app/getfile?id=" + far.getFileIDString() + "\">" + far.getFileName() + "</a>";
+		fileLink = "app/getfile?id=" + far.getFileIDString();
+		String linkTargetHTML = "<a target=\"_blank\" href=\"" + fileLink + "\">" + far.getFileName() + "</a>";
+		String previewLink = "app/getfilepreview?id=" + far.getFileIDString();
 		if(downLink == null) {
 			downLink = new Anchor();
-			downLink.getElement().getStyle().setMarginLeft(3, Unit.EM);
+			downLink.getElement().getStyle().setMarginLeft(2, Unit.EM);
 			panel.add(downLink);
 			//fileUpload.clear();
 			//fileUpload.add(downLink);
+			
+			preview = new Image(previewLink);
+			preview.addClickHandler(clickHandler);
+			preview.getElement().getStyle().setMarginLeft(2, Unit.EM);
+			panel.add(preview);
 		}
 		downLink.setHTML(linkTargetHTML);
+		preview.setUrl(previewLink);
 	}
 
 	@Override

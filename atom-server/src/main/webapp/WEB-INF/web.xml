@@ -10,7 +10,8 @@
 	<context-param>
 		<!-- max size of the upload request -->
 		<param-name>maxSize</param-name>
-		<param-value>3145728</param-value>
+		<param-value>104857600</param-value> <!-- =100MB  -->
+		<!-- <param-value>3145728</param-value> =3MB -->
 	</context-param>
 	<!-- <context-param>
 		Useful in development mode to slow down the uploads in fast networks. 
@@ -49,6 +50,11 @@
 	</servlet>
 
 	<servlet>
+		<servlet-name>importServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.UploadImportServlet</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>exportServlet</servlet-name>
 		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadExportServlet</servlet-class>
 	</servlet>
@@ -58,11 +64,9 @@
 		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadFileAttributeServlet</servlet-class>
 	</servlet>
 	
-	
-
 	<servlet>
-		<servlet-name>importServlet</servlet-name>
-		<servlet-class>at.ac.fhcampuswien.atom.server.UploadImportServlet</servlet-class>
+		<servlet-name>downloadFilePreviewServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadFileAttributePreviewServlet</servlet-class>
 	</servlet>
 
 	<servlet>
@@ -82,8 +86,8 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>downloadFileServlet</servlet-name>
-		<url-pattern>/app/getfile</url-pattern>
+		<servlet-name>importServlet</servlet-name>
+		<url-pattern>/app/import</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
@@ -92,10 +96,15 @@
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>importServlet</servlet-name>
-		<url-pattern>/app/import</url-pattern>
+		<servlet-name>downloadFileServlet</servlet-name>
+		<url-pattern>/app/getfile</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping>
+		<servlet-name>downloadFilePreviewServlet</servlet-name>
+		<url-pattern>/app/getfilepreview</url-pattern>
+	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
 		<url-pattern>/app/gwt-log</url-pattern>
