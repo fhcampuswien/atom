@@ -213,6 +213,7 @@
 							<urls>
 								<url>file://${basedir}/../atom-core/target/atom-core-${project.version}.jar</url>
 								<url>file://${basedir}/../atom-domain/target/atom-domain-${project.version}.jar</url>
+								<url>file://${basedir}/target/ATOM/WEB-INF/classes/</url>
 							</urls>
 						</configuration>
 					</execution>
@@ -403,7 +404,8 @@
 								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
 								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
 								<path>/</path>
-								<httpsPort>8443</httpsPort>
+								<port>8880</port>
+								<httpsPort>8843</httpsPort>
 								<uriEncoding>UTF-8</uriEncoding>
 							</configuration>
 						</plugin>
@@ -415,8 +417,8 @@
 								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
 								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
 								<path>/</path>
-								<!-- <port>8888</port> -->
-								<httpsPort>8443</httpsPort>
+								<port>8880</port>
+								<httpsPort>8843</httpsPort>
 								<uriEncoding>UTF-8</uriEncoding>
 							</configuration>
 						</plugin>

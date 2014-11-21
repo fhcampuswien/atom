@@ -8,9 +8,9 @@
 <stringAttribute key="com.google.gdt.eclipse.designer.launchAttrModuleHtml" value="blank.html"/>
 <booleanAttribute key="com.google.gdt.eclipse.designer.launchAttrNoServer" value="true"/>
 <stringAttribute key="com.google.gdt.eclipse.designer.launchAttrParameters" value=""/>
-<stringAttribute key="com.google.gdt.eclipse.designer.launchAttrPort" value="8443"/>
+<stringAttribute key="com.google.gdt.eclipse.designer.launchAttrPort" value="8843"/>
 <stringAttribute key="com.google.gdt.eclipse.designer.launchAttrStyle" value="OBFUSCATED"/>
-<stringAttribute key="com.google.gdt.eclipse.designer.launchAttrURL" value="https://127.0.0.1:8443/"/>
+<stringAttribute key="com.google.gdt.eclipse.designer.launchAttrURL" value="https://127.0.0.1:8843/"/>
 <stringAttribute key="com.google.gdt.eclipse.designer.launchAttrWhiteList" value="127.0.0.1"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/atom-client"/>

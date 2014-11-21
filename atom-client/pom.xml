@@ -20,7 +20,7 @@
 		<gwt.style>OBFUSCATED</gwt.style>
 		<gwt.genParam>false</gwt.genParam>
 		<!-- keep in sync with atom-server -->
-		<runTarget>https://127.0.0.1:8443/</runTarget>
+		<runTarget>https://127.0.0.1:8843/</runTarget>
 		<!-- <runTarget>https://localhost:8443/</runTarget> -->
 		<!-- <runTarget>http://localhost:8080/</runTarget> -->
 	</properties>
