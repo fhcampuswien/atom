@@ -62,18 +62,19 @@ public class ServerTools {
 			return null;
 	}
 
+	private static String[] allowedDebugHosts = {"127.0.0.1", "localhost", "10.10.4.24"};
+	
 	public static String getServerDomain(HttpServletRequest request) {
 		String referer = request.getHeader("Referer");
 
-		if (referer.contains("127.0.0.1")) {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain found 127.0.0.1, using this as host for authcookie", request);
-			return "127.0.0.1";
-		}	
-		else if (referer.contains("localhost")) {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain found localhost, using this as host for authcookie", request);
-			return "localhost";
+		for(String s : allowedDebugHosts) {
+			if(referer.contains(s)) {
+				AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain found " + s + " in the referer string. Using it as host for authcookie; referer = " + referer, request);
+				return s;
+			}
 		}
-		AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain couldn't find local-access, using '.fh-campuswien.ac.at' as host for authcookie", request);
+		
+		AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain couldn't find one of the allowedDebugHosts in the referer string. Using '.fh-campuswien.ac.at' as host for authcookie; referer = " + referer, request);
 		return ".fh-campuswien.ac.at";
 	}
 
@@ -610,13 +611,28 @@ public class ServerTools {
 							continue;
 						}
 					}
-					 
+					
 
 					if ("date".equals(columnType)) {
 						Date date = new Date(Long.valueOf(filterValue));
 						SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 						filterValue = formatter.format(date);
 					}
+					else {
+						String[] lbd = attribute.getListBoxDisplay();
+						if(lbd != null && lbd.length > 0) {
+							String[] lbk = attribute.getListBoxKeys();
+							if(!lbk.equals(lbd)) {
+								for(int i=0 ; i < lbd.length ; i++) {
+									if(lbd[i].equals(filterValue)) {
+										filterValue = lbk[i];
+										break;
+									}
+								}
+							}
+						}
+					}
+					
 
 					// if (Date.class.equals((filterValue.getClass()))) {
 					// SimpleDateFormat formatter = new

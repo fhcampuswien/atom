@@ -193,7 +193,7 @@ public class Frame extends Composite {
 	}
 
 	public void deliverError(ValidationError ve) {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "this frame does not process delivered Errors.", this);
+		AtomTools.log(Log.LOG_LEVEL_DEBUG, "Frame.deliverError using generic implementation", this);
 		
 		final PopupPanel popupPanel = new PopupPanel(false);
 		popupPanel.getElement().getStyle().setZIndex(1000);
