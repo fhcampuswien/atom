@@ -18,6 +18,7 @@ import at.ac.fhcampuswien.atom.shared.DataFilter;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
+import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -85,6 +86,10 @@ public class ClientTools {
 		// "setAttributeValue(" + domainClass.getName() + ", "
 		// + domainClassAttribute.getName() + ", "
 		// + domainObject.getStringRepresentation() + ")", null);
+		
+		if("java.lang.Integer".equals(domainClassAttribute.getType()) && value instanceof String) {
+			value = Integer.parseInt((String) value);
+		}
 
 		try {
 			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
@@ -97,11 +102,11 @@ public class ClientTools {
 						+ "' anywhere in the domaintree on the client-side!", null);
 			}
 		} catch (Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "AtomTools.setAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
-			StackTraceElement[] st = t.getStackTrace();
-			for (StackTraceElement e : st) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "AtomTools.setAttributeValue - stacktrace: " + e.toString(), null);
+			if(t instanceof ValidationError) {
+				throw (ValidationError) t;
 			}
+			AtomTools.log(Log.LOG_LEVEL_ERROR, "AtomTools.setAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
+			AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, null);
 		}
 
 		// classType.invoke(domainObject, "set" +
