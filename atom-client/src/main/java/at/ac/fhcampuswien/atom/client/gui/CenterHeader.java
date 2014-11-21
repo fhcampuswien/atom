@@ -226,6 +226,11 @@ public class CenterHeader extends Composite {
 				panel.addButton(panel.duplicateButton);
 			}
 		},
+		OBJECT_DETAIL_VIEW_ONLY_DUPLICATE {
+			protected void buildState(CenterHeader panel) {
+				panel.addButton(panel.duplicateButton);
+			}
+		},
 		OBJECT_EDIT_NORMAL {
 			protected void buildState(CenterHeader panel) {
 				panel.addButton(panel.saveButton);

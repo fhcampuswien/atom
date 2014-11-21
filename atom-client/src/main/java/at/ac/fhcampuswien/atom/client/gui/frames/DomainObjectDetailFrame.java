@@ -76,6 +76,8 @@ public class DomainObjectDetailFrame extends Frame {
 				} else {
 					return CenterHeader.State.OBJECT_DETAIL_VIEW_NORMAL;
 				}
+			} else if (AtomTools.isAccessAllowed(AtomConfig.accessCreateNew, at)) {
+				return CenterHeader.State.OBJECT_DETAIL_VIEW_ONLY_DUPLICATE;
 			} else if (AtomTools.isAccessAllowed(AtomConfig.accessLinkage, at)) {
 				return CenterHeader.State.EMPTY;
 			} else {
@@ -250,7 +252,7 @@ public class DomainObjectDetailFrame extends Frame {
 							@Override
 							public void doNotify(Object reason) {
 								if(representedObject != null) {
-									if("java.lang.Integer".equals(attribute.getType()))
+									if("java.lang.Integer".equals(attribute.getType()) && reason instanceof String)
 										reason = Integer.parseInt((String) reason);
 									ClientTools.setAttributeValue(representedClass, attribute, representedObject, reason);
 								}
@@ -523,17 +525,27 @@ public class DomainObjectDetailFrame extends Frame {
 			String name = getName(instance, representedClass);
 			DomainObjectDetailFrame.this.setTitles("Detailansicht von " + name, name);
 			
-			if(DomainObjectDetailFrame.this.representedObject.getObjectID() == null) {
+			DomainObject oldInstanceVersion = DomainObjectDetailFrame.this.representedObject;
+			DomainObjectDetailFrame.this.representedObject = instance;
+			boolean wasNew = (oldInstanceVersion.getObjectID() == null);
+			
+			if(instance.getNullReasons().containsValue(AtomConfig.nullReasonNotRelationEssential)) {
+				//the object we got back from the server got cleared because user doesn't have read access!
+				//preserve the previous version's values, so that the "duplicate" button can still work for
+				//DomainObjects that the user has createNew-permissions but no read permissions on!
+				//instance = DomainObjectDetailFrame.this.representedObject;
+				applyValuesOf(oldInstanceVersion, true);
+			}
+			
+			if(wasNew) {
 				//if we save an instance for the first time, then we didn't have an objectid before.
 				//the identity changed --> remove the old thing from the userinterface, and add the new one.
-				App.removeFromUI(DomainObjectDetailFrame.this.representedObject);
-				DomainObjectDetailFrame.this.representedObject = instance;
+				App.removeFromUI(oldInstanceVersion);
 				App.addFrame(DomainObjectDetailFrame.this);
 			}
 			else {
-				instance.setShownFields(representedObject.getShownFields());
-				representedObject.unregisterWatcher(shownFieldsNotifiable);
-				representedObject = instance;
+				instance.setShownFields(oldInstanceVersion.getShownFields());
+				oldInstanceVersion.unregisterWatcher(shownFieldsNotifiable);
 				instance.registerWatcher(shownFieldsNotifiable);
 				unsavedNew = false;
 			}
@@ -562,7 +574,7 @@ public class DomainObjectDetailFrame extends Frame {
 			// the database
 		}
 		try {
-			// update
+			// write values from AttributeViews into DomainObject instance
 			for (DomainClassAttribute anAttribute : attributeFields.keySet()) {
 				AttributeView<?, ?, ?> aView = attributeFields.get(anAttribute);
 				if (anAttribute.isWriteAble())
@@ -572,6 +584,7 @@ public class DomainObjectDetailFrame extends Frame {
 			}
 
 			// validation
+			representedObject.prepareSave(RPCCaller.getSinglton().getClientSession());
 			ClientTools.validateDomainObject(representedObject, representedClass);
 		} catch (ValidationError ve) {
 			this.deliverError(ve);
@@ -676,14 +689,14 @@ public class DomainObjectDetailFrame extends Frame {
 		this.objectReciever = reciever;
 	}
 
-	public void applyValuesOf(DomainObject sourceInstance) {
+	public void applyValuesOf(DomainObject sourceInstance, boolean onlyWhereCurrentlyNull) {
 		
 		if(this.representedObject == null)
 			representedObject = ClientTools.createInstance(representedClass);
 
 		HashMap<String, DomainClassAttribute> allAttrs = representedClass.getAllAttributes();
 		for(DomainClassAttribute attr : allAttrs.values()) {
-			if(attr.isWriteAble()) {
+			if(attr.isWriteAble() && (!onlyWhereCurrentlyNull || ClientTools.getAttributeValue(representedClass, attr, representedObject) == null)) {
 				Object value = ClientTools.getAttributeValue(representedClass, attr, sourceInstance);
 				ClientTools.setAttributeValue(representedClass, attr, representedObject, value);	
 			}
