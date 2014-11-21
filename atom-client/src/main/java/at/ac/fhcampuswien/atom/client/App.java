@@ -601,7 +601,7 @@ public class App implements EntryPoint {
 		if(frame == null)
 			frame = new DomainObjectDetailFrame(null, sourceClass, true);
 		
-		((DomainObjectDetailFrame)frame).applyValuesOf(sourceInstance);
+		((DomainObjectDetailFrame)frame).applyValuesOf(sourceInstance, false);
 		singleton.history.showFrame(frame);
 	}
 
@@ -718,10 +718,14 @@ public class App implements EntryPoint {
 			accessTypes = classOfObject.getAccessHandler().getNoRelationRequiredAccess(RPCCaller.getSinglton().getClientSession());
 			//AtomTools.getNoRelationRequiredAccess(classOfObject.getUsersAccess());
 		
-		if (editable && !(accessTypes.contains(AtomConfig.accessReadWrite) || 
-				(object == null && classOfObject.getAccessHandler()
-				.getAllAccessTypes(RPCCaller.getSinglton().getClientSession()).contains(AtomConfig.accessCreateNew)
-				))) {
+		if (editable && !
+				(
+					accessTypes.contains(AtomConfig.accessReadWrite) || 
+					(
+						object == null && accessTypes.contains(AtomConfig.accessCreateNew)
+					)
+				)
+			) {
 			AtomTools.log(Log.LOG_LEVEL_ERROR, "User does not have write access to this object, set editable=false!", this);
 			editable = false;
 		}
