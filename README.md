@@ -13,6 +13,11 @@ The GWT web-frontend can work with arbritary data-structures through the help of
 
 ====
 
+There's a live demo (with only one defined demo DomainObject "Message") you can look at here:
+https://atomdemo.cloudapp.net
+
+====
+
 The motivation of this project is to allow easy data management of data with quickly evolving data structures.
 This is achieved by eliminating the need to manually propagate changing metadata through all tiers.
 The developer only needs to change the structure in one place, the "domain object" classes.
