@@ -87,27 +87,27 @@
 
 	<servlet-mapping>
 		<servlet-name>importServlet</servlet-name>
-		<url-pattern>/app/import</url-pattern>
+		<url-pattern>/import</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>exportServlet</servlet-name>
-		<url-pattern>/app/export</url-pattern>
+		<url-pattern>/export</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>downloadFileServlet</servlet-name>
-		<url-pattern>/app/getfile</url-pattern>
+		<url-pattern>/getfile</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
 		<servlet-name>downloadFilePreviewServlet</servlet-name>
-		<url-pattern>/app/getfilepreview</url-pattern>
+		<url-pattern>/getfilepreview</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
-		<url-pattern>/app/gwt-log</url-pattern>
+		<url-pattern>/gwt-log</url-pattern>
 	</servlet-mapping>
 
 

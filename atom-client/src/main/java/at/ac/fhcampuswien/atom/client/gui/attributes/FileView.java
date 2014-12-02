@@ -124,9 +124,9 @@ public class FileView extends AttributeView<String, FileView, String> {
 		//fileUpload.getFileInput()
 		FileAttributeRepresentation far = new FileAttributeRepresentation(value);
 		//String linkTargetHTML = "<a rel=\"external\" download=\"" + far.getFileName() + "\" target=\"_blank\" href=\"app/getfile?id=" + far.getFileIDString() + "\">" + far.getFileName() + "</a>";
-		fileLink = "app/getfile?id=" + far.getFileIDString();
+		fileLink = "getfile?id=" + far.getFileIDString();
 		String linkTargetHTML = "<a target=\"_blank\" href=\"" + fileLink + "\">" + far.getFileName() + "</a>";
-		String previewLink = "app/getfilepreview?id=" + far.getFileIDString();
+		String previewLink = "getfilepreview?id=" + far.getFileIDString();
 		if(downLink == null) {
 			downLink = new Anchor();
 			downLink.getElement().getStyle().setMarginLeft(2, Unit.EM);
