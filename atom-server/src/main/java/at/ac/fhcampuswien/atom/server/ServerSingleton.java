@@ -533,18 +533,21 @@ public class ServerSingleton {
 				try {
 					Method getAttribute = rc.getMethod("get" + AtomTools.upperFirstChar(a.getName()), new Class[] {});
 					String val = (String) getAttribute.invoke(domainObject, new Object[] {});
-					FileAttributeRepresentation far = new FileAttributeRepresentation(val);
-					PersistedFileAttribute pfa = em.find(PersistedFileAttribute.class, far.getFileID());
 					
-					if(!pfa.getForClassName().equals(requestedClass.getName()) || 
-							!pfa.getForAttributeName().equals(a.getName()) || 
-							(pfa.getForInstance() != null && !domainObject.equals(pfa.getForInstance()))
-					  )
-						throw new ValidationError("user is trying to link a file from a different attribute, denying - potential permission problem");
-					
-					pfa.setForInstanceSaved(true);
-					pfa.setForInstance(domainObject);
-					em.merge(pfa);
+					if(val != null && val.length() > 0) {
+						FileAttributeRepresentation far = new FileAttributeRepresentation(val);
+						PersistedFileAttribute pfa = em.find(PersistedFileAttribute.class, far.getFileID());
+						
+						if(!pfa.getForClassName().equals(requestedClass.getName()) || 
+								!pfa.getForAttributeName().equals(a.getName()) || 
+								(pfa.getForInstance() != null && !domainObject.equals(pfa.getForInstance()))
+						  )
+							throw new ValidationError("user is trying to link a file from a different attribute, denying - potential permission problem");
+						
+						pfa.setForInstanceSaved(true);
+						pfa.setForInstance(domainObject);
+						em.merge(pfa);
+					}
 					
 				} catch(NoSuchMethodException e) {
 					e.printStackTrace();
