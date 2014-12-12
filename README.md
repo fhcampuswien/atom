@@ -15,6 +15,7 @@ The GWT web-frontend can work with arbritary data-structures through the help of
 
 There's a live demo (with only one defined demo DomainObject "Message") you can look at here:
 https://atomdemo.cloudapp.net
+*update 2014-12-12: the demo has been offline for the last few weeks because of some accounting problem with the azure cloud, it's back online now, and I hope it remains like that ;)
 
 ====
 
