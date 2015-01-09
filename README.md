@@ -15,7 +15,11 @@ The GWT web-frontend can work with arbritary data-structures through the help of
 
 There's a live demo (with only one defined demo DomainObject "Message") you can look at here:
 https://atomdemo.cloudapp.net
-*update 2014-12-12: the demo has been offline for the last few weeks because of some accounting problem with the azure cloud, it's back online now, and I hope it remains like that ;)
+
+and yes there are a lot of german strings in there (since our users are german speakers) but they can easily translated by adapting
+https://github.com/fhcampuswien/atom/blob/master/atom-core/src/main/resources/at/ac/fhcampuswien/atom/shared/AtomMessages.properties
+and / or:
+https://github.com/fhcampuswien/atom/blob/master/atom-core/src/main/resources/at/ac/fhcampuswien/atom/shared/AtomMessages_en.properties
 
 ====
 
