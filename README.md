@@ -30,5 +30,7 @@ The developer only needs to change the structure in one place, the "domain objec
 I've wrote up a developer setup guide you can find in the wiki tab here on this github page:
 https://github.com/fhcampuswien/atom/wiki/Developer-Setup-Guide
 
+(As you can see, I have not pushed any updates in a long time. This is not because development stopped, but because I don't see a point doing that work if as it looks to me right now nobody cares anyway. If sombody might stumble upon this repository who is actually interested in looking at the latest version of my project, just contact me by mail or enter an issue in githubs issue tracker here)
+
 If you've got any questions, feel free to contact me by email: <br\>
 thomas dot kaefer at fh minus campuswien dot ac dot at
