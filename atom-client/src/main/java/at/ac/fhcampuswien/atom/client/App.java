@@ -58,6 +58,7 @@ import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -255,6 +256,21 @@ public class App implements EntryPoint {
 			}
 		});
 
+		RPCCaller.getSinglton().getServerInfo(new AsyncCallback<String>() {
+			
+			@Override
+			public void onSuccess(String result) {
+				AtomTools.log(Log.LOG_LEVEL_WARN, "received serverInfo -> " + result, this);
+				singleton.testarea.getElement().setInnerHTML(result);
+				RootPanel.get("serverinfo").getElement().setInnerHTML(result);
+			}
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				AtomTools.log(Log.LOG_LEVEL_WARN, "could not get serverInfo -> " + caught.getMessage(), this);
+			}
+		});
+		
 		centerHeader.setHeader("Seite geladen, prüfe Identität..");
 		checkLoginState();
 		Window.setTitle("DIA");

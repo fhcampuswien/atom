@@ -116,7 +116,10 @@ public class ServerSingleton {
 //		updateStringRepresentationsOnce("at.ac.fhcampuswien.atom.shared.domain.PortalPerson");
 	}
 	
-
+	protected String getDatabaseInfo(HttpServletRequest request) {
+		//auth.getSessionFromCookie(request, false); //giving out this info without authentication?
+		return emFactory.getConnectionInfo();
+	}
 	
 
 	public DomainClass getDomainTreeForUser(HttpServletRequest request) {

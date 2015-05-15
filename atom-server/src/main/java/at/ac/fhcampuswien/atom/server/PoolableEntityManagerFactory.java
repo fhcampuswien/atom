@@ -41,4 +41,8 @@ public class PoolableEntityManagerFactory extends BasePoolableObjectFactory<Enti
 			return emFactory.createEntityManager();
 		}
 	}
+	
+	protected String getConnectionInfo() {
+		return emFactory.getProperties().get("hibernate.connection.url").toString().replace("jdbc:sqlserver://", "");
+	}
 }

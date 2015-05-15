@@ -38,15 +38,6 @@ public class RPCCaller {
 
 	private static RPCCaller singlton = null;
 
-	public static RPCCaller getSinglton() {
-		if (singlton == null)
-			singlton = new RPCCaller();
-		return singlton;
-	}
-
-	private RPCCaller() {
-	}
-
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting
 	 * service.
@@ -62,6 +53,16 @@ public class RPCCaller {
 
 	private Map<String, Date> classChanges = null;
 
+
+	public static RPCCaller getSinglton() {
+		if (singlton == null)
+			singlton = new RPCCaller();
+		return singlton;
+	}
+
+	private RPCCaller() {
+	}
+	
 	private void clearEverything() {
 		getLoadedLists().clear();
 		getLoadedListBoxChoices().clear();
@@ -74,6 +75,10 @@ public class RPCCaller {
 			classChanges = new HashMap<String, Date>();
 		}
 		return classChanges;
+	}
+	
+	public void getServerInfo(AsyncCallback<String> callback) {
+		atomRPCAsync.getServerInfo(callback);
 	}
 
 	public Date getClassChangeDate(String className) {

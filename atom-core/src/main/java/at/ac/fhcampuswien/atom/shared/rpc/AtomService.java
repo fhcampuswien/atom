@@ -113,4 +113,6 @@ public interface AtomService extends RemoteService {
     public ClientSession getSessionForCookie(String cookieValue) throws Exception;
     
     public LinkedHashMap<String, String> getAttributeChoiceList(String clientSession, String nameOfClass, String nameOfAttribute) throws AtomException;
+    
+    public String getServerInfo();
 }

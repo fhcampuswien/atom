@@ -84,10 +84,11 @@
 			<artifactId>gxt</artifactId>
 			<type>jar</type>
 			<scope>provided</scope>
-			<version>3.1.0</version>
+			<version>3.1.1</version>
 			<!-- <version>[3.0.0b,)</version> -->
 			<!-- <version>3.0.1</version> -->
 			<!-- <version>3.1.0-beta</version> -->
+			<!-- <version>3.1.0</version> -->
 		</dependency>
 
 	</dependencies>
@@ -98,6 +99,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
+				<version>${gwt.version}</version>
 				<configuration>
 					<module>${gwt.module}</module>
 					<strict>true</strict>

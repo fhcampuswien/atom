@@ -94,4 +94,9 @@ public class AtomServiceImpl extends RemoteServiceServlet implements AtomService
 	public LinkedHashMap<String, String> getAttributeChoiceList(String clientSession, String nameOfClass, String nameOfAttribute) throws AtomException {
 		return server.getAttributeChoiceList(getThreadLocalRequest(), nameOfClass, nameOfAttribute);
 	}
+	
+	@Override
+	public String getServerInfo() {
+		return server.getDatabaseInfo(getThreadLocalRequest());
+	}
 }

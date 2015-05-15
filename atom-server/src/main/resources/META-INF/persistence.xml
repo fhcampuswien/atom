@@ -27,10 +27,23 @@
 			<property name="hibernate.connection.driver_class" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
 			<!-- mysql <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />  -->
 
+			<!-- jdbc:sqlserver://[serverName[\instanceName][:portNumber]][;property=value[;property=value]] -->
+	   <!-- <property name="hibernate.connection.url" value="jdbc:sqlserver://***REMOVED***\SQL2012:14330;databaseName=Atom" /> -->
+	   <!-- <property name="hibernate.connection.url" value="jdbc:sqlserver://***REMOVED***\SQL2012;databaseName=Atom" /> --> 
+	   <!-- <property name="hibernate.connection.url" value="jdbc:sqlserver://***REMOVED***:14330;databaseName=Atom" />  -->
+	   <!-- <property name="hibernate.connection.url" value="jdbc:sqlserver://***REMOVED***;databaseName=Atom" /> -->
 
-			<property name="hibernate.connection.url" value="jdbc:sqlserver://localhost;databaseName=ATOM" /> 
+			<!-- <property name="hibernate.connection.url" value="jdbc:sqlserver://***REMOVED***:14330;databaseName=Atom" />
+			<property name="hibernate.connection.username" value="atom" />
+			<property name="hibernate.connection.password" value="***REMOVED***" /> -->
+
+			<property name="hibernate.connection.url" value="***REMOVED***" /> 
+			<property name="hibernate.connection.username" value="atomuser" />
+			<property name="hibernate.connection.password" value="***REMOVED***" />
+
+			<!-- <property name="hibernate.connection.url" value="jdbc:sqlserver://localhost;databaseName=ATOM" /> 
 			<property name="hibernate.connection.username" value="******secret***dont*commit*your*creditials*into*version*control**********" />
-			<property name="hibernate.connection.password" value="******secret***dont*commit*your*creditials*into*version*control**********" />
+			<property name="hibernate.connection.password" value="******secret***dont*commit*your*creditials*into*version*control**********" /> -->
 			
 			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" /> -->
 			<property name="hibernate.dialect" value="at.ac.fhcampuswien.atom.server.UnicodeSQLServerDialect" />

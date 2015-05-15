@@ -62,11 +62,16 @@ public class ServerTools {
 			return null;
 	}
 
-	private static String[] allowedDebugHosts = {"127.0.0.1", "localhost", "10.10.4.24"};
+	private static String[] allowedDebugHosts = {"127.0.0.1", "10.10.4.24"}; //, "localhost"
 	
 	public static String getServerDomain(HttpServletRequest request) {
 		String referer = request.getHeader("Referer");
 
+		// workaround for chrome not accepting cookies bound to localhost
+		if(referer.contains("localhost")) {
+			return "";
+		}
+		
 		for(String s : allowedDebugHosts) {
 			if(referer.contains(s)) {
 				AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain found " + s + " in the referer string. Using it as host for authcookie; referer = " + referer, request);
