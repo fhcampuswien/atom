@@ -9,14 +9,14 @@ https://github.com/fhcampuswien/atom/blob/master/atom-domain/src/main/java/at/ac
 These data-structures are persisted by hibernate into a relational database. The connection information needs to be entered here:
 https://github.com/fhcampuswien/atom/blob/master/atom-server/src/main/resources/META-INF/persistence.xml
 
-The GWT web-frontend can work with arbritary data-structures through the help of reflection (enabled by the project gwt-ent https://code.google.com/p/gwt-ent/)
+The GWT web-frontend can work with arbitrary data-structures through the help of reflection (enabled by the project gwt-ent https://code.google.com/p/gwt-ent/)
 
 ====
 
 There's a live demo (with only one defined demo DomainObject "Message") you can look at here:
 https://atomdemo.cloudapp.net
 
-and yes there are a lot of german strings in there (since our users are german speakers) but they can easily translated by adapting
+and yes there are a lot of german strings in there (since our users are german speakers) but they can easily be translated by adapting
 https://github.com/fhcampuswien/atom/blob/master/atom-core/src/main/resources/at/ac/fhcampuswien/atom/shared/AtomMessages.properties
 and / or:
 https://github.com/fhcampuswien/atom/blob/master/atom-core/src/main/resources/at/ac/fhcampuswien/atom/shared/AtomMessages_en.properties
