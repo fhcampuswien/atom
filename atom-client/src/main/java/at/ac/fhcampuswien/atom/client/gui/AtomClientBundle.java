@@ -97,7 +97,7 @@ public interface AtomClientBundle extends ClientBundle {
 	@Source("AtomClientBundleStyle.css")
     public AtomClientBundleStylePublic css();
 	
-	@Source("logo.core.svg")
+	@Source("logo.svg.core")
 	public TextResource svgCore();
 	
 	public class SaveHtml {
