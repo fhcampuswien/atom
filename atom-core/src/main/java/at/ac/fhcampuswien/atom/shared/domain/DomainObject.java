@@ -88,7 +88,9 @@ import com.gwtent.reflection.client.Reflectable;
  *         oder dürfen nicht an den Client gesendet werden. 
  */
 
+//gwt-ent reflection, currently concidering to replace it with https://github.com/WeTheInternet/xapi/tree/master/gwt/gwt-reflect 
 @Reflectable(superClasses = false, assignableClasses = true, relationTypes = false, fields = false, methods = true, constructors = true, classAnnotations = false, fieldAnnotations = false)
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 // @ObjectImage("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAJCAYAAADkZNYtAAAAwklEQVR42lVQWw7CIBDkoFJLLwL1FNrSejAfP21ijJ7A2I47CzSRBJbdmR2YNdfpiX07oAo9mnCE9b3mdY42jHBth8v8gmHRhohKG6IQosa0eyUSr32EKSCbCFZelCT/AnD+pMqKiZhhoSi6rEalVcg8SHT5ZbNrR7mckdD/tWhtUbKTJlPMWVVPxrixfrTf+g7VIb1s+IUmdNtEGAmQScyFQc0RM1TU8Wwmk2Gb84Kp8n166OfViIxpG1kmF4Hb/MYPmyYNcDZbmSIAAAAASUVORK5CYII=")
