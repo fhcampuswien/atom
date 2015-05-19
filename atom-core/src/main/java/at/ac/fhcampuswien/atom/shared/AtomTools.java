@@ -127,6 +127,10 @@ public class AtomTools {
 	}-*/;
 
 	public static void log(int logLevel, String message, Object caller) {
+		log(logLevel, message, caller, null);
+	}
+	
+	public static void log(int logLevel, String message, Object caller, Throwable t) {
 
 		String callerString = "static";
 		if (caller != null){
@@ -150,27 +154,27 @@ public class AtomTools {
 		// if (GWT.isClient()) {
 		switch (logLevel) {
 		case Log.LOG_LEVEL_FATAL: {
-			Log.fatal(logString);
+			Log.fatal(logString, t);
 			break;
 		}
 		case Log.LOG_LEVEL_ERROR: {
-			Log.error(logString);
+			Log.error(logString, t);
 			break;
 		}
 		case Log.LOG_LEVEL_WARN: {
-			Log.warn(logString);
+			Log.warn(logString, t);
 			break;
 		}
 		case Log.LOG_LEVEL_INFO: {
-			Log.info(logString);
+			Log.info(logString, t);
 			break;
 		}
 		case Log.LOG_LEVEL_DEBUG: {
-			Log.debug(logString);
+			Log.debug(logString, t);
 			break;
 		}
 		case Log.LOG_LEVEL_TRACE: {
-			Log.trace(logString);
+			Log.trace(logString, t);
 			break;
 		}
 		}
