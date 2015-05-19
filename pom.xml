@@ -21,8 +21,20 @@
 
 		<!-- cant switch to gwt 2.6. yet, because gwt-i18n-server is incompatible -->
 
+		<!-- <gwt.version>2.6.1</gwt.version> -->
+		
+		<!-- <gwt.version>2.7.2.20150203-1500ori</gwt.version> -->
+		<!-- <gwt.mavenplugin.version>2.7.0</gwt.mavenplugin.version> -->
+		
+		<!-- INCOMPATIBILTIES: -->
+		<!-- gwt-ent reflection - only works with 2.6.1 and lower -->
+		<!-- sencha gxt - only works with 2.7.0, not with current trunk (or xapi gwt fork) -->
+		
 		<gwt.version>2.6.1</gwt.version>
-		<gwt-mvn.version>2.6.1</gwt-mvn.version>
+		<gwt.mavenplugin.version>2.6.1</gwt.mavenplugin.version>
+		
+		<!-- 2015-01-13: 2.7.0 = wont compile, errors from gwt-ent & sencha gxt! -->
+		<!-- <gwt.version>2.7.0</gwt.version> -->
 
 		<hibernate.version>4.3.1.Final</hibernate.version>
 	</properties>
