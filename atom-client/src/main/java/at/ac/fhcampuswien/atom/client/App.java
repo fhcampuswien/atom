@@ -641,8 +641,11 @@ public class App implements EntryPoint {
 		
 		url = AtomTools.ensureEndsWithSlash(url);
 		
-		if(!(url.endsWith("app/")))
-			url += "app/";
+		//export servlet (and every other servlet but the gwt-rpc one) are defined to be on the root folder
+		// @ atom/atom-server/src/main/webapp/WEB-INF/web.xml
+		
+//		if(!(url.endsWith("app/")))
+//			url += "app/";
 			
 		url += "export?class=" + singleton.lastShownFrame.getRepresentedClass().getName();
 		url += "&filter=" + AtomTools.getFilterString(singleton.lastShownFrame.getDataFilters());
