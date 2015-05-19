@@ -39,7 +39,7 @@
 			<plugins>
 				<plugin> <!-- globally setting java version here -->
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.1</version>
+					<version>3.2</version>
 					<configuration>
 						<source>${java.version}</source>
 						<target>${java.version}</target>

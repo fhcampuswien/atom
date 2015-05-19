@@ -111,7 +111,7 @@
 					<cssFiles>
 						<cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
 					</cssFiles>
-
+            		<sourceLevel>1.7</sourceLevel>
 					<deploy>${project.build.directory}/gwtc/extra</deploy>
 					<extra>${project.build.directory}/gwtc/extra</extra>
 					<gen>${project.build.directory}/gwtc/gen</gen>
