@@ -43,7 +43,7 @@ public class ImportFrame extends Frame {
 	formPanel.setMethod(FormPanel.METHOD_POST);
 	// (GWT.isProdMode() ? "ATOM/" : "") +
 	// (GWT.isProdMode() ? "app/" : "") + 
-	formPanel.setAction("app/import?class=" + domainClass.getName());
+	formPanel.setAction("import?class=" + domainClass.getName());
 	fileUpload.setName("upload");
 	
 	formPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
