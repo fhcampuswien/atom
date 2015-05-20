@@ -28,6 +28,9 @@
 		
 		<!-- INCOMPATIBILTIES: -->
 		<!-- gwt-ent reflection - only works with 2.6.1 and lower -->
+		<!-- gwt-ent reflection - only works with old dev-mode, no super-dev mode
+		        [ERROR] The Cross-Site-Iframe linker does not support <script> tags in the gwt.xml files, but the gwt.xml file  
+		        (or the gwt.xml files which it includes) contains the following script tags: [INFO] gwtent/pagebus.js -->
 		<!-- sencha gxt - only works with 2.7.0, not with current trunk (or xapi gwt fork) -->
 		
 		<gwt.version>2.6.1</gwt.version>
