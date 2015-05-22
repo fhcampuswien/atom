@@ -319,7 +319,7 @@
 				<version>1.5</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>install</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
@@ -330,7 +330,7 @@
 						<!-- <rename src="ATOM-SNAPSHOT_.war" dest="ATOM-SNAPSHOT_x_${buildNumber}.war"/> -->
 						<echo message="buildNumber='${buildNumber}'" />
 						<move file="${project.build.directory}/${project.build.finalName}.war"
-							tofile="${project.build.directory}/ATOM_build_${buildDateTime}_${buildNumber}.war" />
+							tofile="${project.build.directory}/ATOM_${scmBranch}_build_${buildDateTime}_${buildNumber}.war" />
 					</target>
 				</configuration>
 
