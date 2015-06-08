@@ -497,7 +497,7 @@ public class ServerSingleton {
 			tx = em.getTransaction();
 			tx.begin();
 
-			ServerTools.replaceRelatedObjects(em, domainObject, requestedClass, false);
+			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false);
 			domainObject = em.merge(domainObject);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 
@@ -777,9 +777,14 @@ public class ServerSingleton {
 			ClientSession session) {
 
 		if (domainClass.isSearchable()) { // info: permission gets checked by the getList method // && AtomTools.isAccessAllowed(AtomConfig.accessLinkage, access)) {
-			DomainObjectList subResult = getListOfDomainObject(domainClass, fromRow, pageSize, null, null, result.getSearchTerm(), result.isOnlyScanStringRepresentation(), session, result.isOnlyRelated());
-			if (subResult != null & subResult.getTotalSize() > 0) {
-				result.addList(subResult);
+			try {
+				DomainObjectList subResult = getListOfDomainObject(domainClass, fromRow, pageSize, null, null, result.getSearchTerm(), result.isOnlyScanStringRepresentation(), session, result.isOnlyRelated());
+				if (subResult != null & subResult.getTotalSize() > 0) {
+					result.addList(subResult);
+				}
+			}
+			catch(AuthenticationException e) {
+				AtomTools.log(Log.LOG_LEVEL_INFO, "User has no permissions to search Class: " + domainClass.getName(), this, e);
 			}
 		}
 		for (DomainClass subClass : domainClass.getSubClasses()) {

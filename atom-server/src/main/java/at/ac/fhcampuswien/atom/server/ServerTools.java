@@ -806,7 +806,7 @@ public class ServerTools {
 	 * @param clear
 	 *            true = clear relations, false = replace with uptodate copys from the database.
 	 */
-	public static void replaceRelatedObjects(EntityManager em, DomainObject domainObject, DomainClass domainClass, boolean clear) {
+	public static void handleRelatedObjects(EntityManager em, DomainObject domainObject, DomainClass domainClass, boolean clear) {
 		Class<?> reflClass = domainObject.getClass();
 
 		for (DomainClassAttribute domainClassAttribute : domainClass.getAttributesOfTypeDomainObject()) {
@@ -842,6 +842,9 @@ public class ServerTools {
 
 		for (DomainClassAttribute domainClassAttribute : domainClass.getCollectionAttributes()) {
 
+			// keep the new state of PersistentString Sets, since
+			// PersistentStrings are always created directly inside instances of
+			// other Objects, and not managed separately.
 			try {
 				Method getAttribute = reflClass.getMethod("get" + AtomTools.upperFirstChar(domainClassAttribute.getName()), new Class[] {});
 				Class<?> collectionClass = getAttribute.getReturnType();
@@ -859,7 +862,10 @@ public class ServerTools {
 						for (Object relObj : related) {
 							if (relObj instanceof DomainObject) {
 								DomainObject obj = (DomainObject) relObj;
-								fromDB.add(em.find(obj.getClass(), obj.getObjectID()));
+								if (domainClassAttribute.getType().equals("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>"))
+									fromDB.add(em.merge(obj));
+								else
+									fromDB.add(em.find(obj.getClass(), obj.getObjectID()));
 							} else {
 								AtomTools.log(Log.LOG_LEVEL_FATAL, "this cannot happen", ServerTools.class);
 							}
