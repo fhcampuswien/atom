@@ -132,6 +132,7 @@ public class RPCCaller {
 	public void loginUser(String username, String password, final Notifiable<String> objectToNotify) {
 		atomRPCAsync.getNewSession(username, password, new AsyncCallback<ClientSession>() {
 			public void onFailure(Throwable caught) {
+				AtomTools.log(Log.LOG_LEVEL_WARN, "could not login user", this, caught);
 				String failed = "Vom Server gemeldeter Fehler: ";
 				if (caught.getMessage() != null)
 					failed += caught.getMessage();
