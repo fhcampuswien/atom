@@ -280,9 +280,11 @@ public class AtomTools {
 	
 	public static Set<String> getRequiredRelations(String requiredPermission, Set<Access> access) {
 		Set<String> ret = new HashSet<String>();
-		for(Access a : access) {
-			if(isAccessAllowed(requiredPermission, a.getAccessTypes())) {
-				java.util.Collections.addAll(ret, a.getRequiredRelations());
+		if(access != null) {
+			for(Access a : access) {
+				if(isAccessAllowed(requiredPermission, a.getAccessTypes())) {
+					java.util.Collections.addAll(ret, a.getRequiredRelations());
+				}
 			}
 		}
 		if(ret.size() < 1)
