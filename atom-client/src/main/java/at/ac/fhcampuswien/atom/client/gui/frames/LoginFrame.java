@@ -5,9 +5,9 @@
 package at.ac.fhcampuswien.atom.client.gui.frames;
 
 import at.ac.fhcampuswien.atom.client.App;
+import at.ac.fhcampuswien.atom.client.ClientTools;
 
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -44,14 +44,7 @@ public class LoginFrame extends Composite {
 	
 	@UiHandler("passwordBox")
 	void onKeyPress_passwordBox(KeyPressEvent event) {
-		//GWT BUG: http://code.google.com/p/google-web-toolkit/issues/detail?id=5558
-		int unicode = event.getUnicodeCharCode();
-		char code = event.getCharCode(); 
-		NativeEvent nativeEvent = event.getNativeEvent();
-		int keyCode = nativeEvent.getKeyCode();
-//		AtomTools.log(Log.LOG_LEVEL_TRACE, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
-		
-		if(code == '\n' || code == '\r' || (unicode == 0 && keyCode == 13)) {
+		if(ClientTools.hasEnterKeyBeenPressed(event)) {
 			App.actionLogin();
 		}
 	}

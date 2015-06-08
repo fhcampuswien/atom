@@ -4,6 +4,7 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes.components;
 
+import at.ac.fhcampuswien.atom.client.ClientTools;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
@@ -11,7 +12,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -55,7 +55,7 @@ public class InputDialogBox extends DialogBox {
 				
 				@Override
 				public void onKeyPress(KeyPressEvent event) {
-					if(event.getCharCode() == KeyCodes.KEY_ENTER) {
+					if(ClientTools.hasEnterKeyBeenPressed(event)) {
 						commit(false);
 					}
 				}

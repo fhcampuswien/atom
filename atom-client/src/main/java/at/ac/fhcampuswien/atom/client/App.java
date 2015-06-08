@@ -159,7 +159,7 @@ public class App implements EntryPoint {
 		searchBox.addDomHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if (event.getCharCode() == '\r') {
+				if(ClientTools.hasEnterKeyBeenPressed(event)) {
 					AtomTools.log(Log.LOG_LEVEL_DEBUG, "searchSimple = " + searchSimpleCheck.getElement().getPropertyString("checked") + " ; " + searchSimpleCheck.getElement().getPropertyBoolean("checked"), this);
 					App.processCommand("SEARCH_" + (searchSimpleCheck.getElement().getPropertyBoolean("checked") ? "SIMPLE_" : "") + searchBox.getElement().getPropertyString("value"));
 				}

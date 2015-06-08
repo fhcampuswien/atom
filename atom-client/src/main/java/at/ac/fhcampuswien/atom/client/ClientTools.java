@@ -21,6 +21,8 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.gwtent.reflection.client.ClassType;
 import com.gwtent.reflection.client.NotFoundException;
@@ -223,5 +225,20 @@ public class ClientTools {
 				new FilterSpecificationDialogBox("Bitte Suchbegriff(e) eingeben:", dc.getSortedAttributesForFilterDefinition(), showShowListButton, reciever);
 			}
 		});
+	}
+	
+	public static boolean hasEnterKeyBeenPressed(KeyPressEvent event) {
+		//GWT BUG: http://code.google.com/p/google-web-toolkit/issues/detail?id=5558
+		int unicode = event.getUnicodeCharCode();
+		char code = event.getCharCode(); 
+		NativeEvent nativeEvent = event.getNativeEvent();
+		int keyCode = nativeEvent.getKeyCode();
+//		AtomTools.log(Log.LOG_LEVEL_TRACE, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
+		//if(event.getCharCode() == KeyCodes.KEY_ENTER) {
+		
+		if(code == '\n' || code == '\r' || (unicode == 0 && keyCode == 13)) {
+			return true;
+		}
+		return false;
 	}
 }
