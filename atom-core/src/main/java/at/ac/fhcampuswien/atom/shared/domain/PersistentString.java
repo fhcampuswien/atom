@@ -4,14 +4,20 @@
  */
 package at.ac.fhcampuswien.atom.shared.domain;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import at.ac.fhcampuswien.atom.shared.AtomConfig;
+import at.ac.fhcampuswien.atom.shared.annotations.AccessListRoles;
 import at.ac.fhcampuswien.atom.shared.annotations.AnalyzerIgnore;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNamePlural;
+import at.ac.fhcampuswien.atom.shared.annotations.HideFromGui;
 
-//@Entity
+@Entity
 @ClassNamePlural("PersistentStrings")
-@AnalyzerIgnore
+//@AnalyzerIgnore
+@HideFromGui
+@AccessListRoles(accessTypes={AtomConfig.accessLinkage, AtomConfig.accessReadOnly},value="*")
 public class PersistentString extends DomainObject {
 
 	@AnalyzerIgnore
