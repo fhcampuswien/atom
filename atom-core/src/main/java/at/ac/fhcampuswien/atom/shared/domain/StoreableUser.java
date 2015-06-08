@@ -5,12 +5,19 @@
 package at.ac.fhcampuswien.atom.shared.domain;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 import at.ac.fhcampuswien.atom.shared.Access;
 import at.ac.fhcampuswien.atom.shared.AccessForOes;
 import at.ac.fhcampuswien.atom.shared.annotations.AnalyzerIgnore;
+import at.ac.fhcampuswien.atom.shared.annotations.AttributeDisplayName;
+import at.ac.fhcampuswien.atom.shared.annotations.AttributeGroup;
+import at.ac.fhcampuswien.atom.shared.annotations.AttributeLoadingPolicy;
+import at.ac.fhcampuswien.atom.shared.annotations.HideFromListGui;
 import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
 
 /**
@@ -38,10 +45,6 @@ public class StoreableUser extends DomainObject {
 	@AnalyzerIgnore
 	private static final long serialVersionUID = 2422853819641167767L;
 
-	public Integer getPer_ID() {
-		return getObjectID();
-	}
-	
 	public Integer getHaupt_OrE_ID() {
 		return null;
 	}
@@ -50,7 +53,43 @@ public class StoreableUser extends DomainObject {
 		return "(-1)";
 	}
 	
+	private Integer Per_ID;
+	
+	@HideFromListGui
+	@AttributeDisplayName("Erstellte Objektinstanzen")
+	@AttributeGroup("System")
+	@OneToMany(mappedBy = "creationUser", fetch = FetchType.LAZY)
+	@AttributeLoadingPolicy(requiredForStringRepresentation = false, whenNotPrimary = false, withLists = false)
+	private Set<FeaturedObject> createdInstances;
+	
+	@HideFromListGui
+	@AttributeDisplayName("Zuletzt bearbeitete Instanzen")
+	@AttributeGroup("System")
+	@OneToMany(mappedBy = "updateUser", fetch = FetchType.LAZY)
+	@AttributeLoadingPolicy(requiredForStringRepresentation = false, whenNotPrimary = false, withLists = false)
+	private Set<FeaturedObject> updatedInstances;
+
+	public Integer getPer_ID() {
+		return getObjectID();
+	}
+	
 	public HashSet<Access> accessForMatchingOes(HashSet<AccessForOes> oeas) {
 		return null;
+	}
+	
+	public Set<FeaturedObject> getCreatedInstances() {
+		return createdInstances;
+	}
+
+	public void setCreatedInstances(Set<FeaturedObject> createdInstances) {
+		this.createdInstances = createdInstances;
+	}
+
+	public Set<FeaturedObject> getUpdatedInstances() {
+		return updatedInstances;
+	}
+
+	public void setUpdatedInstances(Set<FeaturedObject> updatedInstances) {
+		this.updatedInstances = updatedInstances;
 	}
 }
