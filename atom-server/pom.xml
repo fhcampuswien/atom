@@ -315,6 +315,7 @@
 
 			<!-- renaming I@H into IatH because of this bug: -->
 			<!-- https://github.com/gwtproject/gwt/issues/9142 -->
+			<!-- copied from: http://stackoverflow.com/questions/12002033/in-maven-how-can-i-dynamically-build-a-property-value-at-runtime -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
