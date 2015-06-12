@@ -17,7 +17,7 @@
 	</properties>
 
 	<dependencies>
-		
+
 		<!-- shared code, domain depends on core, so core will be imported through 
 			domain -->
 		<dependency>
@@ -52,7 +52,8 @@
 			<version>2.5</version>
 		</dependency>
 
-		<!-- using Hibernate c3p0 connection pool, because default is not suited for production -->
+		<!-- using Hibernate c3p0 connection pool, because default is not suited 
+			for production -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
@@ -121,14 +122,14 @@
 			<version>6.7</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
 			<version>2.27.0</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.opera</groupId>
 			<artifactId>operadriver</artifactId>
@@ -220,48 +221,6 @@
 				</executions>
 			</plugin>
 
-			<!-- get build time as property into ${buildNumber} for use in war-file-name -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.3</version>
-				<executions>
-					<execution>
-						<id>generate-buildnumber</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-						<configuration>
-							<!-- warning, doUpdate might be a problem, since it fetches all updates 
-								from the svn-server and incoperates them into the working copy. But its the 
-								only way I found to get the true last revision number (for using it in the 
-								build name) -->
-							<detail>true</detail>
-							<doUpdate>false</doUpdate>
-							<doCheck>false</doCheck>
-							<shortRevisionLength>7</shortRevisionLength>
-							<buildNumberPropertyName>buildNumber</buildNumberPropertyName>
-						</configuration>
-					</execution>
-					<execution>
-						<id>generate-timestamp</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-						<configuration>
-							<format>{0,date,yyyy-MM-dd_HHmm-ss}</format>
-							<revisionOnScmFailure>fetchDateFailed</revisionOnScmFailure>
-							<items>
-								<item>timestamp</item>
-							</items>
-							<buildNumberPropertyName>buildDateTime</buildNumberPropertyName>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -311,6 +270,72 @@
 				</executions>
 			</plugin>
 
+
+			<!-- get build time as property into ${buildNumber} for use in war-file-name -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.3</version>
+				<executions>
+					<execution>
+						<id>generate-buildnumber</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+						<configuration>
+							<!-- warning, doUpdate might be a problem, since it fetches all updates 
+								from the svn-server and incoperates them into the working copy. But its the 
+								only way I found to get the true last revision number (for using it in the 
+								build name) -->
+							<detail>true</detail>
+							<doUpdate>false</doUpdate>
+							<doCheck>false</doCheck>
+							<shortRevisionLength>7</shortRevisionLength>
+							<buildNumberPropertyName>buildNumber</buildNumberPropertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-timestamp</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+						<configuration>
+							<format>{0,date,yyyy-MM-dd_HHmm-ss}</format>
+							<revisionOnScmFailure>fetchDateFailed</revisionOnScmFailure>
+							<items>
+								<item>timestamp</item>
+							</items>
+							<buildNumberPropertyName>buildDateTime</buildNumberPropertyName>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- renaming I@H into IatH because of this bug: -->
+			<!-- https://github.com/gwtproject/gwt/issues/9142 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>regex-property</id>
+						<goals>
+							<goal>regex-property</goal>
+						</goals>
+						<configuration>
+							<name>branchAtReplaced</name>
+							<value>${scmBranch}</value>
+							<regex>^([0-9a-zA-Z]*)@([0-9a-zA-Z]*)$</regex>
+							<replacement>$1at$2</replacement>
+							<failIfNoMatch>false</failIfNoMatch>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -330,7 +355,7 @@
 						<!-- <rename src="ATOM-SNAPSHOT_.war" dest="ATOM-SNAPSHOT_x_${buildNumber}.war"/> -->
 						<echo message="buildNumber='${buildNumber}'" />
 						<move file="${project.build.directory}/${project.build.finalName}.war"
-							tofile="${project.build.directory}/ATOM_${scmBranch}_build_${buildDateTime}_${buildNumber}.war" />
+							tofile="${project.build.directory}/ATOM_${branchAtReplaced}_build_${buildDateTime}_${buildNumber}.war" />
 					</target>
 				</configuration>
 
