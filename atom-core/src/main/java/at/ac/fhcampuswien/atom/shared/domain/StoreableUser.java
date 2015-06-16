@@ -19,6 +19,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.AttributeGroup;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeLoadingPolicy;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromListGui;
 import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
+import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
 
 /**
  * 
@@ -45,15 +46,25 @@ public class StoreableUser extends DomainObject {
 	@AnalyzerIgnore
 	private static final long serialVersionUID = 2422853819641167767L;
 
+	private Integer Per_ID;
+
+	public Integer getPer_ID() {
+		return Per_ID;
+	}
+
+	public void setPer_ID(Integer per_ID) {
+		Per_ID = per_ID;
+	}
+
+	@RelationEssential //to not fail on clearing it because no setter is available
 	public Integer getHaupt_OrE_ID() {
 		return null;
 	}
 	
+	@RelationEssential //to not fail on clearing it because no setter is available
 	public CharSequence getOrE_ID_List() {
 		return "(-1)";
 	}
-	
-	private Integer Per_ID;
 	
 	@HideFromListGui
 	@AttributeDisplayName("Erstellte Objektinstanzen")
@@ -68,10 +79,6 @@ public class StoreableUser extends DomainObject {
 	@OneToMany(mappedBy = "updateUser", fetch = FetchType.LAZY)
 	@AttributeLoadingPolicy(requiredForStringRepresentation = false, whenNotPrimary = false, withLists = false)
 	private Set<FeaturedObject> updatedInstances;
-
-	public Integer getPer_ID() {
-		return getObjectID();
-	}
 	
 	public HashSet<Access> accessForMatchingOes(HashSet<AccessForOes> oeas) {
 		return null;
