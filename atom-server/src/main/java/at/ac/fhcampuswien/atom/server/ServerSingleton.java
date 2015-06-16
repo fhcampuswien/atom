@@ -363,7 +363,7 @@ public class ServerSingleton {
 			}
 
 			if (resultList.size() > 0)
-				ServerTools.prepareDOListForClient(resultList, domainClass, em, session);
+				totalSize -= ServerTools.prepareDOListForClient(resultList, domainClass, em, session);
 
 			AtomTools.log(Log.LOG_LEVEL_TRACE, "returning fetched list", this);
 			return new DomainObjectList(domainClass, resultList, fromRow, pageSize, totalSize == null ? 0 : totalSize.intValue(), filters, sorters,

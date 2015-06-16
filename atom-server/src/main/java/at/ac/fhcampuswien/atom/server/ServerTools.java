@@ -140,7 +140,15 @@ public class ServerTools {
 		return walkInstanceWeb(instance, dc, new HashSet<DomainObject>(), WalkTask.CLEARLAZYANDDENIED, true, partOfList, accessTypes, cs);
 	}
 
-	public static void prepareDOListForClient(List<DomainObject> list, DomainClass dc, EntityManager em, ClientSession cs) {
+	/**
+	 * 
+	 * @param list of DomainObjects to prepare
+	 * @param dc DomainClass of the given List of DomainObjects
+	 * @param em EntityManager
+	 * @param cs ClientSession containing permission info
+	 * @return number of instances removed from the list because access to them is denied for this user.
+	 */
+	public static int prepareDOListForClient(List<DomainObject> list, DomainClass dc, EntityManager em, ClientSession cs) {
 
 		HashSet<DomainObject> seen = new HashSet<DomainObject>();
 		for (DomainObject o : list) {
@@ -160,6 +168,7 @@ public class ServerTools {
 		for (DomainObject d : denied) {
 			list.remove(d);
 		}
+		return denied.size();
 	}
 
 	private enum WalkTask {
