@@ -205,11 +205,15 @@ public class AtomTools {
 		}
 	}
 
+	private static String validatorAnnotationPrefix = "@" + AttributeValidator.class.getName() + "(value=";
+	
 	public static boolean validateAttribute(Object value, String attributeValidator) {
 		if (attributeValidator == null || attributeValidator.length() == 0)
 			return false;
 
-		String avValue = attributeValidator.substring(("@" + AttributeValidator.class.getName() + "(value=").length(),
+		String avValue = attributeValidator;
+		if(attributeValidator.startsWith(validatorAnnotationPrefix))
+			avValue = attributeValidator.substring(validatorAnnotationPrefix.length(),
 				attributeValidator.length() - 1);
 
 		if (AttributeValidator.email.equals(avValue)) {
