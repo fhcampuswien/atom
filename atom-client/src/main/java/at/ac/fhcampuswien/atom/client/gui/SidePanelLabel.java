@@ -152,26 +152,33 @@ public class SidePanelLabel<E extends DomainObject> extends HorizontalPanel {
 	 */
 	public boolean update(int space) {
 		
+		boolean sizeChange = false;
 		if(lastResizeWidth != space && space > 20) {
 			lastResizeWidth = space;
-			
-			String name = this.source.getName();
-			
-			if(name == null || name.length() <= 0)
-				return false;
-			
-			String shortended = App.getShortenedString(name, this.sidePanel.sidePanelStyle.label(), space);
-			this.dndWidgetHasText.setText(shortended);
-			
-			//if the full text is too long, set it as tooltip
-			if(!shortended.equals(name))
-				this.dndWidgetAsWidget.setTitle(name);
-			else
-				this.dndWidgetAsWidget.setTitle(null);
-			
-			return true;
+			sizeChange = true;
 		}
-		return false;
+		
+		//always perform update, since it might be a name change!
+		
+		String name = this.source.getName();
+		
+		if(name == null || name.length() <= 0)
+			return false;
+		
+		String shortended = App.getShortenedString(name, this.sidePanel.sidePanelStyle.label(), space);
+		this.dndWidgetHasText.setText(shortended);
+		
+		//if the full text is too long, set it as tooltip
+		if(!shortended.equals(name))
+			this.dndWidgetAsWidget.setTitle(name);
+		else
+			// if not, clear previous tooltip
+			this.dndWidgetAsWidget.setTitle(null);
+		
+		return !sizeChange;
+		
+//		}
+//		return false;
 	}
 
 	// public String getFullString() {
