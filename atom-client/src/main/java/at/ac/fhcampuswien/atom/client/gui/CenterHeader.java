@@ -150,9 +150,11 @@ public class CenterHeader extends Composite {
 		String shortened = App.getShortenedString(newHeader, panelStyle.header(), getOffsetWidth() - buttonSpace - 10);
 		centerHeaderLabel.setText(shortened);
 		if(newHeader.equals(shortened)) {
+			//clear tooltip if the whole name fits in the label
 			centerHeaderLabel.setTitle(null);
 		}
 		else {
+			//set tooltip if the label is smaller than the content we want to write into it with the whole name
 			centerHeaderLabel.setTitle(newHeader);
 		}
 	}

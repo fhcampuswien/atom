@@ -161,11 +161,25 @@ public class SidePanelLabel<E extends DomainObject> extends HorizontalPanel {
 		//always perform update, since it might be a name change!
 		
 		String name = this.source.getName();
+		String oldName = this.dndWidgetHasText.getText();
 		
-		if(name == null || name.length() <= 0)
+		if(name == null || name.length() <= 0) {
+			//there is something wrong, label content should never be empty! refuse update!
 			return false;
+		}
+		
+		if(!sizeChange && name.equals(oldName)) {
+			//nothing changed.
+			return false;
+		}
 		
 		String shortended = App.getShortenedString(name, this.sidePanel.sidePanelStyle.label(), space);
+
+		if(shortended.equals(oldName)) {
+			//nothing changed.
+			return false;
+		}
+		
 		this.dndWidgetHasText.setText(shortended);
 		
 		//if the full text is too long, set it as tooltip
