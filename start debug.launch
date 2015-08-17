@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.cdt.launch.launchGroup">
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.0.action" value="WAIT_FOR_TERMINATION"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.0.enabled" value="true"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.0.mode" value="debug"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.0.name" value="atom-core clean install"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.1.action" value="WAIT_FOR_TERMINATION"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.1.enabled" value="true"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.1.mode" value="debug"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.1.name" value="atom-domain clean install"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.2.action" value="NONE"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.2.enabled" value="true"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.2.mode" value="debug"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.2.name" value="atom-server tomcat7 run -Ddev"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.action" value="NONE"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.enabled" value="true"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.mode" value="debug"/>
+<stringAttribute key="org.eclipse.cdt.launch.launchGroup.3.name" value="gwt dev mode inline"/>
+</launchConfiguration>
