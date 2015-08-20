@@ -78,11 +78,11 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 			if (attribute.getAnnotation("FileAttribute") != null) {
 				returnValue = new FileView(forFrame.getRepresentedClass().getName(), attributeName, forFrame.getRepresentedObject().getObjectID());
 			}
-			else if (attribute.getAnnotation("javax.persistence.Lob") != null) // Langtext
-				if (attribute.getAnnotation("StringFormattedLob") != null)
-					returnValue = new StringFormattedLobView();
-				else
-					returnValue = new StringLobView();
+			else if (attribute.getAnnotation("StringFormattedLob") != null)
+				returnValue = new StringFormattedLobView();
+			else if (attribute.getAnnotation("javax.persistence.Lob") != null || 
+					 attribute.getAnnotation("StringMultiLine") != null)
+				returnValue = new StringLobView();
 			else
 				returnValue = new StringView();
 		} else if ("java.util.Date".equals(type)) {
