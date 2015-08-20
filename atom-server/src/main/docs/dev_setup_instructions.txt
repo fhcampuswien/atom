@@ -33,6 +33,7 @@ http://www.microsoft.com/downloads/en/details.aspx?FamilyID=a737000d-68d0-4531-b
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=2.0        -DgeneratePom=true -Dfile="/home/thomas/Downloads/sqljdbc4.jar"  -Dpackaging=jar
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=2.0        -DgeneratePom=true -Dfile="/home/kaefert/Arbeitsfläche/Userdata/Development/libraries/sqljdbc4.jar"  -Dpackaging=jar
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.0.2206.100   -DgeneratePom=true -Dfile="/home/kaefert/Development/libs/sqljdbc_4.0/enu/sqljdbc4.jar"         -Dpackaging=jar
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.1 -DgeneratePom=true -Dfile="sqljdbc41.jar" -Dpackaging=jar
 
 
 
