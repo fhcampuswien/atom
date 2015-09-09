@@ -81,12 +81,12 @@ public class AtomServiceImpl extends RemoteServiceServlet implements AtomService
 	}
 
 	@Override
-	public ClientSession getNewSession(String userName, String password) throws Exception {
+	public ClientSession getNewSession(String userName, String password) throws AtomException {
 		return server.getAuth().getSessionForCredentials(userName, password, getThreadLocalRequest(), getThreadLocalResponse());
 	}
 
 	@Override
-	public ClientSession getSessionForCookie(String cookieValue) throws Exception {
+	public ClientSession getSessionForCookie(String cookieValue) throws AtomException {
 		return server.getAuth().getSessionFromCookie(getThreadLocalRequest());
 	}
 

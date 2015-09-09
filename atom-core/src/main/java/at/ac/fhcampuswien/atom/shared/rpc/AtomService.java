@@ -15,7 +15,6 @@ import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.DomainObjectSearchResult;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
-import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -59,7 +58,7 @@ public interface AtomService extends RemoteService {
      * @param domainObject
      * @return
      */
-    public DomainObject saveDomainObject(String clientSession, DomainObject domainObject) throws ValidationError;
+    public DomainObject saveDomainObject(String clientSession, DomainObject domainObject) throws AtomException;
 
     /**
      * If the given ClientSession is valid, the given DomainObject instance will be deleted. If this action is
@@ -69,7 +68,7 @@ public interface AtomService extends RemoteService {
      * @param domainObject
      * @return
      */
-    public boolean deleteDomainObject(String clientSession, DomainObject domainObject);
+    public boolean deleteDomainObject(String clientSession, DomainObject domainObject) throws AtomException;
 
     /**
      * If the given ClientSession is valid, this method will return a representation of the derivation hierarchy below
@@ -80,7 +79,7 @@ public interface AtomService extends RemoteService {
      * @param clientSession
      * @return
      */
-    public DomainClass getDomainTree(String clientSession);
+    public DomainClass getDomainTree(String clientSession) throws AtomException;
 
 //    public List<DomainClass> getAccessibleDomainClasses(String clientSession);
     
@@ -96,9 +95,9 @@ public interface AtomService extends RemoteService {
      *             is thrown if authentication webservice tells the credentials to be invalid, or if it can't be
      *             reached.
      */
-    public ClientSession getNewSession(String userName, String password) throws Exception;
+    public ClientSession getNewSession(String userName, String password) throws AtomException;
 
-    public Boolean logoutActiveUser(String cookieValue) throws Exception;
+    public Boolean logoutActiveUser(String cookieValue) throws AtomException;
     
     /**
      * This method allows clients to verify the validity of an existing session which can be stored in a cookie inside
@@ -110,7 +109,7 @@ public interface AtomService extends RemoteService {
      *             is thrown if authentication webservice tells the credentials to be invalid, or if it can't be
      *             reached.
      */
-    public ClientSession getSessionForCookie(String cookieValue) throws Exception;
+    public ClientSession getSessionForCookie(String cookieValue) throws AtomException;
     
     public LinkedHashMap<String, String> getAttributeChoiceList(String clientSession, String nameOfClass, String nameOfAttribute) throws AtomException;
     

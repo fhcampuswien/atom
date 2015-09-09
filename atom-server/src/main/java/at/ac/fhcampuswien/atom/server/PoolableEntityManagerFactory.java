@@ -23,7 +23,7 @@ public class PoolableEntityManagerFactory extends BasePoolableObjectFactory<Enti
 	}
 
 	@Override
-	public EntityManager makeObject() throws Exception {
+	public EntityManager makeObject() {
 		try {
 			return emFactory.createEntityManager();
 		} catch (Throwable t) {
