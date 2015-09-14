@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomConfig.FrameType;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
@@ -33,8 +35,6 @@ import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.Searchable;
 import at.ac.fhcampuswien.atom.shared.annotations.SortColumn;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
-
-import com.allen_sauer.gwt.log.client.Log;
 
 @Entity
 @ClassNamePlural("FrameVisits")
@@ -119,6 +119,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 //	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
+//	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private DomainObject representedInstance;
 
 	private transient DomainClass representedClass;
@@ -374,3 +375,23 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 			return getFrameType().toString();
 	}
 }
+
+
+/*
+ * 
+
+## manually modified constraint to allow deletion of instances with FrameVisits
+
+ALTER TABLE [dbo].[FrameVisit] DROP CONSTRAINT [FK_opdj3fq3yhyobmcc6208x2lbu]
+GO
+
+ALTER TABLE [dbo].[FrameVisit]  WITH CHECK ADD  CONSTRAINT [FK_opdj3fq3yhyobmcc6208x2lbu] FOREIGN KEY([representedInstance_objectID])
+REFERENCES [dbo].[DomainObject] ([objectID])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[FrameVisit] CHECK CONSTRAINT [FK_opdj3fq3yhyobmcc6208x2lbu]
+GO
+
+ * 
+ */

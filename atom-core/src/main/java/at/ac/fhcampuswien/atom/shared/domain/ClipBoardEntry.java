@@ -132,3 +132,23 @@ public class ClipBoardEntry extends FeaturedObject implements Serializable {
 		this.added = added;
 	}
 }
+
+/*
+ * 
+ * 
+## manually modified constraint to allow deletion of instances with ClipBoardEntries
+
+ALTER TABLE [dbo].[ClipBoardEntry] DROP CONSTRAINT [FK_ick5gj1r5j2bou3hjfukjccvg]
+GO
+
+ALTER TABLE [dbo].[ClipBoardEntry]  WITH CHECK ADD  CONSTRAINT [FK_ick5gj1r5j2bou3hjfukjccvg] FOREIGN KEY([instance_objectID])
+REFERENCES [dbo].[DomainObject] ([objectID])
+ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[ClipBoardEntry] CHECK CONSTRAINT [FK_ick5gj1r5j2bou3hjfukjccvg]
+GO
+
+ * 
+ * 
+ */
