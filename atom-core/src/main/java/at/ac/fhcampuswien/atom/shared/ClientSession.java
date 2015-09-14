@@ -200,4 +200,13 @@ public class ClientSession implements java.io.Serializable, com.google.gwt.user.
 	public Date getCacheDate() {
 		return cacheDate;
 	}
+	
+	public boolean isStillValid() {
+		// 1000 ms = 1 sec *60 = 1 minute *60 = 1 hour
+		Date oldestAllowed = new Date((new Date()).getTime() - (1000 * 60 * 60));
+		if (cacheDate.before(oldestAllowed)) {
+			return false;
+		}
+		return true;
+	}
 }
