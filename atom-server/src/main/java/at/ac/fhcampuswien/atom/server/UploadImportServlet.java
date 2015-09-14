@@ -347,7 +347,7 @@ public class UploadImportServlet extends HttpServlet {
 	}
 	
 	private void processCollection(Collection<DomainObject> collection, String clues, DomainClassAttribute attribute, ClientSession session) {
-		if(clues.length() <= 0)
+		if(clues == null || clues.length() <= 0)
 			return;
 		
 		for(String clue : clues.split(";")) {

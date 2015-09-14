@@ -166,7 +166,8 @@ public class ServerSingleton {
 				}
 			}
 
-			updateStringRepresentationsOnce(classOfObject.getName());
+			//don't do that! this takes forever!
+			//updateStringRepresentationsOnce(classOfObject.getName());
 
 			// find instance by string representation
 			ArrayList<DataFilter> filters = new ArrayList<DataFilter>(1);
