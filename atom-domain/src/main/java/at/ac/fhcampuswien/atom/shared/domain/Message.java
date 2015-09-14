@@ -13,7 +13,10 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
+import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.annotations.AccessListRoles;
 import at.ac.fhcampuswien.atom.shared.annotations.AnalyzerIgnore;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeDisplayName;
@@ -46,17 +49,17 @@ public class Message extends FeaturedObject {
 	private String longText;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	//cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL }, 
+	// cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL },
 	// @JoinColumn(name = "NEXT_MESSAGE_ID")
 	private Message nextMessage;
 
 	@OneToMany(mappedBy = "nextMessage", fetch = FetchType.LAZY)
-	//, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL }
+	// , cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL }
 	private Set<Message> previousMessages;
 
-	@SliderAttribute(defaultValue=0, maxValue=100, minValue=-100, stepSize=0.1, roundTo=5)
+	@SliderAttribute(defaultValue = 0, maxValue = 100, minValue = -100, stepSize = 0.1, roundTo = 5)
 	private Double testDoubleField;
-	
+
 	@AttributeValidator(AttributeValidator.email)
 	private String senderAddress;
 
@@ -79,16 +82,15 @@ public class Message extends FeaturedObject {
 	public void setText(String text) {
 		this.text = text;
 	}
-	
+
 	@AttributePlacement(20)
 	@AttributeDisplayName("Typ")
 	@RelationEssential
-	@ListBoxDefinition(viewType=ViewType.RadioButtons, 
-			keys={"MessageType1", "MessageType2", "MessageType3", "MessageType4", "MessageType5", "MessageType6", "MessageType7", "MessageType8", "MessageType9", "MessageType10", "MessageType11"})
+	@ListBoxDefinition(viewType = ViewType.RadioButtons, keys = { "MessageType1", "MessageType2", "MessageType3", "MessageType4", "MessageType5", "MessageType6", "MessageType7", "MessageType8", "MessageType9", "MessageType10", "MessageType11" })
 	public String getTyp() {
 		return typ;
 	}
-	
+
 	public void setTyp(String typ) {
 		this.typ = typ;
 	}
@@ -98,30 +100,39 @@ public class Message extends FeaturedObject {
 	}
 
 	public void setNextMessage(Message nextMessage) {
-		if(this.nextMessage != null && !this.nextMessage.equals(nextMessage)) {
-			if(this.nextMessage.getPreviousMessages() != null) {
-				this.nextMessage.getPreviousMessages().remove(this);				
+		if (this.nextMessage != null && !this.nextMessage.equals(nextMessage)) {
+			if (this.nextMessage.getPreviousMessages() != null) {
+				this.nextMessage.getPreviousMessages().remove(this);
 			}
 		}
 		this.nextMessage = nextMessage;
-		
-		if(nextMessage != null && nextMessage.getPreviousMessages() != null) {
+
+		if (nextMessage != null && nextMessage.getPreviousMessages() != null) {
 			nextMessage.getPreviousMessages().add(this);
 		}
 	}
 
 	public void setPreviousMessages(Set<Message> previousMessages) {
-		if(this.previousMessages != null) {
-			for(Message message : this.previousMessages) {
-				if(this.equals(message.getNextMessage()))
-					message.setNextMessage(null);
+
+		// clearing the property - we might not have a session to access
+		// lazyLoading attribute previousMessages
+		try {
+			Set<Message> oldPreviousMessages = this.previousMessages;
+			if (oldPreviousMessages != null) {
+				for (Message message : oldPreviousMessages) {
+					if (this.equals(message.getNextMessage()))
+						message.setNextMessage(null);
+				}
 			}
+		} catch (Throwable t) {
+			AtomTools.log(Log.LOG_LEVEL_DEBUG, "failed to go through oldPreviousMessages - probably not loaded (lazy loading) and session closed.", this);
 		}
 		this.previousMessages = previousMessages;
-		if(previousMessages != null) {
-			for(Message message : previousMessages) {
+		
+		if (previousMessages != null) {
+			for (Message message : previousMessages) {
 				message.setNextMessage(this);
-			}			
+			}
 		}
 	}
 
@@ -152,7 +163,7 @@ public class Message extends FeaturedObject {
 	public String getLongText() {
 		return longText;
 	}
-	
+
 	public String getBinaryContent() {
 		return binaryContent;
 	}
@@ -160,7 +171,7 @@ public class Message extends FeaturedObject {
 	public void setBinaryContent(String binaryContent) {
 		this.binaryContent = binaryContent;
 	}
-	
+
 	@Override
 	@HideFromListGui
 	public String getConcreteClass() {
