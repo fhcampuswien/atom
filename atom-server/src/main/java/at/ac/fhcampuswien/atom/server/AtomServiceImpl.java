@@ -41,6 +41,7 @@ public class AtomServiceImpl extends RemoteServiceServlet implements AtomService
 	@Override
 	protected void doUnexpectedFailure(Throwable e) {
 		AtomTools.log(Log.LOG_LEVEL_ERROR, "unexpectedFailure happened in doPost method: " + e.getMessage(), this);
+		e.printStackTrace();
 		throw new AtomException("unexpectedFailure happened in doPost method", e);
 	}
 
