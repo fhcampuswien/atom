@@ -175,6 +175,18 @@ public class ServerTools {
 		LOAD, CLEARLAZYANDDENIED;
 	}
 
+	/**
+	 * 
+	 * @param domainObject
+	 * @param domainClass
+	 * @param objectsISaw
+	 * @param task
+	 * @param primary
+	 * @param partOfList
+	 * @param accessTypes
+	 * @param session
+	 * @return false if permission is denied and instance must not be sent to client
+	 */
 	private static boolean walkInstanceWeb(DomainObject domainObject, DomainClass domainClass, HashSet<DomainObject> objectsISaw, WalkTask task,
 			boolean primary, boolean partOfList, Set<String> accessTypes, ClientSession session) {
 
