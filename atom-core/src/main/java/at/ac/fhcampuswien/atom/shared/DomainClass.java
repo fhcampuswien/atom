@@ -333,7 +333,7 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 //		orderedGroupFields = null;
 		
 		LinkedHashMap<String, ArrayList<DomainClassAttribute>> r = new LinkedHashMap<String, ArrayList<DomainClassAttribute>>(orderedAttributeGroups.length);
-		for(int i = 0 ; i <= orderedAttributeGroups.length ; i++) {
+		for(int i = 0 ; i <= orderedAttributeGroups.length-1 ; i++) {
 			ArrayList<DomainClassAttribute> attributes = new ArrayList<DomainClassAttribute>();
 			for(String attributeName : orderedGroupFields[i]) {
 				attributes.add(getAttributeNamed(attributeName));
@@ -536,7 +536,7 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 					maxAttr = Math.max(maxAttr, list.value().length);
 			}
 			orderedGroupFields = new String[oal.length][maxAttr];
-			for(int i=0 ; i<= oal.length ; i++) {
+			for(int i=0 ; i<= oal.length-1 ; i++) {
 				orderedGroupFields[i] = oal[i].value();
 			}
 		}
