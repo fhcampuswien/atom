@@ -192,7 +192,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 		return representedSearchString;
 	}
 
-	public Boolean isSimpleSearch() {
+	public Boolean getSimpleSearch() {
 		return simpleSearch;
 	}
 
@@ -219,6 +219,10 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	// public void setFrame(Frame frame) {
 	// this.frame = frame;
 	// }
+
+	public DataFilter[] getFilters() {
+		return filters;
+	}
 
 	public FrameType getFrameType() {
 		if(frameType == null)
