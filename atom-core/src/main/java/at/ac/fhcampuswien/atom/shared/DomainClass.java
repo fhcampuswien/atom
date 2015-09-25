@@ -244,7 +244,8 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 	
 	public ArrayList<DomainClassAttribute> getSortedAttributesListView(boolean omitHidden) {
 
-		if (orderedAttributesListViewStrings != null) {
+		//don't use orderedAttributesListViewStrings if omitHidden == false (because hidden attributes probably have been omitted from such a list)
+		if (omitHidden && orderedAttributesListViewStrings != null) {
 			if (orderedAttributesListView == null) {
 				orderedAttributesListView = new ArrayList<DomainClassAttribute>(orderedAttributesListViewStrings.length);
 				for (String s : orderedAttributesListViewStrings) {
