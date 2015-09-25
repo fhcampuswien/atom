@@ -796,17 +796,13 @@ public class ServerTools {
 		DomainClass classOfObject = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
 		HashMap<String, DomainClassAttribute> allAttributes = classOfObject.getAllAttributes();
 		for (DomainClassAttribute attribute : allAttributes.values()) {
-			String attributeValidator = attribute.getAnnotation("AttributeValidator");
-			if (attributeValidator != null && attributeValidator != "") {
-				try {
-					AtomTools.validateAttribute(
-							Class.forName(classOfObject.getName()).getMethod("get" + AtomTools.upperFirstChar(attribute.getName()), (Class[]) null)
-									.invoke(domainObject, (Object[]) null), attributeValidator);
-				} catch (ValidationError e) {
-					throw e;
-				} catch (Throwable t) {
-					t.printStackTrace();
-				}
+			try {
+				AtomTools.validateAttribute(attribute.getDisplayName(), Class.forName(classOfObject.getName()).getMethod("get" + 
+					AtomTools.upperFirstChar(attribute.getName()), (Class[]) null).invoke(domainObject, (Object[]) null), attribute.getValidators());
+			} catch (ValidationError e) {
+				throw e;
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 	}

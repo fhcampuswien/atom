@@ -573,21 +573,32 @@ public class DomainObjectDetailFrame extends Frame {
 			// work because we don't know the id the new instance will get from
 			// the database
 		}
-		try {
-			// write values from AttributeViews into DomainObject instance
-			for (DomainClassAttribute anAttribute : attributeFields.keySet()) {
-				AttributeView<?, ?, ?> aView = attributeFields.get(anAttribute);
-				if (anAttribute.isWriteAble())
-					ClientTools.setAttributeValue(representedClass, anAttribute, representedObject, aView.getValue());
+		
+		ValidationError validationError = null;
+		
+		// write values from AttributeViews into DomainObject instance
+		for (DomainClassAttribute anAttribute : attributeFields.keySet()) {
+			AttributeView<?, ?, ?> aView = attributeFields.get(anAttribute);
+			if (anAttribute.isWriteAble()) {
+				ClientTools.setAttributeValue(representedClass, anAttribute, representedObject, aView.getValue());
+				
+				//remember the first validationError
+				if(validationError == null)
+					validationError = aView.validateAndMark(anAttribute.getDisplayName());
 				else
-					aView.setValue(ClientTools.getAttributeValue(representedClass, anAttribute, representedObject));
+					aView.validateAndMark(anAttribute.getDisplayName());
 			}
+			else
+				aView.setValue(ClientTools.getAttributeValue(representedClass, anAttribute, representedObject));
+		}
 
-			// validation
-			representedObject.prepareSave(RPCCaller.getSinglton().getClientSession());
-			ClientTools.validateDomainObject(representedObject, representedClass);
-		} catch (ValidationError ve) {
-			this.deliverError(ve);
+		representedObject.prepareSave(RPCCaller.getSinglton().getClientSession());
+		
+		// validation done above already by AttributeViews
+		//ClientTools.validateDomainObject(representedObject, representedClass);
+		
+		if(validationError != null) {
+			this.deliverError(validationError);
 			App.setLoadingState(false, this);
 			return;
 		}

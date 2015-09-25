@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import net.lightoze.gwt.i18n.client.LocaleFactory;
-import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidator;
+import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidators;
 import at.ac.fhcampuswien.atom.shared.dateformat.SimpleDateFormatGwt;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
@@ -205,18 +205,36 @@ public class AtomTools {
 		}
 	}
 
-	private static String validatorAnnotationPrefix = "@" + AttributeValidator.class.getName() + "(value=";
+	private static String validatorAnnotationPrefix = "@" + AttributeValidators.class.getName() + "(value=";
 	
-	public static boolean validateAttribute(Object value, String attributeValidator) {
+	/**
+	 * 
+	 * @param value
+	 * @param attributeValidators
+	 * @return true if validation succeeded
+	 * @return false if no validation possible (value or validator not available / empty)
+	 * @throws at.ac.fhcampuswien.atom.shared.exceptions.ValidationError if validation failed
+	 */
+	public static boolean validateAttribute(String attributeName, Object value, String[] attributeValidators) {
+		if (attributeValidators == null || attributeValidators.length == 0)
+			return false;
+
+		boolean validated = false;
+		for(String validator : attributeValidators) {
+			validated = validated | validateAttribute(attributeName, value, validator);
+		}
+		return validated;
+	}
+	
+	private static boolean validateAttribute(String attributeName, Object value, String attributeValidator) {
 		if (attributeValidator == null || attributeValidator.length() == 0)
 			return false;
 
-		String avValue = attributeValidator;
 		if(attributeValidator.startsWith(validatorAnnotationPrefix))
-			avValue = attributeValidator.substring(validatorAnnotationPrefix.length(),
+			attributeValidator = attributeValidator.substring(validatorAnnotationPrefix.length(),
 				attributeValidator.length() - 1);
 
-		if (AttributeValidator.email.equals(avValue)) {
+		if (AttributeValidators.email.equals(attributeValidator)) {
 			if (value == null || "".equals(value))
 				return true;
 			String stringValue = value.toString();
@@ -228,7 +246,7 @@ public class AtomTools {
 			else
 				return true;
 		}
-		if (AttributeValidator.socialsecurity.equals(avValue)) {
+		else if (AttributeValidators.socialsecurity.equals(attributeValidator)) {
 
 			if (value == null || "".equals(value))
 				return false;
@@ -249,8 +267,8 @@ public class AtomTools {
 						"Bitte überprüfen sie die Sozialversicherungsnummer, die Prüfsummenvalidierung war nicht erfolgreich!");
 
 		}
-		if (AttributeValidator.telephone.equals(avValue)) {
-			if (value == null)
+		else if (AttributeValidators.telephone.equals(attributeValidator)) {
+			if (value == null || (value instanceof String && ((String) value).length() == 0))
 				return false;
 			if (!value.toString().matches("\\+[0-9]+ ?[\\(| ][0-9]+[\\)| ][0-9 ]+-? ?[0-9]+")) // "\\+ ?\\([0-9]+\\)[0-9 ]+-?[0-9 ]*"))
 				throw new ValidationError(
@@ -258,7 +276,17 @@ public class AtomTools {
 			else
 				return true;
 		}
+		else if (AttributeValidators.notEmpty.equals(attributeValidator)) {
+			if (value == null || 
+					(value instanceof String && ((String) value).length() == 0) || 
+					(value instanceof Collection<?> && ((Collection<?>) value).size() == 0)
+			   )
+				throw new ValidationError("Feld " + attributeName + " müss befüllt werden!");
+			else
+				return true;
+		}
 		return false;
+		
 	}
 
 //	public static Set<String> checkPermissions(ClientSession session, String accessType, DomainClass requestedClass,

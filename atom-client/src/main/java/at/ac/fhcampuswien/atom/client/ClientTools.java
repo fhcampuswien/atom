@@ -148,9 +148,7 @@ public class ClientTools {
 	public static void validateDomainObject(DomainObject domainObject, DomainClass classOfObject) {
 		HashMap<String, DomainClassAttribute> allAttributes = classOfObject.getAllAttributes();
 		for (DomainClassAttribute attribute : allAttributes.values()) {
-			String attributeValidator = attribute.getAnnotation("AttributeValidator");
-			if (attributeValidator != null && attributeValidator != "")
-				AtomTools.validateAttribute(ClientTools.getAttributeValue(classOfObject, attribute, domainObject), attributeValidator);
+			AtomTools.validateAttribute(attribute.getDisplayName(), ClientTools.getAttributeValue(classOfObject, attribute, domainObject), attribute.getValidators());
 		}
 	}
 

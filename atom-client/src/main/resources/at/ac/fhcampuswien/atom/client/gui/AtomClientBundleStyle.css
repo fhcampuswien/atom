@@ -40,7 +40,7 @@
 }
 
 .attributeViewValidationError {
-	background-color: #ffffff;
-	color: #B00; /* #f9cbcb; */
-	text-shadow: none;
+	background-color: #ffc3c3; /* #ffffff; */
+	/* color: #B00; #f9cbcb;
+	text-shadow: none; */
 }

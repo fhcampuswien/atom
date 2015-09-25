@@ -39,7 +39,7 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 	private Double positionOverall = null;
 	private Double positionInGroup = null;
 	private String attributeGroup = null;
-	private String validator = null;
+	private String[] validators = null;
 	
 	private Boolean hideFromListGui = null;
 	private Boolean hideFromDetailGui = null;
@@ -403,12 +403,12 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 		return sliderRoundTo;
 	}
 
-	public String getValidator() {
-		return validator;
+	public String[] getValidators() {
+		return validators;
 	}
 
-	public void setValidator(String validator) {
-		this.validator = validator;
+	public void setValidators(String[] validators) {
+		this.validators = validators;
 	}
 	
 	public AccessHandler getAccessHandler() {

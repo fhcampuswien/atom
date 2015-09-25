@@ -121,7 +121,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		}
 
 		// read money email sozialversicherungsnummer oder ähnliches annotation und übergib info an erzeugte AttributeView
-		returnValue.validator = attribute.getValidator();
+		returnValue.validators = attribute.getValidators();
 
 		return returnValue;
 	}
@@ -129,13 +129,30 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 	protected D value;
 	protected E field;
 	protected boolean readOnly;
-	protected String validator;
+	protected String[] validators;
 
-	public boolean validate(D value) {
-		if (validator != null) {
-			return AtomTools.validateAttribute(value, validator);
+	private void markGood() {
+		field.removeStyleName(AtomClientBundle.INSTANCE.css().insensitiveAttributeView());
+		field.removeStyleName(AtomClientBundle.INSTANCE.css().attributeViewValidationError());
+		field.addStyleName(AtomClientBundle.INSTANCE.css().sensitiveAttributeView());
+	}
+	
+	private void markError() {
+		field.removeStyleName(AtomClientBundle.INSTANCE.css().insensitiveAttributeView());
+		field.removeStyleName(AtomClientBundle.INSTANCE.css().sensitiveAttributeView());
+		field.addStyleName(AtomClientBundle.INSTANCE.css().attributeViewValidationError());
+	}
+	
+	public ValidationError validateAndMark(String attributeName) {
+		try {
+			readValue();
+			AtomTools.validateAttribute(attributeName, value, validators);
+			markGood();
+			return null;
+		} catch (ValidationError e) {
+			markError();
+			return e;
 		}
-		return true;
 	}
 
 	public boolean isReadOnly() {
@@ -210,25 +227,8 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 
 		public void onKeyUp(KeyUpEvent event) {
 			if(!isReadOnly()) {
-				try {
-					readValue();
-					if(validate(value)) {
-						field.removeStyleName(AtomClientBundle.INSTANCE.css().insensitiveAttributeView());
-						field.removeStyleName(AtomClientBundle.INSTANCE.css().attributeViewValidationError());
-						field.addStyleName(AtomClientBundle.INSTANCE.css().sensitiveAttributeView());
-					}
-					else
-						markError();
-				} catch (ValidationError e) {
-					markError();
-				}
+				validateAndMark("irrelevant");
 			}
-		}
-		
-		private void markError() {
-			field.removeStyleName(AtomClientBundle.INSTANCE.css().insensitiveAttributeView());
-			field.removeStyleName(AtomClientBundle.INSTANCE.css().sensitiveAttributeView());
-			field.addStyleName(AtomClientBundle.INSTANCE.css().attributeViewValidationError());
 		}
 	}
 

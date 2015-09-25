@@ -147,6 +147,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 			@Override
 			public void onChange(ChangeEvent event) {
 				AtomTools.log(Log.LOG_LEVEL_TRACE, "listBox Value changed", this);
+				validateAndMark("irrelevant");
 				if(changeHandlers != null) {
 					readValue();
 					for(Notifiable<Object> ch : changeHandlers) {
