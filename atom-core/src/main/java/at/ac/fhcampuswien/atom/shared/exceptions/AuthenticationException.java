@@ -22,6 +22,11 @@ public class AuthenticationException extends AtomException implements IsSerializ
     	this.reason = reason;
     }
     
+    public AuthenticationException(String reason, Throwable cause) {
+    	this(reason);
+    	this.initCause(cause);
+    }
+    
     private String reason;
     
     @Override
