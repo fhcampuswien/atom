@@ -10,24 +10,25 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
-import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
-import at.ac.fhcampuswien.atom.shared.AtomTools;
-import at.ac.fhcampuswien.atom.shared.DomainClass;
-import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
-import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
+
+import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
+import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
+import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
+import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
 
 public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Boolean> {
 
@@ -52,24 +53,27 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 	@UiField
 	protected FlowPanel panel;
 
-	private List<RadioButton> radioButtons;
+	private List<CheckBox> radioButtons;
 	private String radioButtonGroup;
 	private ListBoxDefinition.ViewType viewType = null;
+	private String multiSelectSeperator;
 	
 	private LinkedHashMap<String, String> keyDisplayMap = null;
 	
-	public RadioButtonsView(String radioButtonGroup, LinkedHashMap<String, String> keyDisplayMap, ListBoxDefinition.ViewType viewType) {
+	public RadioButtonsView(String radioButtonGroup, LinkedHashMap<String, String> keyDisplayMap, ListBoxDefinition.ViewType viewType, String multiSelectSeperator) {
 		super();
 		this.radioButtonGroup = radioButtonGroup;
 		this.keyDisplayMap = keyDisplayMap;
 		this.viewType = viewType;
+		this.multiSelectSeperator = multiSelectSeperator;
 
 		buildDisplay();
 	}
 	
-	public RadioButtonsView(DomainClass representedClass, String attributeName, ListBoxDefinition.ViewType viewType) {
+	public RadioButtonsView(DomainClass representedClass, String attributeName, ListBoxDefinition.ViewType viewType, String multiSelectSeperator) {
 		
 		this.viewType = viewType;
+		this.multiSelectSeperator = multiSelectSeperator;
 		radioButtonGroup = representedClass.getName() + "." + attributeName;
 		
 		RPCCaller.getSinglton().loadListBoxChoices(representedClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
@@ -97,13 +101,17 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 	private void buildDisplay() {
 
 		if (radioButtons == null) {
-			radioButtons = new ArrayList<RadioButton>();
+			radioButtons = new ArrayList<CheckBox>();
 		} else {
 			radioButtons.clear();
 		}
 		
 		for (Entry<String, String> entry : keyDisplayMap.entrySet()) {
-			RadioButton r = new RadioButton(radioButtonGroup, entry.getValue());
+			CheckBox r = null;
+			if(multiSelectSeperator != null && !"".equals(multiSelectSeperator))
+				r = new CheckBox(entry.getValue());
+			else
+				r = new RadioButton(radioButtonGroup, entry.getValue());
 			r.addValueChangeHandler(getVCHandler());
 		    radioButtons.add(r);
 		}
@@ -112,7 +120,7 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 			FlexTable table = new FlexTable();
 			
 			for (int i = 0; i < radioButtons.size(); i++) {
-				RadioButton b = radioButtons.get(i);
+				CheckBox b = radioButtons.get(i);
 				Label l = new Label(b.getText());
 				l.setStyleName(panelStyle.labelTable());
 				table.setWidget(0, i, l);
@@ -125,7 +133,7 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 			panel.add(table);
 		}
 		else if(viewType == ViewType.RadioButtons) {
-			for (RadioButton b : radioButtons) {
+			for (CheckBox b : radioButtons) {
 				b.setStyleName(panelStyle.button());
 				b.setWordWrap(false);
 				panel.add(b);
@@ -152,12 +160,28 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 	 */
 	@Override
 	protected void showValue() {
+		String[] values = null;
+		if(multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
+			values = value.split(multiSelectSeperator);
+		}
+		
 		Iterator<String> iterator = keyDisplayMap.keySet().iterator();
 		for (int i = 0; i < radioButtons.size(); i++) {
 			String key = iterator.next();
-			if (key.equals(value)) {
+			
+			boolean selected = false;
+			if(values != null) {
+				for(String v : values) {
+					selected = selected || key.equals(v);
+				}
+			}
+			else {
+				selected = key.equals(value);
+			}
+			
+			if(selected)
 				radioButtons.get(i).setValue(true);
-			} else
+			else
 				radioButtons.get(i).setValue(false);
 		}
 	}
@@ -166,19 +190,32 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 	public void setReadOnly(boolean readOnly) {
 		super.setReadOnly(readOnly);
 		this.readOnly = readOnly;
-		for (RadioButton b : radioButtons) {
+		for (CheckBox b : radioButtons) {
 			b.setEnabled(!readOnly);
 		}
 	}
 
 	@Override
 	protected void readValue() {
+		
+		if(multiSelectSeperator != null && multiSelectSeperator != "")
+			value = "";
+		
 		Iterator<String> iterator = keyDisplayMap.keySet().iterator();
+		
 		for (int i = 0; i < radioButtons.size(); i++) {
 			String key = iterator.next();
 			if (radioButtons.get(i).getValue() == true) {
-				value = key;
-				break;
+				if(multiSelectSeperator != null && multiSelectSeperator != "") {
+					if("".equals(value))
+						value = key;
+					else
+						value = value + multiSelectSeperator + key;
+				}
+				else {
+					value = key;
+					break;
+				}
 			}
 		}
 	}

@@ -37,21 +37,22 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 
 		String[] listBoxKeys = attribute.getListBoxKeys();
 		String listBoxSql = attribute.getListBoxSql();
+		String listBoxMSSeperator = attribute.getListBoxMSSeperator();
 		ListBoxDefinition.ViewType listBoxViewType = attribute.getListBoxViewType();
 		
 		if((listBoxSql != null && !listBoxSql.equals(""))) {
 			// this is a listbox with options to load from sql
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
-				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName);
+				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator);
 			else
-				returnValue = new RadioButtonsView(forFrame.getRepresentedClass(), attributeName, listBoxViewType);
+				returnValue = new RadioButtonsView(forFrame.getRepresentedClass(), attributeName, listBoxViewType, listBoxMSSeperator);
 		}
 		else if(listBoxKeys != null) {
 			// this is a listbox with static options
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
-				returnValue = new ListBoxView(attribute.getListBoxMapped());
+				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator);
 			else
-				returnValue = new RadioButtonsView(forFrame.getRepresentedClass().getName() + "." + attributeName, attribute.getListBoxMapped(), listBoxViewType);
+				returnValue = new RadioButtonsView(forFrame.getRepresentedClass().getName() + "." + attributeName, attribute.getListBoxMapped(), listBoxViewType, listBoxMSSeperator);
 //		}
 //
 //		if (listBoxNamed != null) {

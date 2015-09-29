@@ -11,7 +11,16 @@ public @interface ListBoxDefinition {
 		
 	String[] keys() default {};
 	String[] display() default {};
+	
+	/**
+	 * empty string (default) means that there is no sql query for this ListBox
+	 */
 	String sql() default "";
+	
+	/**
+	 * empty string (default) means that this is not a multiselect attribute
+	 */
+	String multiSelectSeperator() default "";
 	
 	public enum ViewType implements com.google.gwt.user.client.rpc.IsSerializable {
 		DropDown, RadioButtons, RadioTable

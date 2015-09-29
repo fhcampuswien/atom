@@ -48,6 +48,7 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 	private String[] listBoxDisplay = null;
 	private String listBoxSql = null;
 	private ListBoxDefinition.ViewType listBoxViewType = null;
+	private String listBoxMSSeperator = null;
 	
 	//slider-attribute-view config
 	private boolean useSlider = false;
@@ -310,11 +311,12 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 		this.relationEssential = relationEssential;
 	}
 
-	public void setListBox(String[] keys, String[] display, String sql, ViewType viewType) {
+	public void setListBox(String[] keys, String[] display, String sql, ViewType viewType, String multiSelectSeperator) {
 		listBoxKeys = keys;
 		listBoxDisplay = display;
 		listBoxSql = sql;
 		listBoxViewType = viewType;
+		listBoxMSSeperator = multiSelectSeperator;
 	}
 
 	public String[] getListBoxKeys() {
@@ -345,6 +347,10 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 
 	public ViewType getListBoxViewType() {
 		return listBoxViewType;
+	}
+	
+	public String getListBoxMSSeperator() {
+		return listBoxMSSeperator;
 	}
 
 	public Boolean getHideFromListGui() {

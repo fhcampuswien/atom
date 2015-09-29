@@ -15,6 +15,7 @@ import at.ac.fhcampuswien.atom.shared.Notifiable;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.CssResource;
@@ -45,15 +46,19 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	protected ListBox listBox;
 	
 	private LinkedHashMap<String, String> keyDisplayMap = null;
+	private String multiSelectSeperator = null;
 	
-	public ListBoxView(LinkedHashMap<String, String> keyDisplayMap) {
+	public ListBoxView(LinkedHashMap<String, String> keyDisplayMap, String multiSelectSeperator) {
 		super();
 		this.keyDisplayMap = keyDisplayMap;
+		this.multiSelectSeperator = multiSelectSeperator;
 		
 		buildListBox();
 	}
 	
-	public ListBoxView(DomainClass representedClass, String attributeName) {
+	public ListBoxView(DomainClass representedClass, String attributeName, String multiSelectSeperator) {
+		this.multiSelectSeperator = multiSelectSeperator;
+		
 		RPCCaller.getSinglton().loadListBoxChoices(representedClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
 			
 			@Override
@@ -136,6 +141,11 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 		
 		listBox.clear();
 		
+		if(multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
+			listBox.setMultipleSelect(true);
+			listBox.getElement().getStyle().setHeight(60, Unit.PX);
+		}
+		
 		for (Map.Entry<String, String> entry : keyDisplayMap.entrySet()) {
 			listBox.addItem(entry.getValue(), entry.getKey());
 		}
@@ -171,24 +181,50 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	 */
 	@Override
 	protected void showValue() {
-		boolean found = false;
 		
-		if(value!= null) {
-			for(int i=0 ; i < listBox.getItemCount() ; i++ ) {
-				if(listBox.getValue(i).equals(value.toString())) {
-					listBox.setSelectedIndex(i);
-					found = true;
-					break;
+		if(value == null || "".equals(value))
+			return; //nothing to show
+		
+		
+		if(multiSelectSeperator != null && multiSelectSeperator != "") {
+			unselectAll();
+			for(String v : value.split(multiSelectSeperator)) {
+				showSingleValue(v, false);
+			}
+		}
+		else {
+			boolean found = showSingleValue(value, true);
+			
+			if(!found) {
+				if(!"".equals(listBox.getValue(listBox.getItemCount()-1))) {
+					listBox.addItem("", "");
 				}
+				listBox.setSelectedIndex(listBox.getItemCount()-1);
 			}
 		}
-		
-		if(!found) {
-			if(!"".equals(listBox.getValue(listBox.getItemCount()-1))) {
-				listBox.addItem("", "");
-			}
-			listBox.setSelectedIndex(listBox.getItemCount()-1);
+	}
+	
+	private void unselectAll() {
+		for(int i=0 ; i < listBox.getItemCount() ; i++ ) {
+			listBox.setItemSelected(i, false);
 		}
+	}
+	
+	private boolean showSingleValue(String value, boolean deselectOthers) {
+		boolean found = false;
+
+		for(int i=0 ; i < listBox.getItemCount() ; i++ ) {
+			if(listBox.getValue(i).equals(value.toString())) {
+				if(deselectOthers)
+					listBox.setSelectedIndex(i);
+				else
+					listBox.setItemSelected(i, true);
+				
+				found = true;
+				break;
+			}
+		}
+		return found;
 	}
 
 	@Override
@@ -200,8 +236,21 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 
 	@Override
 	protected void readValue() {
-		int index = listBox.getSelectedIndex();
-		value = listBox.getValue(index);
+		if(multiSelectSeperator != null && multiSelectSeperator != "") {
+			value = "";
+			for(int i=0 ; i < listBox.getItemCount() ; i++ ) {
+				if(listBox.isItemSelected(i)) {
+					if("".equals(value))
+						value = listBox.getValue(i);
+					else
+						value = value + multiSelectSeperator + listBox.getValue(i);
+				}
+			}
+		}
+		else {
+			int index = listBox.getSelectedIndex();
+			value = listBox.getValue(index);
+		}
 	}
 
 	@Override

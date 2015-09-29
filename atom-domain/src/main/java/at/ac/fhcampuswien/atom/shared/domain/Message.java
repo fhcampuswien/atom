@@ -68,6 +68,9 @@ public class Message extends FeaturedObject {
 	@FileAttribute
 	private String binaryContent;
 
+	@ListBoxDefinition(viewType = ViewType.RadioTable, multiSelectSeperator=",", keys = { "1", "2", "3", "4" }, display = { "ms1", "ms2", "ms3", "ms4" })
+	private String multiSelect;
+
 	public Message() {
 	}
 
@@ -170,6 +173,14 @@ public class Message extends FeaturedObject {
 
 	public void setBinaryContent(String binaryContent) {
 		this.binaryContent = binaryContent;
+	}
+	
+	public String getMultiSelect() {
+		return multiSelect;
+	}
+
+	public void setMultiSelect(String multiSelect) {
+		this.multiSelect = multiSelect;
 	}
 
 	@Override
