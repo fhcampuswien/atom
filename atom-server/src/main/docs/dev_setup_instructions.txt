@@ -23,9 +23,11 @@ Maven Repositories heruntergeladen. Die folgenden Abhängigkeiten sind jedoch ni
 http://code.google.com/p/gwt-ent/ ; GWT-2.2 version nur als Attachment in einem Issue:
 http://code.google.com/p/gwt-ent/issues/detail?id=40
 
-mvn install:install-file -DgroupId=gwtent                       -DartifactId=gwtent   -Dversion=2.0_GWT2.2 -DgeneratePom=true -Dfile="gwtent.jar"  -Dpackaging=jar
-mvn install:install-file -DgroupId=gwtent                       -DartifactId=gwtent   -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dfile=gwtent2.0_RC1(GWT2.3).jar"  -Dpackaging=jar
-mvn install:install-file -DgroupId=gwtent                       -DartifactId=gwtent   -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dfile="gwtent.jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=gwtent -DartifactId=gwtent -Dversion=2.0_GWT2.2 -DgeneratePom=true -Dfile="gwtent.jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=gwtent -DartifactId=gwtent -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dfile=gwtent2.0_RC1(GWT2.3).jar"  -Dpackaging=jar
+mvn install:install-file -DgroupId=gwtent -DartifactId=gwtent -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dfile="gwtent.jar"  -Dpackaging=jar
+
+mvn install:install-file -DgroupId=gwtent -DartifactId=gwtent -Dversion=2.0_RC1_GWT2.3 -DgeneratePom=true -Dpackaging=jar -Dfile="/media/kaefert/693c12e5-04cf-4b79-b85c-c2b25ba61010/2015-10-02_mint17-2_home/Development/Downloads/gwtent2.0 RC1/reflection/gwtent.jar"
 
 ===============================================================
 
@@ -35,6 +37,7 @@ mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sql
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.0.2206.100   -DgeneratePom=true -Dfile="/home/kaefert/Development/libs/sqljdbc_4.0/enu/sqljdbc4.jar"         -Dpackaging=jar
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.1 -DgeneratePom=true -Dfile="sqljdbc41.jar" -Dpackaging=jar
 
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.1 -DgeneratePom=true -Dpackaging=jar -Dfile="/media/kaefert/693c12e5-04cf-4b79-b85c-c2b25ba61010/2015-10-02_mint17-2_home/Development/Downloads/sqljdbc_4.1/enu/sqljdbc41.jar"
 
 
 
