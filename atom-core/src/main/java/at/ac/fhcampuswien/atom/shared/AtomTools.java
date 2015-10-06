@@ -562,6 +562,39 @@ public class AtomTools {
 		return value;
 	}
 	
+	public static HashSet<String> getCartesianProduct(String[] values, String seperator) {
+		HashSet<String> out = new HashSet<String>();
+		
+		if(values == null || values.length == 0)
+			return out;
+		for(int i=0 ; i < values.length ; i++) {
+			out.add(values[i]);
+			
+			if(values.length > (i+1)) {
+				String[] others = new String[values.length-(i+1)];
+				System.arraycopy(values, i+1, others, 0, values.length-(i+1));
+				out.addAll(combineStringWithOthers(values[i], others, seperator));
+			}
+		}
+		
+		return out;
+	}
+	
+	private static HashSet<String> combineStringWithOthers(String one, String[] others, String seperator) {
+		HashSet<String> out = new HashSet<String>();
+		
+		for(int i=0 ; i < others.length ; i++) {
+			String newOne = one + seperator + others[i];
+			out.add(newOne);
+			if(others.length > (i+1)) {
+				String[] othersB = new String[others.length-(i+1)];
+				System.arraycopy(others, i+1, othersB, 0, others.length-(i+1));
+				out.addAll(combineStringWithOthers(newOne, othersB, seperator));
+			}
+		}
+		return out;
+	}
+	
 	/*
 	 * copied from
 	 * http://www.java2s.com/Open-Source/Java-Document/6.0-JDK-Modules

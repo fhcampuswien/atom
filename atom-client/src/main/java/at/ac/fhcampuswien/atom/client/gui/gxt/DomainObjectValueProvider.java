@@ -69,29 +69,48 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 			}
 			
 
-			LinkedHashMap<String, String> listBoxMapped = attribute.getListBoxMapped();
+			
 			String listBoxSql = attribute.getListBoxSql();
-			if (listBoxSql != null && listBoxSql.length() > 0) {
-
-				RPCCaller.getSinglton().loadListBoxChoices(domainClass, attribute.getName(), new WaitingFor<LinkedHashMap<String, String>>() {
-
-					@Override
-					public void requestFailed(String reason) {
-						AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxChoices failed -> " + reason, this);
-					}
-
-					@Override
-					public void recieve(LinkedHashMap<String, String> result) {
-						DomainObjectValueProvider.this.listBoxMap = result;
-					}
-				});
-				
-				if(listBoxMap != null) {
-					val = listBoxMap.get(val.toString());
+			if (listBoxMap == null) {
+				if(listBoxSql != null && listBoxSql.length() > 0) {
+			
+					RPCCaller.getSinglton().loadListBoxChoices(domainClass, attribute.getName(), new WaitingFor<LinkedHashMap<String, String>>() {
+	
+						@Override
+						public void requestFailed(String reason) {
+							AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxChoices failed -> " + reason, this);
+						}
+	
+						@Override
+						public void recieve(LinkedHashMap<String, String> result) {
+							DomainObjectValueProvider.this.listBoxMap = result;
+						}
+					});
 				}
-
-			} else if (listBoxMapped != null && listBoxMapped.size() > 0) {
-					val = (T) listBoxMapped.get(val.toString());
+				else {
+					listBoxMap = attribute.getListBoxMapped();
+				}
+			}
+			
+			if (listBoxMap != null && listBoxMap.size() > 0) {
+				String sep = attribute.getListBoxMSSeperator();
+				String sval = val.toString();
+				if(sep != null && sep.length() > 0 && sval.contains(sep)) {
+					String[] parts = sval.split(sep);
+					sval = null;
+					for(String part : parts) {
+						String disp = listBoxMap.get(part);
+						if(disp != null && disp.length() > 0) {
+							if(sval == null)
+								sval = disp;
+							else
+								sval = sval + sep + disp;
+						}
+					}
+					val = sval;
+				}
+				else
+					val = (T) listBoxMap.get(val.toString());
 			}
 			
 			if(val instanceof String) {

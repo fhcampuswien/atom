@@ -341,6 +341,17 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 		return returnValue;
 	}
 	
+	public LinkedHashMap<String, String> getListBoxMappedReverse() {
+		if(getListBoxKeys() == null)
+			return null;
+		
+		LinkedHashMap<String, String> returnValue = new LinkedHashMap<String, String>(getListBoxKeys().length);
+		for(int i=0 ; i < getListBoxKeys().length ; i++) {
+			returnValue.put(getListBoxDisplay()[i], getListBoxKeys()[i]);
+		}
+		return returnValue;
+	}
+	
 	public String getListBoxSql() {
 		return listBoxSql;
 	}

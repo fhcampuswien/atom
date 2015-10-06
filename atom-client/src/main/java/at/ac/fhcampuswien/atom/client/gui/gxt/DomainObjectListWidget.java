@@ -7,19 +7,8 @@ package at.ac.fhcampuswien.atom.client.gui.gxt;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
-
-import at.ac.fhcampuswien.atom.client.App;
-import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDNDWidget;
-import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
-import at.ac.fhcampuswien.atom.client.gui.gxt.MyRpcProxy.SettingsProvider;
-import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
-import at.ac.fhcampuswien.atom.shared.AtomTools;
-import at.ac.fhcampuswien.atom.shared.DataFilter;
-import at.ac.fhcampuswien.atom.shared.DomainClass;
-import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
-import at.ac.fhcampuswien.atom.shared.DomainObjectList;
-import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.log.client.Log;
@@ -60,6 +49,18 @@ import com.sencha.gxt.widget.core.client.grid.filters.GridFilters;
 import com.sencha.gxt.widget.core.client.grid.filters.ListFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.NumericFilter;
 import com.sencha.gxt.widget.core.client.grid.filters.StringFilter;
+
+import at.ac.fhcampuswien.atom.client.App;
+import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDNDWidget;
+import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
+import at.ac.fhcampuswien.atom.client.gui.gxt.MyRpcProxy.SettingsProvider;
+import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
+import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.DataFilter;
+import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
+import at.ac.fhcampuswien.atom.shared.DomainObjectList;
+import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 /**
  * Represents a List of DomainObjects
@@ -415,24 +416,45 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 					genericColumn = column;
 					
 					//look for @ListBoxDefinition annotation and create specific filter for it.
-					final String[] listValues = oneAttribute.getListBoxDisplay();
-					final String[] listKeys = oneAttribute.getListBoxKeys();
-					if(listKeys != null && listKeys.length > 0) {
+					String[] listValues = oneAttribute.getListBoxDisplay();
+//					final String[] listKeys = oneAttribute.getListBoxKeys();
+					final LinkedHashMap<String, String> listbox = oneAttribute.getListBoxMappedReverse();
+//					final String msSeperator = oneAttribute.getListBoxMSSeperator();
+					if(listbox != null && listbox.size() > 0) {
 						ListStore<String> store = new ListStore<String>(new ModelKeyProvider<String>() {
 
 							@Override
 							public String getKey(String item) {
 								if(item == null) return null;
-								for(int i=0 ; i < listValues.length ; i++) {
-									if(item.equals(listValues[i]))
-										return listKeys[i];
-								}
-								return null;
+								
+//								if(msSeperator != null && !"".equals(msSeperator) && item.contains(msSeperator)) {
+//									AtomTools.log(Log.LOG_LEVEL_WARN, "this has not yet been implemented", this);
+//									String[] parts = item.split(msSeperator);
+//									String ret = null;
+//									for(String part : parts) {
+//										String key = listbox.get(part);
+//										if(key != null && key.length()>0) {
+//											if(ret == null)
+//												ret = key;
+//											else
+//												ret = ret + msSeperator + key;
+//										}
+//									}
+//									return ret;
+//								}
+//								else
+									return listbox.get(item);
 							}
 						});
+//						if(msSeperator != null && !"".equals(msSeperator)) {
+//							HashSet<String> combinations = AtomTools.getCartesianProduct(listValues, msSeperator);
+//							listValues = combinations.toArray(new String[combinations.size()]);
+//							Arrays.sort(listValues);
+//						}
 						for(String s : listValues) {
 							store.add(s);
 						}
+						
 						ListFilter<DomainObject, String> filter = new ListFilter<DomainObject, String>(valueProvider, store);
 						gridFilters.addFilter(filter);
 					}
