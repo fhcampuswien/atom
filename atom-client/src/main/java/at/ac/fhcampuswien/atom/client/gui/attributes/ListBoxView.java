@@ -182,9 +182,10 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	@Override
 	protected void showValue() {
 		
-		if(value == null || "".equals(value))
+		if(value == null || "".equals(value)) {
+			unselectAll();
 			return; //nothing to show
-		
+		}
 		
 		if(multiSelectSeperator != null && multiSelectSeperator != "") {
 			unselectAll();

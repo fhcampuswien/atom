@@ -162,7 +162,10 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 	protected void showValue() {
 		String[] values = null;
 		if(multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
-			values = value.split(multiSelectSeperator);
+			if(value == null)
+				values = new String[]{};
+			else
+				values = value.split(multiSelectSeperator);
 		}
 		
 		Iterator<String> iterator = keyDisplayMap.keySet().iterator();
