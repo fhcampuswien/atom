@@ -130,8 +130,15 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 			HashSet<String> newFilterFields = new HashSet<String>();
 			if (filterConfigs != null) {
 				for (FilterConfig filterConfig : filterConfigs) {
-					dataFilters.add(new DataFilter(filterConfig.getField(), filterConfig.getValue(), filterConfig.getComparison(),
-							filterConfig.getType()));
+					String searchedValue = filterConfig.getValue();
+					if(searchedValue.contains("::")) {
+						//syntax with which Sencha Grid joins multiple selected values
+						for(String val : searchedValue.split("::")) {
+							dataFilters.add(new DataFilter(filterConfig.getField(), val, filterConfig.getComparison(), filterConfig.getType()));
+						}
+					}
+					else
+						dataFilters.add(new DataFilter(filterConfig.getField(), searchedValue, filterConfig.getComparison(), filterConfig.getType()));
 					newFilterFields.add(filterConfig.getField());
 				}
 			}
