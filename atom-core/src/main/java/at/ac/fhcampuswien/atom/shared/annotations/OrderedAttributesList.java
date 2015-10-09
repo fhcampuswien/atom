@@ -8,6 +8,8 @@ package at.ac.fhcampuswien.atom.shared.annotations;
  * 
  * When used directly on a Class, 
  * it defines the Attributes Displayed in ListViews.
+ * WARNING: this will completely hide attributes not listed in the 
+ *          annotation from the list, not only set them to hidden
  * 
  * When used inside the Annotation OrderedAttributesInGroups, 
  * it defines the Attributes displayed in the corresponding group in DetailViews.
