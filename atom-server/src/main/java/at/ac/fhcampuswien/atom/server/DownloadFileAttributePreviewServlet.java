@@ -10,6 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -62,8 +63,10 @@ public class DownloadFileAttributePreviewServlet extends HttpServlet {
 				if(tryDirectResize(is, fileName, resp))
 					return;
 				
-				File tmp = File.createTempFile("", pfa.getFileName());
-				File output = File.createTempFile("", fileName);
+				File tmp = File.createTempFile("atom-tmp_", pfa.getFileName());
+				IOUtils.copy(pfa.getContent().getBinaryStream(), new FileOutputStream(tmp));				
+				
+				File output = File.createTempFile("atom-tmp_", fileName);
 				String inputFile = tmp.getAbsolutePath();
 				String outputFile = output.getAbsolutePath();
 				String[] params = null;

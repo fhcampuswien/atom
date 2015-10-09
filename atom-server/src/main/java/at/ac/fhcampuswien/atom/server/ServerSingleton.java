@@ -543,7 +543,7 @@ public class ServerSingleton {
 						PersistedFileAttribute pfa = em.find(PersistedFileAttribute.class, far.getFileID());
 						
 						if(!pfa.getForClassName().equals(requestedClass.getName()) || 
-								!pfa.getForAttributeName().equals(a.getName()) || 
+								!a.getName().equals(pfa.getForAttributeName()) || 
 								(pfa.getForInstance() != null && !domainObject.equals(pfa.getForInstance()))
 						  )
 							throw new ValidationError("user is trying to link a file from a different attribute, denying - potential permission problem");

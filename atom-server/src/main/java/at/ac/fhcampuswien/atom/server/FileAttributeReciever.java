@@ -56,11 +56,11 @@ public class FileAttributeReciever extends UploadAction {
 			if (item.isFormField()) {
 				AtomTools.log(Log.LOG_LEVEL_INFO, "got FormField " + item.getFieldName() + " = " + item.getString(), this);
 
-				if("className".equals(item.getFieldName()))
+				if(item.getFieldName().contains("className"))
 					className = item.getString();
-				else if("attributeName".equals(item.getFieldName()))
+				else if(item.getFieldName().contains("attributeName"))
 					attributeName = item.getString();
-				else if("instanceID".equals(item.getFieldName())) {
+				else if(item.getFieldName().contains("instanceID")) {
 					if(!"null".equals(item.getString()))
 						instanceID = Integer.valueOf(item.getString());
 				}
