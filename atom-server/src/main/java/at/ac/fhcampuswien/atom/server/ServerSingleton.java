@@ -205,9 +205,13 @@ public class ServerSingleton {
 	private DomainObject getDomainObject(ClientSession session, int id, Class<?> classOfObject, EntityManager em) {
 		if(DomainObject.class.equals(classOfObject)) {
 			AtomTools.log(Log.LOG_LEVEL_WARN, "Selecting DomainObject without any class info - performance problem!!", this);
+			Thread.dumpStack();
 		}
+		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - getting entity from entityManager now", this);
 		DomainObject result = (DomainObject) em.find(classOfObject, id);
+		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - got entity, preparing for client", this);
 		ServerTools.fillAndDetachInstance(result, em, session, false);
+		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - prepared for client, returning", this);
 		return result;
 	}
 
@@ -215,6 +219,7 @@ public class ServerSingleton {
 
 		EntityManager em = null;
 		try {
+			AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - creating entityManager for query", this);
 			em = emFactory.makeObject();
 			return getDomainObject(session, id, classOfObject, em);
 		} catch (Exception e) {
@@ -250,6 +255,8 @@ public class ServerSingleton {
 	private DomainObjectList getListOfDomainObject(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
 			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated) {
 
+		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getListOfDomainObject start - user " + session.getUsername() + " requesting list of " + domainClass.getName(), this);
+		
 		Set<String> requiredRelations = AtomTools.getRequiredRelations(AtomConfig.accessLinkage, domainClass.getAccessHandler().getAccess(session));
 		Collection<RelationDefinition> reqRelDefs = null;
 		
@@ -265,7 +272,7 @@ public class ServerSingleton {
 			onlyRelated = true;
 			
 			if(reqRelDefs.size() <= 0) {
-				throw new AuthenticationException("no relation definitions found and user has no unrelated-access allowance!");
+				throw new AuthenticationException("ServerSingelton.getListOfDomainObject - no relation definitions found and user has no unrelated-access allowance!");
 			}
 		}
 		
@@ -300,12 +307,12 @@ public class ServerSingleton {
 			
 			join = ServerTools.removeDuplicateJoins(join);
 
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "defined general stuff", this);
+			AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - getting EntityManager now", this);
 
 			em = emFactory.makeObject();
 			Query query = null;
 
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "counting elements", this);
+			AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - got my EntityManger, selecting count", this);
 			if (countQuery != null && countQuery.length() > 0)
 				query = em.createNativeQuery(countQuery);
 			else {
@@ -319,7 +326,7 @@ public class ServerSingleton {
 			// totalSize = (Long) query.getSingleResult();
 
 			if (totalSize > 0) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "fetching elements", this);
+				AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - got count bigger 0, fetching elements now", this);
 				Method getListQuery = specificClass.getMethod("getListQuery", queryParameterClasses);
 				String listQuery = (String) getListQuery.invoke(null, queryParameters);
 
@@ -344,6 +351,7 @@ public class ServerSingleton {
 				query.setFirstResult(Math.max(0, Math.min(fromRow, totalSize.intValue() - pageSize)));
 
 				List<?> queryResult = query.getResultList();
+				AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - got resultList, processing & preparing for client", this);
 
 				if (queryResult != null) {
 					for (Object obj : queryResult) {
@@ -366,20 +374,22 @@ public class ServerSingleton {
 			if (resultList.size() > 0)
 				totalSize -= ServerTools.prepareDOListForClient(resultList, domainClass, em, session);
 
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "returning fetched list", this);
+			AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getListOfDomainObject - returning list to client now", this);
 			return new DomainObjectList(domainClass, resultList, fromRow, pageSize, totalSize == null ? 0 : totalSize.intValue(), filters, sorters,
 					searchString, onlyRelated);
 
 		} catch (NoResultException noResultException) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "AtomServiceImpl.getListOfDomainObject - javax.persistence.NoResultException", this);
+			AtomTools.log(Log.LOG_LEVEL_WARN, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this);
 			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
 		} catch (Exception e) {
 			AtomTools.log(Log.LOG_LEVEL_ERROR, "getListOfDomainObject exception happened:" + e.getMessage(), this);
 			e.printStackTrace();
-			throw new AtomException("getListOfDomainObject exception happened:" + e.getMessage() + ";" + AtomTools.getCustomStackTrace(e));
+			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Exception happened, see cause", e);
 		} finally {
-			if (em != null)
+			if (em != null) {
+				AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
 				em.close();
+			}	
 		}
 	}
 
