@@ -28,7 +28,9 @@ public class PoolableEntityManagerFactory extends BasePoolableObjectFactory<Enti
 	public EntityManager makeObject() {
 		try {
 			AtomTools.log(Log.LOG_LEVEL_TRACE, "calling EntityManagerFactory.createEntityManager()", this);
-			return emFactory.createEntityManager();
+			EntityManager val = emFactory.createEntityManager();
+			AtomTools.log(Log.LOG_LEVEL_TRACE, "successfully created EntityManager, returning it to caller", this);
+			return val;
 		} catch (Throwable t) {
 			// I think this will happen when a db-connection-timeout happens (or
 			// something like that..)

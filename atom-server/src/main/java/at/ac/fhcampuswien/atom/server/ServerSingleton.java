@@ -223,9 +223,10 @@ public class ServerSingleton {
 			em = emFactory.makeObject();
 			return getDomainObject(session, id, classOfObject, em);
 		} catch (Exception e) {
-			e.printStackTrace();
+			AtomTools.log(Log.LOG_LEVEL_ERROR, "ServerSingelton.getDomainObject - Exception happened! ", this, e);
 		} finally {
-			em.close();
+			ServerTools.closeDBConnection(null, em);
+			AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject finally - closed entityManager", this);
 		}
 		return null;
 	}
@@ -674,6 +675,7 @@ public class ServerSingleton {
 		if (domainObject.getObjectID() != null) {
 			
 			EntityManager em = null;
+			EntityTransaction tx = null;
 			try {
 				em = emFactory.makeObject();
 				
@@ -700,7 +702,7 @@ public class ServerSingleton {
 					}
 				}
 				
-				EntityTransaction tx = em.getTransaction();
+				tx = em.getTransaction();
 				tx.begin();
 				em.remove(dbVersion);
 				tx.commit();
@@ -709,7 +711,7 @@ public class ServerSingleton {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				em.close();
+				ServerTools.closeDBConnection(tx, em);
 			}
 		}
 

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -950,5 +951,24 @@ public class ServerTools {
 		
 		return rv;
 		//return "LEFT OUTER JOIN " + Joiner.on(" LEFT OUTER JOIN ").join(uniqJoins);
+	}
+	
+	public static void closeDBConnection(EntityTransaction tx, EntityManager em) {
+		try {
+			if(tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+		}
+		catch(Throwable t) {
+			AtomTools.log(Log.LOG_LEVEL_WARN, "Transaction rollback failed", null, t);
+		}
+		if (em != null) {
+			try {
+				em.close();
+			}
+			catch(Throwable t) {
+				AtomTools.log(Log.LOG_LEVEL_WARN, "could not close EntityManager", null, t);
+			}
+		}
 	}
 }
