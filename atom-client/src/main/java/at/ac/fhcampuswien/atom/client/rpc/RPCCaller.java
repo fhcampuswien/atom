@@ -302,7 +302,11 @@ public class RPCCaller {
 	}
 
 	public void loadDomainObject(Integer objectID, String nameOfClass, final WaitingFor<DomainObject> waiting) {
-		atomRPCAsync.getDomainObject(clientSession.getCookieValue(), objectID, nameOfClass, new AsyncCallback<DomainObject>() {
+		DomainObject cached = getLoadedObjects().get(objectID);
+		if(cached != null && cached.getCompletelyLoaded()) {
+			waiting.recieve(cached);
+		}
+		else atomRPCAsync.getDomainObject(clientSession.getCookieValue(), objectID, nameOfClass, new AsyncCallback<DomainObject>() {
 
 			public void onFailure(Throwable caught) {
 
