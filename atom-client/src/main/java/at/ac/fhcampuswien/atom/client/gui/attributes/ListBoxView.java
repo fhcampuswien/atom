@@ -182,11 +182,6 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	@Override
 	protected void showValue() {
 		
-		if(value == null || "".equals(value)) {
-			unselectAll();
-			return; //nothing to show
-		}
-		
 		if(multiSelectSeperator != null && multiSelectSeperator != "") {
 			unselectAll();
 			for(String v : value.split(multiSelectSeperator)) {
@@ -212,8 +207,12 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	}
 	
 	private boolean showSingleValue(String value, boolean deselectOthers) {
-		boolean found = false;
 
+		if(value == null || "".equals(value)) {
+			return false; //nothing to show
+		}
+
+		boolean found = false;
 		for(int i=0 ; i < listBox.getItemCount() ; i++ ) {
 			if(listBox.getValue(i).equals(value.toString())) {
 				if(deselectOthers)
