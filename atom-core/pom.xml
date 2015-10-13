@@ -35,14 +35,15 @@
 			of this required annotation on @DomainObject it also needs to transverse 
 			into the server side. Used in: at.ac.fhcampuswien.atom.client.ClientTools.getAttributeValue(..) 
 			and setAttributeValue(..) -->
-		<dependency>
+		<!-- currently trying to replace this with net.wetheinter:xapi-gwt:0.5 -->
+		<!-- <dependency>
 			<type>jar</type>
 			<scope>compile</scope>
 			<groupId>gwtent</groupId>
 			<artifactId>gwtent</artifactId>
 			<version>2.0_RC1_GWT2.3</version>
-			<!-- <version>2.0_GWT2.2</version> -->
-		</dependency>
+			<version>2.0_GWT2.2</version>
+		</dependency> -->
 
 
 		<!--used for logging in method at.ac.fhcampuswien.atom.shared.AtomTools.log(..) 
@@ -71,7 +72,7 @@
 			at.ac.fhcampuswien.atom.shared.dateformat depends on code from the gwt-user 
 			package. It is used in AtomTools DateFormat constants -->
 		<dependency>
-			<groupId>com.google.gwt</groupId>
+			<groupId>net.wetheinter</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwt.version}</version>
 			<scope>provided</scope>
@@ -113,7 +114,7 @@
 				project that holds the normal RPC interface, which makes sense to have
 				in atom-core since both atom-client and atom-server need it. -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
+				<groupId>${gwt.mavenplugin.groupid}</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>${gwt.version}</version>
 				<executions>
@@ -158,7 +159,7 @@
 								<pluginExecution>
 									<pluginExecutionFilter>
 										<groupId>
-											org.codehaus.mojo
+											${gwt.mavenplugin.groupid}
 										</groupId>
 										<artifactId>
 											gwt-maven-plugin

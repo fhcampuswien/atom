@@ -25,6 +25,9 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.rpc.GwtTransient;
+
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
@@ -44,10 +47,6 @@ import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
 import at.ac.fhcampuswien.atom.shared.annotations.OrderedAttributeGroups;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.GwtTransient;
-import com.gwtent.reflection.client.Reflectable;
 
 /**
  * 
@@ -89,7 +88,7 @@ import com.gwtent.reflection.client.Reflectable;
  */
 
 //gwt-ent reflection, currently concidering to replace it with https://github.com/WeTheInternet/xapi/tree/master/gwt/gwt-reflect 
-@Reflectable(superClasses = false, assignableClasses = true, relationTypes = false, fields = false, methods = true, constructors = true, classAnnotations = false, fieldAnnotations = false)
+//@Reflectable(superClasses = false, assignableClasses = true, relationTypes = false, fields = false, methods = true, constructors = true, classAnnotations = false, fieldAnnotations = false)
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)

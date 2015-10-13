@@ -13,7 +13,7 @@
 
 		<mavenVersion>3.0</mavenVersion>
 		<atom.version>1.0-SNAPSHOT</atom.version>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 
 		<!-- <gwt.version>[2.5.1,)</gwt.version> -->
 		<!-- <gwt.version>2.5.1</gwt.version>
@@ -33,11 +33,19 @@
 		        (or the gwt.xml files which it includes) contains the following script tags: [INFO] gwtent/pagebus.js -->
 		<!-- sencha gxt - only works with 2.7.0, not with current trunk (or xapi gwt fork) -->
 		
-		<gwt.version>2.6.1</gwt.version>
-		<gwt.mavenplugin.version>2.6.1</gwt.mavenplugin.version>
+		<!-- <gwt.version>2.6.1</gwt.version> -->
+		<!-- <gwt.mavenplugin.version>2.6.1</gwt.mavenplugin.version> -->
 		
 		<!-- 2015-01-13: 2.7.0 = wont compile, errors from gwt-ent & sencha gxt! -->
-		<!-- <gwt.version>2.7.0</gwt.version> -->
+		<gwt.version>2.7.0</gwt.version>
+		<gwt.mavenplugin.version>2.7.0</gwt.mavenplugin.version>
+		
+		<gwt.mavenplugin.groupid>net.wetheinter</gwt.mavenplugin.groupid>
+		
+		<gwt.groupid>net.wetheinter</gwt.groupid>
+		<!-- default google group ids --> <!--
+		<gwt.groupid>com.google.gwt</gwt.groupid>
+		<gwt.mavenplugin.groupid>org.codehaus.mojo</gwt.mavenplugin.groupid> -->
 
 		
 		<!-- with dia version 2015-07-02:

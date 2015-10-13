@@ -27,7 +27,7 @@
 			which causes 'The hierarchy of the type * is incosistent' errors for all 
 			DomainObject sub-classes if neither gwt-user nor gwt-servlet is present -->
 		<dependency>
-			<groupId>com.google.gwt</groupId>
+			<groupId>${gwt.groupid}</groupId>
 			<artifactId>gwt-user</artifactId>
 			<version>${gwt.version}</version>
 			<scope>provided</scope>

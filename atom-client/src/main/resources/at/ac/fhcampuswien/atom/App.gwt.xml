@@ -11,10 +11,9 @@
 
 	<entry-point class="at.ac.fhcampuswien.atom.client.App" />
 
-	<inherits name='com.gwtent.GwtEnt' />
 	<!-- <inherits name='com.gwtent.GwtEnt' /> -->
 	
-	<!-- <inherits name='com.google.gwt.reflect.Reflect' /> -->
+	<inherits name='com.google.gwt.reflect.Reflect' />
 	<!-- <inherits name='xapi.X_Reflect' /> -->
 
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />

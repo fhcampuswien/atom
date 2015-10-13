@@ -4,11 +4,19 @@
  */
 package at.ac.fhcampuswien.atom.client;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.reflect.client.ConstPool;
+import com.google.gwt.reflect.shared.GwtReflect;
 
 import at.ac.fhcampuswien.atom.client.gui.attributes.components.FilterSpecificationDialogBox;
 import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
@@ -19,14 +27,6 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.gwtent.reflection.client.ClassType;
-import com.gwtent.reflection.client.NotFoundException;
-import com.gwtent.reflection.client.TypeOracle;
 
 public class ClientTools {
 	private ClientTools() {
@@ -48,8 +48,11 @@ public class ClientTools {
 //						+ ") started", null);
 
 		try {
-			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
-			Object returnValue = classType.invoke(domainObject, "get" + AtomTools.upperFirstChar(domainClassAttribute.getName()), (Object[]) null);
+			Method getter = GwtReflect.getDeclaredMethod(getClassByName(domainClass.getName()), "get" + AtomTools.upperFirstChar(domainClassAttribute.getName()), new Class[] {});
+			Object returnValue = getter.invoke(domainObject, new Object[] {});
+			
+//			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
+//			Object returnValue = classType.invoke(domainObject, "get" + AtomTools.upperFirstChar(domainClassAttribute.getName()), (Object[]) null);
 			// AtomTools.log(Log.LOG_LEVEL_TRACE,
 			// "AtomTools.getAttributeValue successful", null);
 //			String stringValue;
@@ -60,7 +63,7 @@ public class ClientTools {
 //			AtomTools.log(Log.LOG_LEVEL_TRACE, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
 //					+ domainObject.getStringRepresentation() + ") found value '" + stringValue + "', returning", null);
 			return returnValue;
-		} catch (NotFoundException e) {
+		} catch (RuntimeException e) {
 			if (domainClass.getSuperClass() != null) {
 				AtomTools.log(Log.LOG_LEVEL_TRACE, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
 						+ domainObject.getStringRepresentation() + ") did not find getMethod in this class, will try superclass", null);
@@ -94,9 +97,12 @@ public class ClientTools {
 		}
 
 		try {
-			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
-			classType.invoke(domainObject, "set" + AtomTools.upperFirstChar(domainClassAttribute.getName()), new Object[] { value });
-		} catch (NotFoundException e) {
+			Method setter = GwtReflect.getDeclaredMethod(getClassByName(domainClass.getName()), "set" + AtomTools.upperFirstChar(domainClassAttribute.getName()), value.getClass());
+			setter.invoke(domainObject, value);
+			
+//			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
+//			classType.invoke(domainObject, "set" + AtomTools.upperFirstChar(domainClassAttribute.getName()), new Object[] { value });
+		} catch (RuntimeException e) {
 			if (domainClass.getSuperClass() != null) {
 				setAttributeValue(domainClass.getSuperClass(), domainClassAttribute, domainObject, value);
 			} else {
@@ -152,11 +158,31 @@ public class ClientTools {
 		}
 	}
 
+	
+	private static Class<? extends DomainObject> getClassByName(String className) {
+		Class<?> cls = ConstPool.getConstPool().getClassByName(className);
+		//Class<?> cls = Class.forName(domainClass.getName());
+		
+		@SuppressWarnings("unchecked")
+		Class<? extends DomainObject> dcls = (Class<? extends DomainObject>) cls;
+		
+		return dcls;
+	}
+	
 	public static DomainObject createInstance(DomainClass domainClass) {
 		AtomTools.log(Log.LOG_LEVEL_DEBUG, "createInstance(" + domainClass.getName() + ")", null);
-		ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
-		String[] params = new String[] {};
-		return (DomainObject) classType.findConstructor(params).newInstance();
+		
+		try {
+			return GwtReflect.construct(getClassByName(domainClass.getName()), new Class[] {}, new Object[] {});
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		//ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
+//		String[] params = new String[] {};
+//		return (DomainObject) classType.findConstructor(params).newInstance();
 	}
 
 	private static Map<Object, Date> recordedCalls = new HashMap<Object, Date>();
