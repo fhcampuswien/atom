@@ -1119,7 +1119,6 @@ public class App implements EntryPoint {
 				if (!lastShownFrame.goingInvisible())
 					return false;
 			}
-			centerHeader.setLoading(false);
 			lastShownFrame = frame;
 			lastShownFrame.goingVisible();
 		}
@@ -1129,6 +1128,7 @@ public class App implements EntryPoint {
 		if(frame.getContent() != null)
 			frameSpace.add(frame.getContent());
 		centerHeader.setHeader(frame.getLongTitle());
+		centerHeader.setLoading(false);
 		resizeTimer.schedule(50);
 		return true;
 	}
