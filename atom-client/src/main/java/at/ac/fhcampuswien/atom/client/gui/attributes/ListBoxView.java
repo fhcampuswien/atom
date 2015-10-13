@@ -182,9 +182,9 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	@Override
 	protected void showValue() {
 		
-		if(multiSelectSeperator != null && multiSelectSeperator != "") {
+		if(multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
 			unselectAll();
-			for(String v : value.split(multiSelectSeperator)) {
+			if(value != null) for(String v : value.split(multiSelectSeperator)) {
 				showSingleValue(v, false);
 			}
 		}
