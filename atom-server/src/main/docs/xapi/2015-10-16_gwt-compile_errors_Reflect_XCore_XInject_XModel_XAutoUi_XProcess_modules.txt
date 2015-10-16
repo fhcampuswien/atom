@@ -1,0 +1,5 @@
+[INFO] Compiling module at.ac.fhcampuswien.atom.App
+[INFO]    Tracing compile failure path for type 'xapi.process.impl.ProcessQueueAbstract'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/xapi/process/impl/ProcessQueueAbstract.java'
+[INFO]          [ERROR] Line 23: No source code is available for type xapi.reflect.X_Reflect; did you forget to inherit a required module?
+[INFO]    [ERROR] Aborting compile due to errors in some input files

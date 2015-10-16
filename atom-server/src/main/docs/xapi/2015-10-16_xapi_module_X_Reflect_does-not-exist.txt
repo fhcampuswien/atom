@@ -1,0 +1,1 @@
+[ERROR] Failed to execute goal net.wetheinter:gwt-maven-plugin:2.7.0:compile (gwt-compile) on project atom-client: GWT Module xapi.X_Reflect not found in project sources or resources. -> [Help 1]

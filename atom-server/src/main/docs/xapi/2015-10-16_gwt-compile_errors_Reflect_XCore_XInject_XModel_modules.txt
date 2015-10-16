@@ -1,0 +1,25 @@
+[INFO]    Tracing compile failure path for type 'xapi.gwt.ui.autoui.client.UserInterfaceFactoryGwt'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/xapi/gwt/ui/autoui/client/UserInterfaceFactoryGwt.java'
+[INFO]          [ERROR] Line 62: No source code is available for type xapi.ui.autoui.api.UiRendererOptions; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 32: No source code is available for type xapi.ui.autoui.api.BeanValueProvider; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 35: No source code is available for type xapi.ui.autoui.api.UiOptions; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 85: No source code is available for type xapi.ui.autoui.api.DoNotIndex; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 24: No source code is available for type xapi.ui.autoui.impl.AbstractUserInterfaceFactory; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 29: No source code is available for type xapi.ui.autoui.api.UiRenderingContext; did you forget to inherit a required module?
+[INFO]    Tracing compile failure path for type 'xapi.gwt.process.ConcurrencyServiceGwt'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/xapi/gwt/process/ConcurrencyServiceGwt.java'
+[INFO]          [ERROR] Line 31: No source code is available for type xapi.process.api.ConcurrentEnvironment; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 144: No source code is available for type xapi.process.api.AsyncCondition; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 29: No source code is available for type xapi.process.api.AsyncLock; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 27: No source code is available for type xapi.process.impl.ConcurrencyServiceAbstract; did you forget to inherit a required module?
+[INFO]    Tracing compile failure path for type 'xapi.gwt.ui.autoui.client.ToHtmlUiRenderer'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/xapi/gwt/ui/autoui/client/ToHtmlUiRenderer.java'
+[INFO]          [ERROR] Line 12: No source code is available for type xapi.ui.autoui.api.UiRendererSelector; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 15: No source code is available for type xapi.ui.autoui.api.UserInterface<T>; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 15: No source code is available for type xapi.ui.autoui.api.UiRenderingContext; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 12: No source code is available for type xapi.ui.autoui.api.UiRenderer<T>; did you forget to inherit a required module?
+[INFO]    Tracing compile failure path for type 'xapi.gwt.ui.autoui.client.SafeHtmlUserInterface'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/xapi/gwt/ui/autoui/client/SafeHtmlUserInterface.java'
+[INFO]          [ERROR] Line 10: No source code is available for type xapi.ui.autoui.impl.AbstractUserInterface<T>; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 15: No source code is available for type xapi.ui.autoui.api.UiRenderingContext; did you forget to inherit a required module?
+[INFO]    [ERROR] Aborting compile due to errors in some input files

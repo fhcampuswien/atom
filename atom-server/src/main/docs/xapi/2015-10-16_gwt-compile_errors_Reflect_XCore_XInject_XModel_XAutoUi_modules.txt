@@ -1,0 +1,8 @@
+[INFO] Compiling module at.ac.fhcampuswien.atom.App
+[INFO]    Tracing compile failure path for type 'xapi.gwt.process.ConcurrencyServiceGwt'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/xapi/gwt/process/ConcurrencyServiceGwt.java'
+[INFO]          [ERROR] Line 31: No source code is available for type xapi.process.api.ConcurrentEnvironment; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 144: No source code is available for type xapi.process.api.AsyncCondition; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 29: No source code is available for type xapi.process.api.AsyncLock; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 27: No source code is available for type xapi.process.impl.ConcurrencyServiceAbstract; did you forget to inherit a required module?
+[INFO]    [ERROR] Aborting compile due to errors in some input files

@@ -1,0 +1,12 @@
+[INFO] Compiling module at.ac.fhcampuswien.atom.App
+[INFO]    Tracing compile failure path for type 'java.util.concurrent.CountdownLatch'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/com/google/gwt/emul/java/util/concurrent/CountdownLatch.java'
+[INFO]          [ERROR] Line 14: No source code is available for type xapi.log.X_Log; did you forget to inherit a required module?
+[INFO]    Tracing compile failure path for type 'java.util.ServiceLoader'
+[INFO]       [ERROR] Errors in 'jar:file:/home/kaefert/.m2/repository/net/wetheinter/xapi-gwt/0.5/xapi-gwt-0.5.jar!/com/google/gwt/emul/java/util/ServiceLoader.java'
+[INFO]          [ERROR] Line 12: No source code is available for type xapi.util.api.ReceivesValue<T>; did you forget to inherit a required module?
+[INFO]    Tracing compile failure path for type 'at.ac.fhcampuswien.atom.client.ClientTools'
+[INFO]       [ERROR] Errors in 'file:/home/kaefert/Development/workspace_ATOM/atom/atom-client/src/main/java/at/ac/fhcampuswien/atom/client/ClientTools.java'
+[INFO]          [ERROR] Line 51: No source code is available for type com.google.gwt.reflect.shared.GwtReflect; did you forget to inherit a required module?
+[INFO]          [ERROR] Line 163: No source code is available for type com.google.gwt.reflect.client.ConstPool; did you forget to inherit a required module?
+[INFO]    [ERROR] Aborting compile due to errors in some input files
