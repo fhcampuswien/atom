@@ -22,6 +22,7 @@ import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.allen_sauer.gwt.log.shared.LogRecord;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Window;
 
@@ -150,34 +151,8 @@ public class AtomTools {
 		}
 
 		// GWT.log(logString);
+		Log.log(new LogRecord("gwt-log", logLevel, logString, t));
 
-		// if (GWT.isClient()) {
-		switch (logLevel) {
-		case Log.LOG_LEVEL_FATAL: {
-			Log.fatal(logString, t);
-			break;
-		}
-		case Log.LOG_LEVEL_ERROR: {
-			Log.error(logString, t);
-			break;
-		}
-		case Log.LOG_LEVEL_WARN: {
-			Log.warn(logString, t);
-			break;
-		}
-		case Log.LOG_LEVEL_INFO: {
-			Log.info(logString, t);
-			break;
-		}
-		case Log.LOG_LEVEL_DEBUG: {
-			Log.debug(logString, t);
-			break;
-		}
-		case Log.LOG_LEVEL_TRACE: {
-			Log.trace(logString, t);
-			break;
-		}
-		}
 		// } else {
 		// System.out.println("[" + logLevel + "] " + logString);
 		// }
