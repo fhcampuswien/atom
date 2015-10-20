@@ -14,11 +14,12 @@
 	<!-- <inherits name='com.gwtent.GwtEnt' /> -->
 	
 	<inherits name='com.google.gwt.reflect.Reflect' />
-	<inherits name='xapi.X_Core' />
+	
+	<!-- <inherits name='xapi.X_Core' />
 	<inherits name='xapi.X_Inject' />
 	<inherits name='xapi.X_Model' />
 	<inherits name='xapi.X_AutoUi' />
-	<inherits name='xapi.X_Process' />
+	<inherits name='xapi.X_Process' /> -->
 	
 	<!-- Failed to execute goal net.wetheinter:gwt-maven-plugin:2.7.0:compile (gwt-compile) on project atom-client: GWT Module xapi.X_Reflect not found in project sources or resources.  -->
 	<!-- <inherits name='xapi.X_Reflect' /> -->
@@ -42,7 +43,7 @@
 	<!-- Include GWTUpload library -->
 	<inherits name="gwtupload.GWTUpload" />
 	
-	<!-- Load dinamically predefined styles in the library when the application 
+	<!-- Load dynamically predefined styles in the library when the application 
 		starts
 	<stylesheet src="Upload.css" /> -->
 

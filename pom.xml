@@ -37,7 +37,7 @@
 		<!-- <gwt.mavenplugin.version>2.6.1</gwt.mavenplugin.version> -->
 		
 		<!-- 2015-01-13: 2.7.0 = wont compile, errors from gwt-ent & sencha gxt! -->
-		<gwt.version>2.7.0</gwt.version>
+		<gwt.version>2.7.0fh</gwt.version>
 		<gwt.mavenplugin.version>2.7.0</gwt.mavenplugin.version>
 		
 		<gwt.mavenplugin.groupid>net.wetheinter</gwt.mavenplugin.groupid>

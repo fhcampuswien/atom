@@ -8,33 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import at.ac.fhcampuswien.atom.client.gui.AtomClientBundle;
-import at.ac.fhcampuswien.atom.client.gui.CenterHeader;
-import at.ac.fhcampuswien.atom.client.gui.ClipBoard;
-import at.ac.fhcampuswien.atom.client.gui.HistoryPanel;
-import at.ac.fhcampuswien.atom.client.gui.LoginInfoPanel;
-import at.ac.fhcampuswien.atom.client.gui.ObjectSelectorMenue;
-import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDNDWidget;
-import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDragController;
-import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectDetailFrame;
-import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectListFrame;
-import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectSearchFrame;
-import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
-import at.ac.fhcampuswien.atom.client.gui.frames.ImportFrame;
-import at.ac.fhcampuswien.atom.client.gui.frames.LoginFrame;
-import at.ac.fhcampuswien.atom.client.gui.frames.WelcomeFrame;
-import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
-import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
-import at.ac.fhcampuswien.atom.shared.AtomConfig;
-import at.ac.fhcampuswien.atom.shared.AtomConfig.FrameType;
-import at.ac.fhcampuswien.atom.shared.AtomTools;
-import at.ac.fhcampuswien.atom.shared.DataFilter;
-import at.ac.fhcampuswien.atom.shared.DomainClass;
-import at.ac.fhcampuswien.atom.shared.Notifiable;
-import at.ac.fhcampuswien.atom.shared.domain.ClipBoardEntry;
-import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
-import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.allen_sauer.gwt.dnd.client.drop.AbstractDropController;
 import com.allen_sauer.gwt.log.client.Log;
@@ -63,6 +38,33 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import at.ac.fhcampuswien.atom.client.gui.AtomClientBundle;
+import at.ac.fhcampuswien.atom.client.gui.CenterHeader;
+import at.ac.fhcampuswien.atom.client.gui.ClipBoard;
+import at.ac.fhcampuswien.atom.client.gui.HistoryPanel;
+import at.ac.fhcampuswien.atom.client.gui.LoginInfoPanel;
+import at.ac.fhcampuswien.atom.client.gui.ObjectSelectorMenue;
+import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDNDWidget;
+import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDragController;
+import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectDetailFrame;
+import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectListFrame;
+import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectSearchFrame;
+import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
+import at.ac.fhcampuswien.atom.client.gui.frames.ImportFrame;
+import at.ac.fhcampuswien.atom.client.gui.frames.LoginFrame;
+import at.ac.fhcampuswien.atom.client.gui.frames.WelcomeFrame;
+import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
+import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
+import at.ac.fhcampuswien.atom.shared.AtomConfig;
+import at.ac.fhcampuswien.atom.shared.AtomConfig.FrameType;
+import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.DataFilter;
+import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.Notifiable;
+import at.ac.fhcampuswien.atom.shared.domain.ClipBoardEntry;
+import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
+import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -90,6 +92,12 @@ public class App implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		AtomTools.log(Log.LOG_LEVEL_INFO, "started ATOM onModuleLoad", this);
+		
+		// xapi GWT compiler enhances the class
+		// GwtReflect.magicClass(DomainObject.class);
+		
+		Logger logger = Logger.getLogger("test");
+		logger.log(Level.WARNING, "test");
 		
 		// Inject the contents of the CSS file
 		AtomClientBundle.INSTANCE.css().ensureInjected();

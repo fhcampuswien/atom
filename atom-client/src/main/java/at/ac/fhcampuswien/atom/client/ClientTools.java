@@ -15,7 +15,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.reflect.client.ConstPool;
 import com.google.gwt.reflect.shared.GwtReflect;
 
 import at.ac.fhcampuswien.atom.client.gui.attributes.components.FilterSpecificationDialogBox;
@@ -159,9 +158,9 @@ public class ClientTools {
 	}
 
 	
-	private static Class<? extends DomainObject> getClassByName(String className) {
-		Class<?> cls = ConstPool.getConstPool().getClassByName(className);
-		//Class<?> cls = Class.forName(domainClass.getName());
+	private static Class<? extends DomainObject> getClassByName(String className) throws ClassNotFoundException {
+		//Class<?> cls = ConstPool.getConstPool().getClassByName(className);
+		Class<?> cls = Class.forName(className);
 		
 		@SuppressWarnings("unchecked")
 		Class<? extends DomainObject> dcls = (Class<? extends DomainObject>) cls;
@@ -175,7 +174,6 @@ public class ClientTools {
 		try {
 			return GwtReflect.construct(getClassByName(domainClass.getName()), new Class[] {}, new Object[] {});
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}

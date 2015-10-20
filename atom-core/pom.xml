@@ -116,7 +116,7 @@
 			<plugin>
 				<groupId>${gwt.mavenplugin.groupid}</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				<version>${gwt.version}</version>
+				<version>${gwt.mavenplugin.version}</version>
 				<executions>
 					<execution>
 						<id>my_code_generation</id>

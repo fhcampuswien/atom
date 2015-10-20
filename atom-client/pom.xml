@@ -41,12 +41,12 @@
 			<version>${gwt.version}</version>
 		</dependency>
 		
-		<dependency>
+		<!-- <dependency>
 			<groupId>net.wetheinter</groupId>
 			<artifactId>xapi-gwt</artifactId>
 			<version>0.6-SNAPSHOT</version>
 			<scope>provided</scope>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -139,6 +139,7 @@
 					<cssFiles>
 						<cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
 					</cssFiles>
+					<launcherDir>${project.build.directory}/${project.build.finalName}</launcherDir>
 
 				<extraJvmArgs>-Xmx4096M -Xms1024M</extraJvmArgs>
 				<!-- <extraJvmArgs>-Xmx4096M -Xms1024M -XX:PermSize=128m -XX:MaxPermSize=256m</extraJvmArgs> -->
