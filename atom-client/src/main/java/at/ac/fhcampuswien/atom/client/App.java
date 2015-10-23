@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.reflect.shared.GwtReflect;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
@@ -94,7 +95,7 @@ public class App implements EntryPoint {
 		AtomTools.log(Log.LOG_LEVEL_INFO, "started ATOM onModuleLoad", this);
 		
 		// xapi GWT compiler enhances the class
-		// GwtReflect.magicClass(DomainObject.class);
+		GwtReflect.magicClass(DomainObject.class);
 		
 		Logger logger = Logger.getLogger("test");
 		logger.log(Level.WARNING, "test");

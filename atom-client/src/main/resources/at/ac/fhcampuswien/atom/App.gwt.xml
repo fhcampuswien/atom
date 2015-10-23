@@ -8,10 +8,14 @@
 
 	<source path="client" />
 	<source path="shared" />
+	
+	<super-source path="emul" />
 
 	<entry-point class="at.ac.fhcampuswien.atom.client.App" />
 
 	<!-- <inherits name='com.gwtent.GwtEnt' /> -->
+	
+	<!-- <inherits name='javax.Persistence' /> -->
 	
 	<inherits name='com.google.gwt.reflect.Reflect' />
 	

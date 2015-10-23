@@ -98,6 +98,17 @@
 			<!-- <version>3.1.0-beta</version> -->
 			<!-- <version>3.1.0</version> -->
 		</dependency>
+		
+		
+		<!-- using super sources instead -->
+		<!-- <dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
+		</dependency> -->
+		
 
 	</dependencies>
 
