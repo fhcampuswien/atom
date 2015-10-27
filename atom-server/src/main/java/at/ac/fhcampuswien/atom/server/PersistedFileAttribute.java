@@ -41,7 +41,7 @@ public class PersistedFileAttribute {
 	private String forAttributeName;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@OnDelete(action = OnDeleteAction.NO_ACTION)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private DomainObject forInstance;
 
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -119,3 +119,20 @@ public class PersistedFileAttribute {
 		this.forInstanceSaved = forInstanceSaved;
 	}
 }
+
+
+/*
+ *
+ * Manually modified constraint - added ON DELETE CASCADE
+ * so that an associated file does not block the deletion of an enitity 
+ * 
+
+ALTER TABLE [dbo].[PersistedFileAttribute] DROP CONSTRAINT [FK_a47ifik54mr449um3rsh3mflb]
+GO
+
+ALTER TABLE [dbo].[PersistedFileAttribute]  WITH CHECK
+ ADD CONSTRAINT [FK_a47ifik54mr449um3rsh3mflb] FOREIGN KEY([forInstance_objectID])
+ REFERENCES [dbo].[DomainObject] ([objectID])
+ ON DELETE CASCADE
+GO
+*/
