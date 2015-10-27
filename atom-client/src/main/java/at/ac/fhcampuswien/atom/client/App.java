@@ -65,6 +65,7 @@ import at.ac.fhcampuswien.atom.shared.Notifiable;
 import at.ac.fhcampuswien.atom.shared.domain.ClipBoardEntry;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
+import at.ac.fhcampuswien.atom.shared.domain.Message;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -96,6 +97,8 @@ public class App implements EntryPoint {
 		
 		// xapi GWT compiler enhances the class
 		GwtReflect.magicClass(DomainObject.class);
+		GwtReflect.magicClass(Message.class);
+		//ClientTools.magicDomainTree();
 		
 		Logger logger = Logger.getLogger("test");
 		logger.log(Level.WARNING, "test");

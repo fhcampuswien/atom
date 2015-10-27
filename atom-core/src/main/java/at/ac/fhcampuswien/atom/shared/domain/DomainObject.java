@@ -104,6 +104,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
 //@AccessListRoles(accessTypes = AtomConfig.accessReadWrite, value = { "Administrator" }) })
 // orgEinheitenLists = { @AccessListOrgEinheiten(accessType = "accessReadWrite",
 // value = { "Online-Services" }, onlyLeiter = false, onlyHauptrolle = false) }
+//@ReflectionStrategy(annotationRetention = ReflectionStrategy.NONE, magicSupertypes = true )
 public class DomainObject implements Serializable, com.google.gwt.user.client.rpc.IsSerializable {
 
 	@AnalyzerIgnore
