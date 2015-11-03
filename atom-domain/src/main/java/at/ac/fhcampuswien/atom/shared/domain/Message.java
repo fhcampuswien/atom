@@ -21,7 +21,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.AccessListRoles;
 import at.ac.fhcampuswien.atom.shared.annotations.AnalyzerIgnore;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeDisplayName;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributePlacement;
-import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidator;
+import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidators;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNamePlural;
 import at.ac.fhcampuswien.atom.shared.annotations.FileAttribute;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromListGui;
@@ -60,7 +60,7 @@ public class Message extends FeaturedObject {
 	@SliderAttribute(defaultValue = 0, maxValue = 100, minValue = -100, stepSize = 0.1, roundTo = 5)
 	private Double testDoubleField;
 
-	@AttributeValidator(AttributeValidator.email)
+	@AttributeValidators({AttributeValidators.email})
 	private String senderAddress;
 
 	private String typ;
