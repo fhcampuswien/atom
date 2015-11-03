@@ -26,6 +26,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.reflect.client.strategy.ReflectionStrategy;
 import com.google.gwt.user.client.rpc.GwtTransient;
 
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
@@ -104,7 +105,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
 //@AccessListRoles(accessTypes = AtomConfig.accessReadWrite, value = { "Administrator" }) })
 // orgEinheitenLists = { @AccessListOrgEinheiten(accessType = "accessReadWrite",
 // value = { "Online-Services" }, onlyLeiter = false, onlyHauptrolle = false) }
-//@ReflectionStrategy(annotationRetention = ReflectionStrategy.NONE, magicSupertypes = true )
+@ReflectionStrategy(annotationRetention = ReflectionStrategy.NONE, magicSupertypes = true )
 public class DomainObject implements Serializable, com.google.gwt.user.client.rpc.IsSerializable {
 
 	@AnalyzerIgnore
