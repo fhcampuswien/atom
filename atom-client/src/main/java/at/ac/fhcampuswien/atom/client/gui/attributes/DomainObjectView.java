@@ -24,7 +24,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -208,7 +208,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 					public void onSuccess(DomainObjectList result) {
 						if(result == null || result.getTotalSize() <= 0 || result.getDomainObjects() == null || result.getDomainObjects().size() <= 0) {
 							//result is empty, no DomainObjects recieved!
-							AtomTools.log(Log.LOG_LEVEL_INFO, "nichts gefunden", this);
+							AtomTools.log(Level.INFO, "nichts gefunden", this);
 							DomainObjectView.this.showValue();
 						}
 						else if(result.getDomainObjects().size() == 1) {
@@ -223,7 +223,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 					
 					@Override
 					public void onFailure(Throwable caught) {
-						AtomTools.log(Log.LOG_LEVEL_ERROR, "Fehler beim laden des Suchergebnisses vom Server: " + caught, this);
+						AtomTools.log(Level.SEVERE, "Fehler beim laden des Suchergebnisses vom Server: " + caught, this);
 					}
 				});
 			}
@@ -253,7 +253,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 					App.addFrame(owningFrame);
 					DomainObjectView.this.showValue();
 				} else {
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "recieved a list with size != 1 for singleSelction DomainObjectPopup", this);
+					AtomTools.log(Level.SEVERE, "recieved a list with size != 1 for singleSelction DomainObjectPopup", this);
 				}
 			}
 
@@ -320,7 +320,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 	@Override
 	public void goingInvisible() {
 		if (madeDropable) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "unregistering dropController", this);
+			AtomTools.log(Level.FINER, "unregistering dropController", this);
 			App.unregisterDndDropController(domainObjectDropController);
 			madeDropable = false;
 		}
@@ -329,7 +329,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 	@Override
 	public void goingVisible() {
 		if (!madeDropable) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "registering dropController", this);
+			AtomTools.log(Level.FINER, "registering dropController", this);
 			App.registerDndDropController(domainObjectDropController);
 			madeDropable = true;
 		}

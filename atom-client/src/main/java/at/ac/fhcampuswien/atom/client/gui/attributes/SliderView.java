@@ -8,7 +8,7 @@ import at.ac.fhcampuswien.atom.client.App;
 import at.ac.fhcampuswien.atom.client.gui.attributes.components.slider.SliderBar;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.user.client.Window;
 
@@ -60,7 +60,7 @@ public class SliderView extends AttributeView<Double, SliderBar, Double> {
 			value = null;
 		}
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "read value: " + sliderValue + "; stored value: " + value, this);
+		AtomTools.log(Level.FINER, "read value: " + sliderValue + "; stored value: " + value, this);
 		// if(value.equals(Double.NaN))
 		// value = null;
 	}
@@ -110,6 +110,6 @@ public class SliderView extends AttributeView<Double, SliderBar, Double> {
 		// field.setWidth("" + width + "px");
 		field.setWidth("100%");
 		field.redraw();
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "resizing SliderView to " + width, this);
+		AtomTools.log(Level.FINER, "resizing SliderView to " + width, this);
 	}
 }

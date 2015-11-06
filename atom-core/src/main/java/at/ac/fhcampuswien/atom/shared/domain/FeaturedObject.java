@@ -176,7 +176,7 @@ public class FeaturedObject extends DomainObject { // extends
 	// }
 	//
 	// if (deny && (write || read) || write && read) {
-	// AtomTools.log(Log.LOG_LEVEL_ERROR, "inconsistent access rules!", this);
+	// AtomTools.log(Level.SEVERE, "inconsistent access rules!", this);
 	// }
 	// if (write || (!writeAccess && read)) {
 	// return true;

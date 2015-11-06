@@ -17,7 +17,7 @@ import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.resources.client.CssResource;
@@ -85,7 +85,7 @@ public class WelcomeFrame extends Frame {
 			
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 			}
 			
 			@Override

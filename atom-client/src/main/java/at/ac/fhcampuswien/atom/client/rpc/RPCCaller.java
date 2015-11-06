@@ -29,7 +29,7 @@ import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 import at.ac.fhcampuswien.atom.shared.rpc.AtomService;
 import at.ac.fhcampuswien.atom.shared.rpc.AtomServiceAsync;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -117,13 +117,13 @@ public class RPCCaller {
 	public void checkExistingSession(String campusAuthCookie, final Notifiable<String> objectToNotify) {
 		atomRPCAsync.getSessionForCookie(campusAuthCookie, new AsyncCallback<ClientSession>() {
 			public void onFailure(Throwable caught) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "session invalid: " + caught.getMessage(), this);
+				AtomTools.log(Level.WARNING, "session invalid: " + caught.getMessage(), this);
 				objectToNotify.doNotify("session invalid: " + caught.getMessage());
 			}
 
 			public void onSuccess(ClientSession result) {
 				clientSession = result;
-				AtomTools.log(Log.LOG_LEVEL_INFO, "session valid;" + result.getUserFirstName() + " " + result.getUserLastName(), this);
+				AtomTools.log(Level.INFO, "session valid;" + result.getUserFirstName() + " " + result.getUserLastName(), this);
 				objectToNotify.doNotify("session valid;" + result.getUserFirstName() + " " + result.getUserLastName());
 			}
 		});
@@ -132,7 +132,7 @@ public class RPCCaller {
 	public void loginUser(String username, String password, final Notifiable<String> objectToNotify) {
 		atomRPCAsync.getNewSession(username, password, new AsyncCallback<ClientSession>() {
 			public void onFailure(Throwable caught) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "could not login user", this, caught);
+				AtomTools.log(Level.WARNING, "could not login user", this, caught);
 				String failed = "Vom Server gemeldeter Fehler: ";
 				if (caught.getMessage() != null)
 					failed += caught.getMessage();
@@ -154,14 +154,14 @@ public class RPCCaller {
 
 			@Override
 			public void onSuccess(Boolean result) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "logout successful; result: " + result != null ? result.toString() : "", this);
+				AtomTools.log(Level.INFO, "logout successful; result: " + result != null ? result.toString() : "", this);
 				RPCCaller.this.clearEverything();
 				Window.Location.reload();
 			}
 
 			@Override
 			public void onFailure(Throwable caught) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "logout failure; caught: " + caught.getMessage(), this);
+				AtomTools.log(Level.SEVERE, "logout failure; caught: " + caught.getMessage(), this);
 			}
 		});
 	}
@@ -200,7 +200,7 @@ public class RPCCaller {
 							if (caught instanceof AuthenticationException)
 								App.actionLogout();
 							else {
-								AtomTools.log(Log.LOG_LEVEL_FATAL, "getDomainTree failed @Server. " + caught, this);
+								AtomTools.log(Level.SEVERE, "getDomainTree failed @Server. " + caught, this);
 							}
 							for (WaitingFor<DomainClass> waiting : waitingForDomainTree) {
 								waiting.requestFailed(caught.getMessage());
@@ -217,7 +217,7 @@ public class RPCCaller {
 						}
 					});
 				} catch (Throwable t) {
-					AtomTools.log(Log.LOG_LEVEL_FATAL, "getDomainTree failed @Client. " + t, waiting);
+					AtomTools.log(Level.SEVERE, "getDomainTree failed @Client. " + t, waiting);
 				}
 			}
 		} else {
@@ -247,19 +247,19 @@ public class RPCCaller {
 						if (caught instanceof AuthenticationException)
 							App.actionLogout();
 						else
-							AtomTools.log(Log.LOG_LEVEL_ERROR, "getAttributeChoiceList failed on server (" + domainClass.getName()
+							AtomTools.log(Level.SEVERE, "getAttributeChoiceList failed on server (" + domainClass.getName()
 									+ "." + attributeName + "); exception: " + caught.getMessage(), this);
 					}
 
 					@Override
 					public void onSuccess(LinkedHashMap<String, String> result) {
-						AtomTools.log(Log.LOG_LEVEL_TRACE, "getAttributeChoiceList server returned result (" + domainClass.getName()
+						AtomTools.log(Level.FINER, "getAttributeChoiceList server returned result (" + domainClass.getName()
 								+ "." + attributeName + ")", this);
 						getLoadedListBoxChoices().put(domainClass.getName() + "." + attributeName, result);
 						resultHandler.recieve(result);
 					}
 				});
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "getAttributeChoiceList server-call started (" + domainClass.getName() + "."
+		AtomTools.log(Level.FINER, "getAttributeChoiceList server-call started (" + domainClass.getName() + "."
 				+ attributeName + ")", this);
 	}
 
@@ -272,7 +272,7 @@ public class RPCCaller {
 						if (caught instanceof AuthenticationException)
 							App.actionLogout();
 						else
-							AtomTools.log(Log.LOG_LEVEL_FATAL, "searching DomainObjects failed: " + caught, this);
+							AtomTools.log(Level.SEVERE, "searching DomainObjects failed: " + caught, this);
 
 						outerCallback.onFailure(caught);
 					}
@@ -313,7 +313,7 @@ public class RPCCaller {
 				if (caught instanceof AuthenticationException)
 					App.actionLogout();
 				else
-					AtomTools.log(Log.LOG_LEVEL_FATAL, "fetching DomainObject failed: " + caught, this);
+					AtomTools.log(Level.SEVERE, "fetching DomainObject failed: " + caught, this);
 
 				if (waiting != null)
 					waiting.requestFailed(caught.getMessage());
@@ -344,12 +344,12 @@ public class RPCCaller {
 			int fromRow, int pageSize, final boolean secondaryUpdate, final String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated,
 			boolean forceRefresh, final AsyncCallback<DomainObjectList> callback) {
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "RPCCaller.loadListOfDomainObjects - method start", this);
+		AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - method start", this);
 
 		if (!forceRefresh)
 			for (DomainObjectList list : getLoadedLists(classOfList)) {
 				if (list.useable(classOfList.getName(), classOfList, fromRow, pageSize, filters, sorters, searchString, onlyRelated)) {
-					AtomTools.log(Log.LOG_LEVEL_TRACE, "RPCCaller.loadListOfDomainObjects - using old list for new request (=end)",
+					AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - using old list for new request (=end)",
 							this);
 					callback.onSuccess(list);
 					return;
@@ -366,14 +366,14 @@ public class RPCCaller {
 						if (caught instanceof AuthenticationException)
 							App.actionLogout();
 						else
-							AtomTools.log(Log.LOG_LEVEL_ERROR,
+							AtomTools.log(Level.SEVERE,
 									"RPCCaller.loadListOfDomainObjects - fetching DomainObjectList failed: " + caught, this);
 
 						callback.onFailure(caught);
 					}
 
 					public void onSuccess(DomainObjectList result) {
-						AtomTools.log(Log.LOG_LEVEL_TRACE, "RPCCaller.loadListOfDomainObjects - server returned data", this);
+						AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - server returned data", this);
 						// HashSet<DomainObject> changedObjects = new
 						// HashSet<DomainObject>();
 						// processLoadedList(result.getDomainObjects(),
@@ -394,11 +394,11 @@ public class RPCCaller {
 
 						callback.onSuccess(result);
 						// RPCCaller.this.causeOfUpdate = null;
-						AtomTools.log(Log.LOG_LEVEL_TRACE, "RPCCaller.loadListOfDomainObjects - finished distributing data", this);
+						AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - finished distributing data", this);
 					}
 				});
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "RPCCaller.loadListOfDomainObjects - method end", this);
+		AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - method end", this);
 	}
 
 	public void deleteDomainObject(final DomainObject domainObject, final Notifiable<String> notifiable) {
@@ -436,7 +436,7 @@ public class RPCCaller {
 				}
 
 				private void failed(Throwable caught) {
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "DomainObject instance could not be deleted: '" + domainObject + " ("
+					AtomTools.log(Level.SEVERE, "DomainObject instance could not be deleted: '" + domainObject + " ("
 							+ domainObject + ") error: '" + caught + "'", this);
 					if (notifiable != null)
 						notifiable.doNotify("deletion failed");
@@ -447,7 +447,7 @@ public class RPCCaller {
 
 	public void saveDomainObject(final DomainObject domainObject, final WaitingFor<DomainObject> reciever) {
 		if(domainObject.getObjectID() == null) {
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "sending DomainObject without ID to the server --> creating new instance=row", this);
+			AtomTools.log(Level.FINE, "sending DomainObject without ID to the server --> creating new instance=row", this);
 		}
 		atomRPCAsync.saveDomainObject(clientSession.getCookieValue(), domainObject, new AsyncCallback<DomainObject>() {
 			public void onFailure(Throwable caught) {
@@ -468,8 +468,8 @@ public class RPCCaller {
 					//TODO: implement a presentation for validation errors
 					//AtomGUI.getSinglton().deliverError((ValidationError) caught);
 				} else {
-					AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, caught, this);
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "saveDomainObject failed on Server; " + caught.getMessage(), this);
+					AtomTools.logStackTrace(Level.SEVERE, caught, this);
+					AtomTools.log(Level.SEVERE, "saveDomainObject failed on Server; " + caught.getMessage(), this);
 				}
 			}
 

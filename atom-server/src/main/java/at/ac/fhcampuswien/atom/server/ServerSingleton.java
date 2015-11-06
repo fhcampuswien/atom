@@ -52,7 +52,7 @@ import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 public class ServerSingleton {
 
@@ -110,7 +110,7 @@ public class ServerSingleton {
 		
 		//updateStringRepresentationsOnce("at.ac.fhcampuswien.atom.shared.domain.Publikation");
 		
-		AtomTools.log(Log.LOG_LEVEL_INFO, "Atom ServerSingleton Startup Finished - " + AtomTools.getMessages().willkommen_in_app(), this);
+		AtomTools.log(Level.INFO, "Atom ServerSingleton Startup Finished - " + AtomTools.getMessages().willkommen_in_app(), this);
 		
 //		updateStringRepresentationsOnce("at.ac.fhcampuswien.atom.shared.domain.DomainObject");
 //		updateStringRepresentationsOnce("at.ac.fhcampuswien.atom.shared.domain.PortalPerson");
@@ -135,7 +135,7 @@ public class ServerSingleton {
 
 	public DomainObject getDomainObject(ClientSession session, Integer id, String nameOfClass) {
 		if (nameOfClass == null || nameOfClass.length() < 1) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "Selecting DomainObject without any class info - performance problem!!", this);
+			AtomTools.log(Level.WARNING, "Selecting DomainObject without any class info - performance problem!!", this);
 			return getDomainObject(session, id, DomainObject.class);
 		}
 		else
@@ -156,7 +156,7 @@ public class ServerSingleton {
 			try {
 				linkedID = Double.valueOf(clue);
 			} catch (NumberFormatException e) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "doesn't look like this was an objectID (couldn't parse as double; " + clue, this);
+				AtomTools.log(Level.INFO, "doesn't look like this was an objectID (couldn't parse as double; " + clue, this);
 			}
 			if (linkedID != null) {
 				// find instance by id
@@ -174,12 +174,12 @@ public class ServerSingleton {
 			filters.add(new DataFilter("stringRepresentation", clue, "contains", "text"));
 			DomainObjectList list = getListOfDomainObjects(session, classOfObject.getName(), 0, 20, filters, null, null, false, false);
 			if (list.getTotalSize() == 0) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "could not find instance of \"" + classOfObject.getName() + "\" with stringRepresentation like %" + clue
+				AtomTools.log(Level.WARNING, "could not find instance of \"" + classOfObject.getName() + "\" with stringRepresentation like %" + clue
 						+ "%", this);
 			} else if (list.getTotalSize() == 1) {
 				return list.getDomainObjects().get(0);
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "there is more than one instance of \"" + classOfObject.getName() + "\" with stringRepresentation like %"
+				AtomTools.log(Level.WARNING, "there is more than one instance of \"" + classOfObject.getName() + "\" with stringRepresentation like %"
 						+ clue + "%", this);
 				DomainObject match = null;
 				for (DomainObject d : list.getDomainObjects()) {
@@ -187,7 +187,7 @@ public class ServerSingleton {
 						if (match == null) {
 							match = d;
 						} else {
-							AtomTools.log(Log.LOG_LEVEL_WARN, "there is more than one instance of \"" + classOfObject.getName()
+							AtomTools.log(Level.WARNING, "there is more than one instance of \"" + classOfObject.getName()
 									+ "\" with stringRepresentation equals \"" + clue + "\"; for lack of a better idea I will simply take the first one..",
 									this);
 						}
@@ -204,14 +204,14 @@ public class ServerSingleton {
 
 	private DomainObject getDomainObject(ClientSession session, int id, Class<?> classOfObject, EntityManager em) {
 		if(DomainObject.class.equals(classOfObject)) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "Selecting DomainObject without any class info - performance problem!!", this);
+			AtomTools.log(Level.WARNING, "Selecting DomainObject without any class info - performance problem!!", this);
 			Thread.dumpStack();
 		}
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - getting entity from entityManager now", this);
+		AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - getting entity from entityManager now", this);
 		DomainObject result = (DomainObject) em.find(classOfObject, id);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - got entity, preparing for client", this);
+		AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - got entity, preparing for client", this);
 		ServerTools.fillAndDetachInstance(result, em, session, false);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - prepared for client, returning", this);
+		AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - prepared for client, returning", this);
 		return result;
 	}
 
@@ -219,14 +219,14 @@ public class ServerSingleton {
 
 		EntityManager em = null;
 		try {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject - creating entityManager for query", this);
+			AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - creating entityManager for query", this);
 			em = emFactory.makeObject();
 			return getDomainObject(session, id, classOfObject, em);
 		} catch (Exception e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "ServerSingelton.getDomainObject - Exception happened! ", this, e);
+			AtomTools.log(Level.SEVERE, "ServerSingelton.getDomainObject - Exception happened! ", this, e);
 		} finally {
 			ServerTools.closeDBConnection(null, em);
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getDomainObject finally - closed entityManager", this);
+			AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject finally - closed entityManager", this);
 		}
 		return null;
 	}
@@ -247,7 +247,7 @@ public class ServerSingleton {
 			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated) {
 		DomainClass requestedClass = DomainAnalyzer.getDomainClass(nameOfClass);
 		if (requestedClass == null) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "DomainClass with name \"" + nameOfClass + "\" not found! will use DomainObject as class", this);
+			AtomTools.log(Level.WARNING, "DomainClass with name \"" + nameOfClass + "\" not found! will use DomainObject as class", this);
 			requestedClass = DomainAnalyzer.getDomainTree();
 		}
 		return getListOfDomainObject(requestedClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated);
@@ -256,7 +256,7 @@ public class ServerSingleton {
 	private DomainObjectList getListOfDomainObject(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
 			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated) {
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getListOfDomainObject start - user " + session.getUsername() + " requesting list of " + domainClass.getName(), this);
+		AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject start - user " + session.getUsername() + " requesting list of " + domainClass.getName(), this);
 		
 		Set<String> requiredRelations = AtomTools.getRequiredRelations(AtomConfig.accessLinkage, domainClass.getAccessHandler().getAccess(session));
 		Collection<RelationDefinition> reqRelDefs = null;
@@ -308,12 +308,12 @@ public class ServerSingleton {
 			
 			join = ServerTools.removeDuplicateJoins(join);
 
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - getting EntityManager now", this);
+			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - getting EntityManager now", this);
 
 			em = emFactory.makeObject();
 			Query query = null;
 
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - got my EntityManger, selecting count", this);
+			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got my EntityManger, selecting count", this);
 			if (countQuery != null && countQuery.length() > 0)
 				query = em.createNativeQuery(countQuery);
 			else {
@@ -327,7 +327,7 @@ public class ServerSingleton {
 			// totalSize = (Long) query.getSingleResult();
 
 			if (totalSize > 0) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - got count bigger 0, fetching elements now", this);
+				AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got count bigger 0, fetching elements now", this);
 				Method getListQuery = specificClass.getMethod("getListQuery", queryParameterClasses);
 				String listQuery = (String) getListQuery.invoke(null, queryParameters);
 
@@ -352,11 +352,11 @@ public class ServerSingleton {
 				query.setFirstResult(Math.max(0, Math.min(fromRow, totalSize.intValue() - pageSize)));
 
 				List<?> queryResult = query.getResultList();
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "ServerSingelton.getListOfDomainObject - got resultList, processing & preparing for client", this);
+				AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got resultList, processing & preparing for client", this);
 
 				if (queryResult != null) {
 					for (Object obj : queryResult) {
-						AtomTools.log(Log.LOG_LEVEL_INFO, obj.toString(), this);
+						AtomTools.log(Level.INFO, obj.toString(), this);
 						if (obj instanceof Object[]) {
 							for (Object obj1 : ((Object[]) obj)) {
 								if (obj1 instanceof DomainObject) {
@@ -375,20 +375,20 @@ public class ServerSingleton {
 			if (resultList.size() > 0)
 				totalSize -= ServerTools.prepareDOListForClient(resultList, domainClass, em, session);
 
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getListOfDomainObject - returning list to client now", this);
+			AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - returning list to client now", this);
 			return new DomainObjectList(domainClass, resultList, fromRow, pageSize, totalSize == null ? 0 : totalSize.intValue(), filters, sorters,
 					searchString, onlyRelated);
 
 		} catch (NoResultException noResultException) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this);
+			AtomTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this);
 			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
 		} catch (Exception e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "getListOfDomainObject exception happened:" + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "getListOfDomainObject exception happened:" + e.getMessage(), this);
 			e.printStackTrace();
 			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Exception happened, see cause", e);
 		} finally {
 			if (em != null) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
+				AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
 				em.close();
 			}	
 		}
@@ -433,14 +433,14 @@ public class ServerSingleton {
 			for(Object obj : queryResult) {
 				if(obj instanceof DomainObject) {
 					DomainObject dobj = (DomainObject) obj;
-					AtomTools.log(Log.LOG_LEVEL_INFO, "updated stringRepresentation: " + dobj.getStringRepresentation(), this);
+					AtomTools.log(Level.INFO, "updated stringRepresentation: " + dobj.getStringRepresentation(), this);
 					tx.begin();
 					em.merge(dobj);
 					try {
 						tx.commit();
 					}
 					catch(RollbackException e) {
-						AtomTools.log(Log.LOG_LEVEL_ERROR, "could not commit StringRepresentation" , this);
+						AtomTools.log(Level.SEVERE, "could not commit StringRepresentation" , this);
 						em.detach(dobj);
 					}
 				}
@@ -452,8 +452,8 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "ServerTools.updateStringRepresentationsOnce exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, this);
+				AtomTools.log(Level.SEVERE, "ServerTools.updateStringRepresentationsOnce exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
+				AtomTools.logStackTrace(Level.SEVERE, t, this);
 			}
 		} finally {
 			if (em != null)
@@ -521,8 +521,8 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, this);
+				AtomTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
+				AtomTools.logStackTrace(Level.SEVERE, t, this);
 			}
 		} finally {
 			if (em != null)
@@ -591,7 +591,7 @@ public class ServerSingleton {
 			DomainObject fi = pfa.getForInstance();
 			if(fi == null) {
 				if(pfa.getUploader() != null && pfa.getUploader().equals(cs.getUser())) {
-					AtomTools.log(Log.LOG_LEVEL_INFO, "user downloading file that he has uploaded himself - allowing although it has not yet been saved into an object instance", this);
+					AtomTools.log(Level.INFO, "user downloading file that he has uploaded himself - allowing although it has not yet been saved into an object instance", this);
 					return pfa;
 				}
 				else
@@ -648,8 +648,8 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, this);
+				AtomTools.log(Level.SEVERE, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
+				AtomTools.logStackTrace(Level.SEVERE, t, this);
 			}
 		} finally {
 			if (em != null)
@@ -733,7 +733,7 @@ public class ServerSingleton {
 		final String sql = attr.getListBoxSql();
 		if (sql == null || sql.length() < 1) {
 
-			AtomTools.log(Log.LOG_LEVEL_WARN,
+			AtomTools.log(Level.WARNING,
 					"you should not ask server for static ListBoxValues that the client can read out of the DomainTree metadata himself..", this);
 			return attr.getListBoxMapped();
 		} else {
@@ -797,7 +797,7 @@ public class ServerSingleton {
 				}
 			}
 			catch(AuthenticationException e) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "User has no permissions to search Class: " + domainClass.getName(), this, e);
+				AtomTools.log(Level.INFO, "User has no permissions to search Class: " + domainClass.getName(), this, e);
 			}
 		}
 		for (DomainClass subClass : domainClass.getSubClasses()) {

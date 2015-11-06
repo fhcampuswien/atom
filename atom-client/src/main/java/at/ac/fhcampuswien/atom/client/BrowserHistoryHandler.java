@@ -4,11 +4,12 @@
  */
 package at.ac.fhcampuswien.atom.client;
 
-import at.ac.fhcampuswien.atom.shared.AtomTools;
+import java.util.logging.Level;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+
+import at.ac.fhcampuswien.atom.shared.AtomTools;
 
 public class BrowserHistoryHandler implements ValueChangeHandler<String> {
 
@@ -16,7 +17,7 @@ public class BrowserHistoryHandler implements ValueChangeHandler<String> {
 	public void onValueChange(ValueChangeEvent<String> event) {
 		String command = event.getValue();
 		if (!creatingNewState) {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "BrowserHistoryChange happened: value='" + command + "', type='"
+			AtomTools.log(Level.INFO, "BrowserHistoryChange happened: value='" + command + "', type='"
 					+ event.getAssociatedType() + "'", this);
 			App.processCommand(command);
 		}

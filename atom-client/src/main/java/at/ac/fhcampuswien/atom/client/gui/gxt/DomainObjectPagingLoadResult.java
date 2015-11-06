@@ -9,7 +9,7 @@ import java.util.List;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
 
 public class DomainObjectPagingLoadResult implements PagingLoadResult<DomainObject> {
@@ -48,12 +48,12 @@ public class DomainObjectPagingLoadResult implements PagingLoadResult<DomainObje
 
 	@Override
 	public void setOffset(int offset) {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "I don't know what this should be for!", this);
+		AtomTools.log(Level.SEVERE, "I don't know what this should be for!", this);
 	}
 
 	@Override
 	public void setTotalLength(int totalLength) {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "I don't know what this should be for!", this);
+		AtomTools.log(Level.SEVERE, "I don't know what this should be for!", this);
 	}
 
 }

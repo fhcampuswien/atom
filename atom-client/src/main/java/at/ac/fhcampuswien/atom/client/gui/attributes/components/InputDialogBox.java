@@ -8,7 +8,7 @@ import at.ac.fhcampuswien.atom.client.ClientTools;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -47,7 +47,7 @@ public class InputDialogBox extends DialogBox {
 
 		final String oldValueString = (oldValue != null) ? oldValue.toString() : null;
 
-		AtomTools.log(Log.LOG_LEVEL_INFO, "show popup to enter a new entry", this);
+		AtomTools.log(Level.INFO, "show popup to enter a new entry", this);
 		
 		if(dropDownValues == null) {
 			inputBox = new TextBox();
@@ -117,7 +117,7 @@ public class InputDialogBox extends DialogBox {
 		this.center();
 		inputBox.setFocus(true);
 		// dialogBox.setVisible(true);
-		AtomTools.log(Log.LOG_LEVEL_INFO, "popup showed", this);
+		AtomTools.log(Level.INFO, "popup showed", this);
 
 	}
 	

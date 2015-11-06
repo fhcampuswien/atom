@@ -16,7 +16,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -73,7 +73,7 @@ public abstract class SidePanel<E extends DomainObject> extends Composite {
 //			
 //			@Override
 //			public void onScroll(ScrollEvent event) {
-//				AtomTools.log(Log.LOG_LEVEL_TRACE, "AtomSidePanel.onScroll - " + event.toString(), this);
+//				AtomTools.log(Level.FINER, "AtomSidePanel.onScroll - " + event.toString(), this);
 //			}
 //		});
 	}
@@ -154,7 +154,7 @@ public abstract class SidePanel<E extends DomainObject> extends Composite {
 			rebuildElements();
 		}
 		else
-			AtomTools.log(Log.LOG_LEVEL_WARN, "could not remove element, it wasn't present", this);
+			AtomTools.log(Level.WARNING, "could not remove element, it wasn't present", this);
 	}
 
 	protected Object getIdentifierOfNumber(int i) {
@@ -180,7 +180,7 @@ public abstract class SidePanel<E extends DomainObject> extends Composite {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						AtomTools.log(Log.LOG_LEVEL_ERROR, "Could not load SidePanel Entry-List - " + classOfList.getName(), this);
+						AtomTools.log(Level.SEVERE, "Could not load SidePanel Entry-List - " + classOfList.getName(), this);
 					}
 				});
 	}
@@ -193,7 +193,7 @@ public abstract class SidePanel<E extends DomainObject> extends Composite {
 //		int scrollBarWidth = scrollPanel.getElement().getOffsetWidth() - scrollPanel.getElement().getClientWidth();
 //		int scrollBarHeight = scrollPanel.getElement().getOffsetHeight() - scrollPanel.getElement().getClientHeight();
 		
-//		AtomTools.log(Log.LOG_LEVEL_TRACE, 
+//		AtomTools.log(Level.FINER, 
 //				"OffsetWidthE = " + scrollPanel.getElement().getOffsetWidth() + "; ClientWidthE = " + scrollPanel.getElement().getClientWidth() +
 //				"; OffsetWidth = " + scrollPanel.getOffsetWidth()
 //				+ "; MaximumVerticalScrollPosition = " + scrollPanel.getMaximumVerticalScrollPosition()

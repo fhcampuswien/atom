@@ -7,7 +7,7 @@ package at.ac.fhcampuswien.atom.client.gui;
 import at.ac.fhcampuswien.atom.client.App;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -56,7 +56,7 @@ public class LoginInfoPanel extends Composite {
 			App.actionLogout();
 		}
 		else {
-			AtomTools.log(Log.LOG_LEVEL_FATAL, "unknown login state: " + logInOutLabel.getText(), this);
+			AtomTools.log(Level.SEVERE, "unknown login state: " + logInOutLabel.getText(), this);
 		}
 	}
 

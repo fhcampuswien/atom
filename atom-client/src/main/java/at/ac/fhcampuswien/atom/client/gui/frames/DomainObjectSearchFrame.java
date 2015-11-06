@@ -16,7 +16,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.DomainObjectSearchResult;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -86,7 +86,7 @@ public class DomainObjectSearchFrame extends Frame {
 					if (previousSelected != -1) {
 						lists.get(previousSelected).goingInvisible();
 					}
-					AtomTools.log(Log.LOG_LEVEL_TRACE, "search: switch tab, resizeSingle, lastResizeEvent=" + lastResizeEvent, this);
+					AtomTools.log(Level.FINER, "search: switch tab, resizeSingle, lastResizeEvent=" + lastResizeEvent, this);
 					lists.get(selected).goingVisible();
 					lists.get(selected).resizeSingle(lastResizeEvent);
 				}
@@ -108,7 +108,7 @@ public class DomainObjectSearchFrame extends Frame {
 			public void onFailure(Throwable caught) {
 				loadingLabel.setText("Fehler beim laden des Suchergebnisses vom Server: " + caught);
 				loadingLabel.setStyleName(panelStyle.loadingLabel());
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "Fehler beim laden des Suchergebnisses vom Server: " + caught, this);
+				AtomTools.log(Level.SEVERE, "Fehler beim laden des Suchergebnisses vom Server: " + caught, this);
 			}
 
 			public void onSuccess(DomainObjectSearchResult resultHolder) {

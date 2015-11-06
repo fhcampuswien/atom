@@ -12,7 +12,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
@@ -29,7 +29,7 @@ public class DndTextBox extends TextBox implements AtomDNDWidget {
 	// private MouseListenerCollection mouseListeners;
 
 	public DndTextBox() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "ObservantTextBox created", this);
+		AtomTools.log(Level.FINER, "ObservantTextBox created", this);
 		this.sinkEvents(Event.ONDBLCLICK + Event.ONCLICK + Event.ONKEYPRESS);
 		super.setEnabled(true);
 		
@@ -37,7 +37,7 @@ public class DndTextBox extends TextBox implements AtomDNDWidget {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "click!", this);
+				AtomTools.log(Level.INFO, "click!", this);
 			}
 		});
 	}
@@ -52,7 +52,7 @@ public class DndTextBox extends TextBox implements AtomDNDWidget {
 	@Override
 	public void onBrowserEvent(Event event) {
 		if (DOM.eventGetType(event) == Event.ONDBLCLICK) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "doubleclick: '" + event + "'",
+			AtomTools.log(Level.FINER, "doubleclick: '" + event + "'",
 					this);
 			if (representedObjects.size() > 0)
 				App.openDetailView(representedObjects.get(0),

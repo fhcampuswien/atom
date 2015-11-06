@@ -20,7 +20,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.SortDir;
@@ -80,7 +80,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 
 	@Override
 	public void load(FilterPagingLoadConfig loadConfig, final AsyncCallback<PagingLoadResult<DomainObject>> callback) {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget.MyRpcProxy.load starting", this);
+		AtomTools.log(Level.FINER, "DomainObjectListWidget.MyRpcProxy.load starting", this);
 
 		final FilterPagingLoadConfig config = loadConfig;
 
@@ -160,18 +160,18 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 
 			/*********************** load DomainObjects ***********************/
 
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget.MyRpcProxy.load calling server for data", this);
+			AtomTools.log(Level.FINER, "DomainObjectListWidget.MyRpcProxy.load calling server for data", this);
 			RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, dataFilters, dataSorters, config.getOffset(), config.getLimit(), false,
 					searchString, onlyScanStringRepresentation, onlyRelated, settingsProvider.getForceRefresh(), new AsyncCallback<DomainObjectList>() {
 
 						public void onFailure(Throwable caught) {
-							AtomTools.log(Log.LOG_LEVEL_ERROR, "DomainObjectListWidget.MyRpcProxy.load could not load data from server", this);
+							AtomTools.log(Level.SEVERE, "DomainObjectListWidget.MyRpcProxy.load could not load data from server", this);
 //							grid.mask(caught.getMessage());
 							// grid.set
 						}
 
 						public void onSuccess(DomainObjectList result) {
-							AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget.MyRpcProxy.load server returned data", this);
+							AtomTools.log(Level.FINER, "DomainObjectListWidget.MyRpcProxy.load server returned data", this);
 							settingsProvider.setTotalSize(result.getTotalSize());
 							lastUsedList = result;
 							callback.onSuccess(new DomainObjectPagingLoadResult(result.getDomainObjects(), result.getFromRow(), settingsProvider.getTotalSize()));
@@ -180,7 +180,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 //			toolBar.enableEvents(true);
 		}
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget.MyRpcProxy.load finished", this);
+		AtomTools.log(Level.FINER, "DomainObjectListWidget.MyRpcProxy.load finished", this);
 	}
 
 	protected void openObject(int number) {

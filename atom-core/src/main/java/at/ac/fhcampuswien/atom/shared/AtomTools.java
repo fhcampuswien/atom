@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.lightoze.gwt.i18n.client.LocaleFactory;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidators;
@@ -21,13 +23,13 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.allen_sauer.gwt.log.shared.LogRecord;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.Window;
 
 public class AtomTools {
 
+	static Logger logger = Logger.getLogger("atom");
+	
 	private AtomTools() {
 	}
 
@@ -65,7 +67,7 @@ public class AtomTools {
 		// double roundedExt = Math.round(d*ext);
 		// double rounded = roundedExt / ext;
 		//
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "rounding " + d + " to " +
+		// AtomTools.log(Level.FINER, "rounding " + d + " to " +
 		// rounded, null);
 		// return rounded;
 	}
@@ -127,11 +129,11 @@ public class AtomTools {
 		}
 	}-*/;
 
-	public static void log(int logLevel, String message, Object caller) {
+	public static void log(Level logLevel, String message, Object caller) {
 		log(logLevel, message, caller, null);
 	}
 	
-	public static void log(int logLevel, String message, Object caller, Throwable t) {
+	public static void log(Level logLevel, String message, Object caller, Throwable t) {
 
 		String callerString = "static";
 		if (caller != null){
@@ -151,7 +153,8 @@ public class AtomTools {
 		}
 
 		// GWT.log(logString);
-		Log.log(new LogRecord("gwt-log", logLevel, logString, t));
+		logger.log(logLevel, logString, t);
+		//Log.log(new LogRecord("gwt-log", logLevel, logString, t));
 
 		// } else {
 		// System.out.println("[" + logLevel + "] " + logString);
@@ -173,10 +176,10 @@ public class AtomTools {
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 
-	public static void logStackTrace(int logLevel, Throwable t, Object caller) {
+	public static void logStackTrace(Level logLevel, Throwable t, Object caller) {
 		StackTraceElement[] stackTraceElementArray = t.getStackTrace();
 		for (StackTraceElement element : stackTraceElementArray) {
-			log(logLevel, element.toString(), caller);
+			log(logLevel, element.toString(), caller);			
 		}
 	}
 
@@ -273,7 +276,7 @@ public class AtomTools {
 //			accessTypes = requestedClass.getAccess(session);
 //
 //		if (checkPermissionsMatch(accessType, accessTypes, session, requestedClass, requestedObject)) {
-//			AtomTools.log(Log.LOG_LEVEL_INFO,
+//			AtomTools.log(Level.INFO,
 //					"User '" + session.getUsername() + "' is permitted access to class '" + requestedClass.getName() + "' instance '"
 //							+ (requestedObject != null ? requestedObject.getStringRepresentation() : "null") + "'; permission='"
 //							+ accessType + "'", null);
@@ -332,7 +335,7 @@ public class AtomTools {
 			checkPermissionMatch(accessType, accessTypes);
 			return true;
 		} catch (AuthenticationException e) {
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, e.getMessage(), null);
+			AtomTools.log(Level.FINER, e.getMessage(), null);
 		}
 		return false;
 	}
@@ -344,7 +347,7 @@ public class AtomTools {
 	// checkPermissions(session, accessType, requestedClass, requestedObject);
 	// return true;
 	// } catch (AuthenticationException e) {
-	// AtomTools.log(Log.LOG_LEVEL_WARN, e.getMessage(), null);
+	// AtomTools.log(Level.WARNING, e.getMessage(), null);
 	// }
 	// return false;
 	// }
@@ -533,7 +536,7 @@ public class AtomTools {
 				value += 71 * f.hashCode();
 			}
 		
-//		AtomTools.log(Log.LOG_LEVEL_INFO, "return hashCode = " + value + " for frame " + this.shortTitle, this);
+//		AtomTools.log(Level.INFO, "return hashCode = " + value + " for frame " + this.shortTitle, this);
 		return value;
 	}
 	

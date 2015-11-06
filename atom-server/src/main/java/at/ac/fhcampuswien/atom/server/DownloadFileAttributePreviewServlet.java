@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
@@ -119,7 +119,7 @@ public class DownloadFileAttributePreviewServlet extends HttpServlet {
 			return true;
 		}
 		catch(Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "I guess this file was no image of a format that java ImageIO knows of, Exception: " + t.getMessage(), this);
+			AtomTools.log(Level.FINE, "I guess this file was no image of a format that java ImageIO knows of, Exception: " + t.getMessage(), this);
 		}
     	return false;
     }
@@ -140,7 +140,7 @@ public class DownloadFileAttributePreviewServlet extends HttpServlet {
 			return true;
 
 		} catch (Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "ImageMagick failed creating thumbnail, Exception: " + t.getMessage(), this);
+			AtomTools.log(Level.FINE, "ImageMagick failed creating thumbnail, Exception: " + t.getMessage(), this);
 		}
 		
 		return false;

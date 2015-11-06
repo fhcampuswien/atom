@@ -20,7 +20,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -43,38 +43,38 @@ public class ClientTools {
 
 	public static Object getAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject) {
 		
-//		AtomTools.log(Log.LOG_LEVEL_TRACE,
+//		AtomTools.log(Level.FINER,
 //				"AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", " + domainObject.getStringRepresentation()
 //						+ ") started", null);
 
 		try {
 			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
 			Object returnValue = classType.invoke(domainObject, "get" + AtomTools.upperFirstChar(domainClassAttribute.getName()), (Object[]) null);
-			// AtomTools.log(Log.LOG_LEVEL_TRACE,
+			// AtomTools.log(Level.FINER,
 			// "AtomTools.getAttributeValue successful", null);
 //			String stringValue;
 //			if (returnValue != null)
 //				stringValue = returnValue.toString();
 //			else
 //				stringValue = "null";
-//			AtomTools.log(Log.LOG_LEVEL_TRACE, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
+//			AtomTools.log(Level.FINER, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
 //					+ domainObject.getStringRepresentation() + ") found value '" + stringValue + "', returning", null);
 			return returnValue;
 		} catch (NotFoundException e) {
 			if (domainClass.getSuperClass() != null) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
+				AtomTools.log(Level.FINER, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
 						+ domainObject.getStringRepresentation() + ") did not find getMethod in this class, will try superclass", null);
 				return getAttributeValue(domainClass.getSuperClass(), domainClassAttribute, domainObject);
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
+				AtomTools.log(Level.SEVERE, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
 						+ domainObject.getStringRepresentation() + ") could not find method 'get" + AtomTools.upperFirstChar(domainClassAttribute.getName())
 						+ "' anywhere in the domaintree on the client-side!", null);
 			}
 		} catch (Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "AtomTools.getAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
+			AtomTools.log(Level.SEVERE, "AtomTools.getAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
 			StackTraceElement[] st = t.getStackTrace();
 			for (StackTraceElement e : st) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "AtomTools.getAttributeValue - stacktrace: " + e.toString(), null);
+				AtomTools.log(Level.SEVERE, "AtomTools.getAttributeValue - stacktrace: " + e.toString(), null);
 			}
 			// t.printStackTrace();
 			// throw t;
@@ -84,7 +84,7 @@ public class ClientTools {
 
 	public static void setAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject, Object value) {
 		// AtomTools.log(
-		// Log.LOG_LEVEL_TRACE,
+		// Level.FINER,
 		// "setAttributeValue(" + domainClass.getName() + ", "
 		// + domainClassAttribute.getName() + ", "
 		// + domainObject.getStringRepresentation() + ")", null);
@@ -100,20 +100,20 @@ public class ClientTools {
 			if (domainClass.getSuperClass() != null) {
 				setAttributeValue(domainClass.getSuperClass(), domainClassAttribute, domainObject, value);
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "could not find method 'set" + AtomTools.upperFirstChar(domainClassAttribute.getName())
+				AtomTools.log(Level.SEVERE, "could not find method 'set" + AtomTools.upperFirstChar(domainClassAttribute.getName())
 						+ "' anywhere in the domaintree on the client-side!", null);
 			}
 		} catch (Throwable t) {
 			if(t instanceof ValidationError) {
 				throw (ValidationError) t;
 			}
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "AtomTools.setAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
-			AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, null);
+			AtomTools.log(Level.SEVERE, "AtomTools.setAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
+			AtomTools.logStackTrace(Level.SEVERE, t, null);
 		}
 
 		// classType.invoke(domainObject, "set" +
 		// domainClassAttribute.getName(), new Object[] { value });
-		// AtomTools.log(Log.LOG_LEVEL_DEBUG,
+		// AtomTools.log(Level.FINE,
 		// "END-OF AtomTools.setAttributeValue", null);
 	}
 
@@ -153,7 +153,7 @@ public class ClientTools {
 	}
 
 	public static DomainObject createInstance(DomainClass domainClass) {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "createInstance(" + domainClass.getName() + ")", null);
+		AtomTools.log(Level.FINE, "createInstance(" + domainClass.getName() + ")", null);
 		ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
 		String[] params = new String[] {};
 		return (DomainObject) classType.findConstructor(params).newInstance();
@@ -204,7 +204,7 @@ public class ClientTools {
 			
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "could not load domaintree! -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "could not load domaintree! -> " + reason, this);
 			}
 			
 			@Override
@@ -231,7 +231,7 @@ public class ClientTools {
 		char code = event.getCharCode(); 
 		NativeEvent nativeEvent = event.getNativeEvent();
 		int keyCode = nativeEvent.getKeyCode();
-//		AtomTools.log(Log.LOG_LEVEL_TRACE, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
+//		AtomTools.log(Level.FINER, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
 		//if(event.getCharCode() == KeyCodes.KEY_ENTER) {
 		
 		if(code == '\n' || code == '\r' || (unicode == 0 && keyCode == 13)) {

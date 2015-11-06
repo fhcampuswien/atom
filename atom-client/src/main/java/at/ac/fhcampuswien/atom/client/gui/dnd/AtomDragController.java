@@ -10,7 +10,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -39,7 +39,7 @@ public class AtomDragController extends PickupDragController {
 
 		int proxyPaddingLeft = Math.max(diffX - 50, 0);
 		int proxyPaddingTop = Math.max(diffY - 5, 0);
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "settingProxyPaddingLeft='" + proxyPaddingLeft + "'", this);
+		AtomTools.log(Level.FINE, "settingProxyPaddingLeft='" + proxyPaddingLeft + "'", this);
 		proxyStyle.setPaddingLeft(proxyPaddingLeft, Unit.PX);
 		proxyStyle.setPaddingTop(proxyPaddingTop, Unit.PX);
 		return proxy;
@@ -63,7 +63,7 @@ public class AtomDragController extends PickupDragController {
 	
 	@Override
 	public void dragEnd() {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "dragEnd called", this);
+		AtomTools.log(Level.FINE, "dragEnd called", this);
 //		enableTextSelection();
 		App.dragEnd();
 		super.dragEnd();

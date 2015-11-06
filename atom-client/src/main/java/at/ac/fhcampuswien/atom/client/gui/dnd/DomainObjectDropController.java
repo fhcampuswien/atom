@@ -12,7 +12,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbstractDropController;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DomainObjectDropController extends AbstractDropController {
@@ -34,13 +34,13 @@ public class DomainObjectDropController extends AbstractDropController {
 	@Override
 	public void onDrop(DragContext context) {
 		super.onDrop(context);
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "onDrop called (should have been canceled to preserve orginal widget!)", this);
+		AtomTools.log(Level.SEVERE, "onDrop called (should have been canceled to preserve orginal widget!)", this);
 	}
 
 	@Override
 	public void onEnter(DragContext context) {
 		super.onEnter(context);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "onEnter called", this);
+		AtomTools.log(Level.FINER, "onEnter called", this);
 		for (Widget widget : context.selectedWidgets) {
 		    List<DomainObject> objects = ((AtomDNDWidget) widget).getRepresentedDomainObjects();
 		    for(DomainObject object : objects) {
@@ -52,14 +52,14 @@ public class DomainObjectDropController extends AbstractDropController {
 	@Override
 	public void onLeave(DragContext context) {
 		super.onLeave(context);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "onLeave called", this);
+		AtomTools.log(Level.FINER, "onLeave called", this);
 		dropHandler.dropperLeft();
 	}
 
 	@Override
 	public void onPreviewDrop(DragContext context) throws VetoDragException {
 		super.onPreviewDrop(context);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "onPreviewDrop called", this);
+		AtomTools.log(Level.FINER, "onPreviewDrop called", this);
 		for (Widget widget : context.selectedWidgets) {
 		    List<DomainObject> objects = ((AtomDNDWidget) widget).getRepresentedDomainObjects();
 		    for(DomainObject object : objects) {

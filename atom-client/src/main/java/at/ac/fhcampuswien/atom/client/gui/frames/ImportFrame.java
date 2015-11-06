@@ -9,7 +9,7 @@ import at.ac.fhcampuswien.atom.shared.AtomConfig.FrameType;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -80,7 +80,7 @@ public class ImportFrame extends Frame {
     @UiHandler("uploadButton")
     void onClick_loginButton(ClickEvent event) {
 	formPanel.submit();
-	AtomTools.log(Log.LOG_LEVEL_INFO, "pressed upload import file button - " + fileUpload.getFilename(), this);
+	AtomTools.log(Level.INFO, "pressed upload import file button - " + fileUpload.getFilename(), this);
     }
 
     // public String getUploadFilePath() {

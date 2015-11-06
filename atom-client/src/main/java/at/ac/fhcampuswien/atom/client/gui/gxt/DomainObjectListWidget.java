@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -118,7 +118,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 	public DomainObjectListWidget(DomainClass theRepresentedClass, DomainObjectList preloadedList, String searchString, boolean onlyScanStringRepresentation,
 			DataFilter[] defaultFilters, boolean onlyRelated, boolean insideTab, ActionMode mode, Frame owner) {
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget.Constructor started", this);
+		AtomTools.log(Level.FINER, "DomainObjectListWidget.Constructor started", this);
 
 		representedSearchString = searchString;
 		this.defaultFilters = defaultFilters;
@@ -194,7 +194,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 		} else if (ActionMode.MULTI_SELECT.equals(selectedMode) || ActionMode.DEFAULT_OPEN.equals(selectedMode)) {
 			cbSelectionModel.setSelectionMode(SelectionMode.MULTI);
 		} else {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown DomainObjectListWidget.ActionMode!", this);
+			AtomTools.log(Level.SEVERE, "unknown DomainObjectListWidget.ActionMode!", this);
 		}
 
 		ColumnModel<DomainObject> cm = new ColumnModel<DomainObject>(getColumnConfigs());
@@ -239,7 +239,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 		// @Override
 		// protected Object newLoadConfig() {
 		// BasePagingLoadConfig config = new BaseFilterPagingLoadConfig();
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "creating LoadConfig; pageSize=" +
+		// AtomTools.log(Level.FINER, "creating LoadConfig; pageSize=" +
 		// pageSize + "; newPageSize=" + newPageSize, this);
 		// pageSize = newPageSize;
 		// config.setLimit(pageSize);
@@ -307,7 +307,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 			}
 		}
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget.Constructor finished", this);
+		AtomTools.log(Level.FINER, "DomainObjectListWidget.Constructor finished", this);
 	}
 
 	private List<ColumnConfig<DomainObject, ?>> getColumnConfigs() {
@@ -407,7 +407,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 					gridFilters.addFilter(filter);
 				} else {
 					if (!"java.lang.String".equals(attributeType))
-						AtomTools.log(Log.LOG_LEVEL_WARN, "attributeType nicht erkannt: '" + attributeType
+						AtomTools.log(Level.WARNING, "attributeType nicht erkannt: '" + attributeType
 								+ "' --> verwende toString()", this);
 
 					DomainObjectValueProvider<String> valueProvider = new DomainObjectValueProvider<String>(representedClass,
@@ -428,7 +428,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 								if(item == null) return null;
 								
 //								if(msSeperator != null && !"".equals(msSeperator) && item.contains(msSeperator)) {
-//									AtomTools.log(Log.LOG_LEVEL_WARN, "this has not yet been implemented", this);
+//									AtomTools.log(Level.WARNING, "this has not yet been implemented", this);
 //									String[] parts = item.split(msSeperator);
 //									String ret = null;
 //									for(String part : parts) {
@@ -505,7 +505,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 
 		@Override
 		public void run() {
-			// AtomTools.log(Log.LOG_LEVEL_TRACE,
+			// AtomTools.log(Level.FINER,
 			// "DomainObjectListWidget.LoadTimer - started - loading data; pageSize="
 			// + pageSize
 			// + "; newPageSize=" + newPageSize + "; totalSize=" + totalSize,
@@ -533,7 +533,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 			}
 			
 			if (contentPanel != null) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "gxt table bugfix: set real size here in the delayed load timer", this);
+				AtomTools.log(Level.FINER, "gxt table bugfix: set real size here in the delayed load timer", this);
 				contentPanel.setPixelSize(currentWidth, currentHeight);
 			}
 			
@@ -559,7 +559,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 			// if (contentPanel != null)
 			// contentPanel.setSize(lastWidth, lastHeight);
 			// this.schedule(1000);
-			// AtomTools.log(Log.LOG_LEVEL_TRACE,
+			// AtomTools.log(Level.FINER,
 			// "DomainObjectListWidget.LoadTimer - finished method - loading data; pageSize="
 			// + pageSize + "; newPageSize=" + newPageSize + "; totalSize=" +
 			// totalSize, this);
@@ -600,13 +600,13 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 			newHeight = windowHeight;
 		}
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "resizing to Width=" + newWidth + "; newHeight=" + newHeight + "(w" + subtractedWidth
+		AtomTools.log(Level.FINER, "resizing to Width=" + newWidth + "; newHeight=" + newHeight + "(w" + subtractedWidth
 				+ ", h" + subtractedHeight + "; wt" + subtractedWidthForTabs + ", ht" + subtractedHeightForTabs + "; " + firstResize
 				+ ")", this);
 
 		if (contentPanel != null) {
 			//gxt table bugfix: first set size one pixel smaller, then in the delayed timer run set real size
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "gxt table bugfix: first set size one pixel smaller", this);
+			AtomTools.log(Level.FINER, "gxt table bugfix: first set size one pixel smaller", this);
 			contentPanel.setPixelSize(newWidth-(timeOut<2?1:0), newHeight);
 		}
 
@@ -614,14 +614,14 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 		int heightForLines = newHeight - (32 + 22);
 		newPageSize = (int) Math.floor(heightForLines / 22);
 
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "setting newPageSize=" +
+		// AtomTools.log(Level.FINER, "setting newPageSize=" +
 		// newPageSize, this);
 
 		currentHeight = newHeight;
 		currentWidth = newWidth;
 
 		if (toolBar != null) {
-			// AtomTools.log(Log.LOG_LEVEL_TRACE,
+			// AtomTools.log(Level.FINER,
 			// "canceling and rescheduling loadTimer", this);
 			loadTimer.cancel();
 			loadTimer.schedule(timeOut);
@@ -654,7 +654,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 	}
 
 	public Widget getDndProxy(int x, int y) {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListWidget getDndProxy", this);
+		AtomTools.log(Level.FINER, "DomainObjectListWidget getDndProxy", this);
 		return new Label(AtomTools.domainObjectsString(getRepresentedDomainObjects(), "nichts ausgewählt"));
 	}
 

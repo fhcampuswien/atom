@@ -10,7 +10,7 @@ import java.util.Set;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 
@@ -40,10 +40,10 @@ public class RichTextArea extends com.google.gwt.user.client.ui.RichTextArea {
 			String eventType = event.getType();
 			
 //			if(!"mousemove".equals(eventType))
-//				AtomTools.log(Log.LOG_LEVEL_TRACE, "RichTextArea - toString=[" + event.toString() + "], type=[" + eventType + "]", this);
+//				AtomTools.log(Level.FINER, "RichTextArea - toString=[" + event.toString() + "], type=[" + eventType + "]", this);
 //			
 //			if(eventType.contains("key"))
-//				AtomTools.log(Log.LOG_LEVEL_TRACE, "RichTextArea - key event key=[" + event.getKeyCode() + "]", this);
+//				AtomTools.log(Level.FINER, "RichTextArea - key event key=[" + event.getKeyCode() + "]", this);
 			
 			if(keyboardEvents.contains(eventType)) {
 				//  	arrow key navigation; 											ctrl + c --> copying content, allow this!
@@ -55,13 +55,13 @@ public class RichTextArea extends com.google.gwt.user.client.ui.RichTextArea {
 					return;
 				}
 				else
-					AtomTools.log(Log.LOG_LEVEL_INFO, "keycode = " + event.getKeyCode(), this);
+					AtomTools.log(Level.INFO, "keycode = " + event.getKeyCode(), this);
 			}
 			
 			if(!harmlessEvents.contains(eventType))
 				event.preventDefault();
 			else if(!"mousemove".equals(eventType)) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "scheduling restoreValue, caused by eventtype: " + eventType, this);
+				AtomTools.log(Level.FINER, "scheduling restoreValue, caused by eventtype: " + eventType, this);
 				restoreValueTimer.schedule(30);
 			}
 		}
@@ -74,10 +74,10 @@ public class RichTextArea extends com.google.gwt.user.client.ui.RichTextArea {
 			String currentValue = RichTextArea.this.getHTML();
 			if(valueWhenDisabled != null && (!valueWhenDisabled.equals(currentValue))) {
 				RichTextArea.this.setHTML(valueWhenDisabled);
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "restoring RichtTextArea value to: " + valueWhenDisabled, this);
+				AtomTools.log(Level.FINER, "restoring RichtTextArea value to: " + valueWhenDisabled, this);
 			}
 			else {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "RichtTextArea value did not change, do nothing " + currentValue, this);
+				AtomTools.log(Level.FINER, "RichtTextArea value did not change, do nothing " + currentValue, this);
 			}
 				
 			

@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -104,7 +104,7 @@ public class BooleanView extends AttributeView<Boolean, BooleanView, Boolean> {
 		else if (nullButton.getValue())
 			value = null;
 		else
-			AtomTools.log(Log.LOG_LEVEL_WARN, "none of the 3 booleanView options (true, false, null) is selected! attribute:" + attributeName, this);
+			AtomTools.log(Level.WARNING, "none of the 3 booleanView options (true, false, null) is selected! attribute:" + attributeName, this);
 	}
 
 }

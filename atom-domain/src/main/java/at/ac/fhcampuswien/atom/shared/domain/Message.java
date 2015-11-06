@@ -13,7 +13,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
@@ -128,7 +128,7 @@ public class Message extends FeaturedObject {
 				}
 			}
 		} catch (Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "failed to go through oldPreviousMessages - probably not loaded (lazy loading) and session closed.", this);
+			AtomTools.log(Level.FINE, "failed to go through oldPreviousMessages - probably not loaded (lazy loading) and session closed.", this);
 		}
 		this.previousMessages = previousMessages;
 		

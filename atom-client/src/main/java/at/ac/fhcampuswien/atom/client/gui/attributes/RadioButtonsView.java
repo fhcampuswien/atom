@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -80,7 +80,7 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 			
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxChoices failed -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "getListBoxChoices failed -> " + reason, this);
 			}
 			
 			@Override
@@ -141,7 +141,7 @@ public class RadioButtonsView extends AttributeView<String, RadioButtonsView, Bo
 			}
 		}
 		else {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown RadioButtons ViewType = " + viewType.toString(), this);
+			AtomTools.log(Level.SEVERE, "unknown RadioButtons ViewType = " + viewType.toString(), this);
 		}
 		
 		showValue();

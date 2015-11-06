@@ -16,7 +16,7 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -140,60 +140,60 @@ public class Frame extends Composite {
 	
 	public FrameType getFrameType() {
 		if(frameType == null)
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "FrameType must never be null!", this);
+			AtomTools.log(Level.SEVERE, "FrameType must never be null!", this);
 		return frameType;
 	}
 	
 	public void setFrameLabel(SidePanelLabel<FrameVisit> sidePanelLabel) {
 //		if(this.frameLabel != null)
-//			AtomTools.log(Log.LOG_LEVEL_ERROR, "Someone tried to call setFrameLabel at a point where a FrameLabel was already present!", this);
+//			AtomTools.log(Level.SEVERE, "Someone tried to call setFrameLabel at a point where a FrameLabel was already present!", this);
 //		else
 			this.frameLabel = sidePanelLabel;
 	}
 
 	public void actionSave() {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "A generic Frame cannot save!", this);
+		AtomTools.log(Level.SEVERE, "A generic Frame cannot save!", this);
 	}
 	
 	public void actionEdit() {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "A generic Frame cannot edit!", this);
+		AtomTools.log(Level.SEVERE, "A generic Frame cannot edit!", this);
 	}
 	
 	public void actionDelete() {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "A generic Frame cannot delete!", this);
+		AtomTools.log(Level.SEVERE, "A generic Frame cannot delete!", this);
 	}
 	
 	public void actionCancel() {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "A generic Frame cannot cancel!", this);
+		AtomTools.log(Level.SEVERE, "A generic Frame cannot cancel!", this);
 	}
 	
 	public void actionFilter() {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "A generic Frame cannot filter!", this);
+		AtomTools.log(Level.SEVERE, "A generic Frame cannot filter!", this);
 	}
 
 	public void actionObjectDelivered(DomainObject instance) {
-		AtomTools.log(Log.LOG_LEVEL_WARN, "A generic Frame does not process deliveries of instances of its type", this);
+		AtomTools.log(Level.WARNING, "A generic Frame does not process deliveries of instances of its type", this);
 	}
 
 	public void actionNewInfoOnly() {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "this frame does not process actionNewInfoOnly events", this);
+		AtomTools.log(Level.FINE, "this frame does not process actionNewInfoOnly events", this);
 	}
 
 	public boolean goingInvisible() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "Frame '" + longTitle + "' going invisible", this);
+		AtomTools.log(Level.FINER, "Frame '" + longTitle + "' going invisible", this);
 		return true;
 	}
 
 	public void goingVisible() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "Frame '" + longTitle + "' going visible", this);
+		AtomTools.log(Level.FINER, "Frame '" + longTitle + "' going visible", this);
 	}
 
 	public void resize(ResizeEvent event) {
-	    AtomTools.log(Log.LOG_LEVEL_DEBUG, "this frame does not process resize events.", this);
+	    AtomTools.log(Level.FINE, "this frame does not process resize events.", this);
 	}
 
 	public void deliverError(ValidationError ve) {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "Frame.deliverError using generic implementation", this);
+		AtomTools.log(Level.FINE, "Frame.deliverError using generic implementation", this);
 		
 		final PopupPanel popupPanel = new PopupPanel(false);
 		popupPanel.getElement().getStyle().setZIndex(1000);

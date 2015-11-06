@@ -27,7 +27,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -50,7 +50,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 			else if (representedType.contains("List"))
 				value = new ArrayList<DomainObject>();
 			else {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "using ArrayList for unknown Collection type: " + representedType, this);
+				AtomTools.log(Level.WARNING, "using ArrayList for unknown Collection type: " + representedType, this);
 				value = new ArrayList<DomainObject>();
 			}
 		}
@@ -66,7 +66,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 		private String previousColor = ClientConfig.colorDragReady;
 
 		public boolean interestedIn(DomainObject domainObject) {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "ListOfDomainObjectsView.MyDropHandler.interestedIn", this);
+			AtomTools.log(Level.INFO, "ListOfDomainObjectsView.MyDropHandler.interestedIn", this);
 			previousColor = listBox.getListBoxWidget().getElement().getStyle().getBackgroundColor();
 			if (!readOnly
 					&& domainObject != null
@@ -167,7 +167,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 		// TODO best would be if the gxt table understands the filters and shows it in the GUI accordingly..
 
 		if(search) {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "show popup to enter a new entry", this);
+			AtomTools.log(Level.INFO, "show popup to enter a new entry", this);
 			
 			ClientTools.getFilterConfigFromUser(AtomTools.getListedType(ListOfDomainObjectsView.this.representedType), true, new WaitingFor<Collection<DataFilter>>() {
 				
@@ -208,7 +208,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 						@Override
 						public void onSuccess(DomainObjectList result) {
 							if(result == null || result.getDomainObjects() == null || result.getDomainObjects().size() <= 0) {
-								AtomTools.log(Log.LOG_LEVEL_INFO, "nichts gefunden", this);
+								AtomTools.log(Level.INFO, "nichts gefunden", this);
 								ListOfDomainObjectsView.this.showValue();
 							}
 							else if(result.getDomainObjects().size() < result.getTotalSize() || (showResultAsList && result.getTotalSize() > 1)) {
@@ -223,7 +223,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 						
 						@Override
 						public void onFailure(Throwable caught) {
-							AtomTools.log(Log.LOG_LEVEL_ERROR, "Fehler beim laden der Liste vom Server: " + caught, this);
+							AtomTools.log(Level.SEVERE, "Fehler beim laden der Liste vom Server: " + caught, this);
 						}
 					});
 				}
@@ -233,7 +233,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 					// don't care;
 				}
 			});
-			AtomTools.log(Log.LOG_LEVEL_INFO, "popup showed", this);
+			AtomTools.log(Level.INFO, "popup showed", this);
 		}
 		else {
 			getObjectsFromSelectorFrame(null, null, true);
@@ -272,7 +272,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 			// if
 			// (!ClientConfig.getBrowserType().toLowerCase().contains("chrom"))
 			App.unRegisterDndWidget(listBox);
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "ListOfDomainObjects - goingInvisible - madeNotDraggable", this);
+			AtomTools.log(Level.FINER, "ListOfDomainObjects - goingInvisible - madeNotDraggable", this);
 			madeDraggable = false;
 		}
 	}
@@ -284,7 +284,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 			// if
 			// (!ClientConfig.getBrowserType().toLowerCase().contains("chrom"))
 			App.registerDndWidget(listBox);
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "ListOfDomainObjects - goingVisible - madeDraggable", this);
+			AtomTools.log(Level.FINER, "ListOfDomainObjects - goingVisible - madeDraggable", this);
 			madeDraggable = true;
 		}
 		showValue();

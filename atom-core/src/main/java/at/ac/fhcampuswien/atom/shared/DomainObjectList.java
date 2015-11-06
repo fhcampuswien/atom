@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
-
-import com.allen_sauer.gwt.log.client.Log;
 
 public class DomainObjectList implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
 
@@ -43,7 +42,7 @@ public class DomainObjectList implements java.io.Serializable, com.google.gwt.us
 		this.totalSize = totalSize;
 		creationDate = new Date();
 		if (totalSize == 0) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "DomainObjectList.totalSize = 0", this);
+			AtomTools.log(Level.WARNING, "DomainObjectList.totalSize = 0", this);
 		}
 	}
 
@@ -55,7 +54,7 @@ public class DomainObjectList implements java.io.Serializable, com.google.gwt.us
 	private DomainObjectList(DomainClass theDomainClass, List<DomainObject> objects, int totalSize) {
 		this(objects, totalSize);
 		domainClass = theDomainClass;
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectList - DomainClass given: " + domainClass.toString(), this);
+		AtomTools.log(Level.FINER, "DomainObjectList - DomainClass given: " + domainClass.toString(), this);
 		domainClassName = domainClass.getName();
 	}
 
@@ -72,7 +71,7 @@ public class DomainObjectList implements java.io.Serializable, com.google.gwt.us
 	}
 
 	public DomainClass getDomainClass() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectList - DomainClass==null -> " + (domainClass == null), this);
+		AtomTools.log(Level.FINER, "DomainObjectList - DomainClass==null -> " + (domainClass == null), this);
 		if (domainClass == null) {
 			// generate domainClass by use of the domainClassName
 			// FIXME: domainClass =

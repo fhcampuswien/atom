@@ -16,7 +16,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DataFilter;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -183,7 +183,7 @@ public class FilterSpecificationDialogBox extends DialogBox {
 		// dialogBox.setSize("100%", "100%");
 		this.center();
 		// dialogBox.setVisible(true);
-		AtomTools.log(Log.LOG_LEVEL_INFO, "popup showed", this);
+		AtomTools.log(Level.INFO, "popup showed", this);
 	}
 	
 	private void addFilterSpecificationLine() {		

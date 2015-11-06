@@ -22,7 +22,7 @@ import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -72,7 +72,7 @@ public class DomainObjectSelectorFrame extends Frame {
 		// super(false, true);
 		// super(new Label("x"));
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "creating DomainObjectSelectorFrame instance", this);
+		AtomTools.log(Level.FINER, "creating DomainObjectSelectorFrame instance", this);
 
 		this.resultHandler = resultHandler;
 		
@@ -99,7 +99,7 @@ public class DomainObjectSelectorFrame extends Frame {
 //
 //			@Override
 //			public void onClick(ClickEvent event) {
-//				AtomTools.log(Log.LOG_LEVEL_DEBUG, "testButton clicked", this);
+//				AtomTools.log(Level.FINE, "testButton clicked", this);
 //				resultHandler.handleDomainObjectList(domainObjectListWidget.getRepresentedDomainObjects());
 //				// DomainObjectSelectPopup.this.hide();
 //				popup.hide();
@@ -114,7 +114,7 @@ public class DomainObjectSelectorFrame extends Frame {
 			
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 			}
 			
 			@Override
@@ -150,7 +150,7 @@ public class DomainObjectSelectorFrame extends Frame {
 		//
 		// @Override
 		// public void onClose(CloseEvent<PopupPanel> event) {
-		// AtomTools.log(Log.LOG_LEVEL_INFO, "closed by onClose from CloseHandler", this);
+		// AtomTools.log(Level.INFO, "closed by onClose from CloseHandler", this);
 		// }
 		// });
 	}
@@ -229,7 +229,7 @@ public class DomainObjectSelectorFrame extends Frame {
 	
 	@Override
 	public void actionCancel() {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "DomainObjectSelectorFrame canceled!", this);
+		AtomTools.log(Level.FINE, "DomainObjectSelectorFrame canceled!", this);
 		closing = true;
 		App.closeFrame(this);
 		resultHandler.cancelSelection();
@@ -237,7 +237,7 @@ public class DomainObjectSelectorFrame extends Frame {
 	
 	@Override
 	public void actionSave() {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "DomainObjectSelectorFrame save action", this);
+		AtomTools.log(Level.FINE, "DomainObjectSelectorFrame save action", this);
 		closing = true;
 		App.closeFrame(this);
 		resultHandler.handleDomainObjectList(domainObjectListWidget.getRepresentedDomainObjects());
@@ -250,7 +250,7 @@ public class DomainObjectSelectorFrame extends Frame {
 	
 	@Override
 	public void actionObjectDelivered(DomainObject instance) {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "DomainObjectSelectorFrame save action", this);
+		AtomTools.log(Level.FINE, "DomainObjectSelectorFrame save action", this);
 		closing = true;
 		App.closeFrame(this);
 		List<DomainObject> list = new ArrayList<DomainObject>(1);

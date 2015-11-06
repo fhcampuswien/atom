@@ -25,7 +25,7 @@ import at.ac.fhcampuswien.atom.shared.Notifiable;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gwt.user.client.History;
@@ -77,7 +77,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 			// frame.getFrameLabel().addClickHandler(new ClickHandler() {
 			// public void onClick(ClickEvent event) {
 			// HistoryPanel.this.showFrame(frame);
-			// AtomTools.log(Log.LOG_LEVEL_TRACE, "frameLabel onClick", this);
+			// AtomTools.log(Level.FINER, "frameLabel onClick", this);
 			// }
 			// });
 
@@ -97,7 +97,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 		// dl.addClickHandler(new ClickHandler() {
 		// public void onClick(ClickEvent event) {
 		// HistoryPanel.this.showFrame(fv);
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "frameLabel onClick", this);
+		// AtomTools.log(Level.FINER, "frameLabel onClick", this);
 		// }
 		// });
 		// SidePanelLabel<FrameVisit> cl = new SidePanelLabel<FrameVisit>(this, dl, fv);
@@ -171,7 +171,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "FrameVisit for Frame [" + frame.getTitle() + "] could not be saved. reason = " + reason, this);
+				AtomTools.log(Level.WARNING, "FrameVisit for Frame [" + frame.getTitle() + "] could not be saved. reason = " + reason, this);
 			}
 
 			@Override
@@ -236,7 +236,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 			
 			@Override
 			public void doNotify(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "HistoryPanel.removeElement - deleteDomainObject -> got response from server, notifying clearTimer to continue", this);
+				AtomTools.log(Level.INFO, "HistoryPanel.removeElement - deleteDomainObject -> got response from server, notifying clearTimer to continue", this);
 				continueClearing();
 			}
 		});

@@ -6,6 +6,9 @@ package at.ac.fhcampuswien.atom.server;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
@@ -18,9 +21,6 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 import at.ac.fhcampuswien.atom.shared.rpc.AtomService;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * The server side implementation of the RPC service.
@@ -40,7 +40,7 @@ public class AtomServiceImpl extends RemoteServiceServlet implements AtomService
 
 	@Override
 	protected void doUnexpectedFailure(Throwable e) {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "unexpectedFailure happened in doPost method: " + e.getMessage(), this);
+		AtomTools.log(Level.SEVERE, "unexpectedFailure happened in doPost method: " + e.getMessage(), this);
 		e.printStackTrace();
 		throw new AtomException("unexpectedFailure happened in doPost method", e);
 	}

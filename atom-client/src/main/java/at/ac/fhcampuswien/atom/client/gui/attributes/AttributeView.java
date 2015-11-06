@@ -15,7 +15,7 @@ import at.ac.fhcampuswien.atom.shared.Notifiable;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -31,7 +31,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		String type = attribute.getType();
 		String attributeName = attribute.getName();
 		
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "generating attributeView for type:" + type, null);
+		AtomTools.log(Level.FINER, "generating attributeView for type:" + type, null);
 
 		AttributeView<?, ?, ?> returnValue = null;
 
@@ -63,7 +63,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 //				else if(AtomConfig.listBoxViewTypeRadioButtons.equals(viewType) || AtomConfig.listBoxViewTypeRadioTable.equals(viewType)) 
 //					returnValue = new RadioButtonsView(AtomConfig.listBoxSql, forFrame.getRepresentedClass(), attributeName, viewType);
 //				else
-//					AtomTools.log(Log.LOG_LEVEL_ERROR, "Unknown ListBoxViewType: " + viewType, null); 
+//					AtomTools.log(Level.SEVERE, "Unknown ListBoxViewType: " + viewType, null); 
 //					
 //			} else
 //				if(AtomConfig.listBoxViewTypeDropDown.equals(viewType))
@@ -71,7 +71,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 //				else if(AtomConfig.listBoxViewTypeRadioButtons.equals(viewType) || AtomConfig.listBoxViewTypeRadioTable.equals(viewType)) 
 //					returnValue = new RadioButtonsView(listBoxNamed, attribute.getListBoxKeys(), attribute.getListBoxDisplay(), viewType);
 //				else
-//					AtomTools.log(Log.LOG_LEVEL_ERROR, "Unknown ListBoxViewType: " + viewType, null); 
+//					AtomTools.log(Level.SEVERE, "Unknown ListBoxViewType: " + viewType, null); 
 				
 		} else if (type.startsWith("at.ac.fhcampuswien.atom.shared.domain")) {
 			returnValue = new DomainObjectView(type, attributeName, forFrame);
@@ -116,7 +116,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		} else if (type.startsWith("java.util.Set") || type.startsWith("java.util.List") || type.startsWith("java.util.ArrayList")) {
 			returnValue = new CollectionView();
 		} else {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "no special attributeView implementation for type '" + type + "', will use StringView for attribute '" + attributeName
+			AtomTools.log(Level.WARNING, "no special attributeView implementation for type '" + type + "', will use StringView for attribute '" + attributeName
 					+ "'", null);
 			returnValue = new StringView();
 		}
@@ -272,7 +272,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 				
 				@Override
 				public void onValueChange(ValueChangeEvent<F> event) {
-					AtomTools.log(Log.LOG_LEVEL_TRACE, "AttributeView value changed", this);
+					AtomTools.log(Level.FINER, "AttributeView value changed", this);
 					if(changeHandlers != null) {
 						readValue();
 						for(Notifiable<Object> ch : changeHandlers) {

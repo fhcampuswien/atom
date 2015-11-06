@@ -9,7 +9,7 @@ import java.util.Collection;
 import at.ac.fhcampuswien.atom.client.gui.attributes.CollectionView;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ListBox;
@@ -33,7 +33,7 @@ public class ObservableListBox<C extends Collection<T>, T> extends ListBox {
 	@Override
 	public void onBrowserEvent(Event event) {
 		if (DOM.eventGetType(event) == Event.ONDBLCLICK) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "doubleclick: '" + event + "'", this);
+			AtomTools.log(Level.FINER, "doubleclick: '" + event + "'", this);
 			this.collectionView.editItemAtIndex(this.getSelectedIndex());
 		}
 		super.onBrowserEvent(event);

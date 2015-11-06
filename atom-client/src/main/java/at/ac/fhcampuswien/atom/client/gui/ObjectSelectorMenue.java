@@ -13,7 +13,7 @@ import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -39,10 +39,10 @@ public class ObjectSelectorMenue extends Composite {
 
 	public static ObjectSelectorMenue getSinglton() {
 		if (singlton == null) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "constructing DomainObjectMenue now!", null);
+			AtomTools.log(Level.FINER, "constructing DomainObjectMenue now!", null);
 			singlton = new ObjectSelectorMenue();
 		}
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "returning DomainObjectMenue", null);
+		AtomTools.log(Level.FINER, "returning DomainObjectMenue", null);
 		return singlton;
 	}
 
@@ -70,12 +70,12 @@ public class ObjectSelectorMenue extends Composite {
 
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 			}
 
 			@Override
 			public void recieve(DomainClass domainTree) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "got domainTree", this);
+				AtomTools.log(Level.FINER, "got domainTree", this);
 				ObjectSelectorMenue.this.domainTree = domainTree;
 				buildMenue();
 			}
@@ -83,14 +83,14 @@ public class ObjectSelectorMenue extends Composite {
 
 		if (domainTree == null) {
 			root.addNorth(pleaseWaitButton, 23);
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "I have unfinished business here because the domainTree was not ready!", this);
+			AtomTools.log(Level.FINER, "I have unfinished business here because the domainTree was not ready!", this);
 		}
 	}
 
 	private boolean built = false;
 
 	private void buildMenue() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "building DomainObjectMenue now!", this);
+		AtomTools.log(Level.FINER, "building DomainObjectMenue now!", this);
 		if (built == false) {
 			built = true;
 			root.clear();

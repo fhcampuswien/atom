@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
 
 import javax.persistence.Transient;
 
@@ -52,8 +53,6 @@ import at.ac.fhcampuswien.atom.shared.annotations.SortColumn;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-import com.allen_sauer.gwt.log.client.Log;
-
 public class DomainAnalyzer {
 
 	private static final String domainPackageName = "at.ac.fhcampuswien.atom.shared.domain";
@@ -78,7 +77,7 @@ public class DomainAnalyzer {
 	}
 
 	private static void buildDomainTree() {
-		AtomTools.log(Log.LOG_LEVEL_INFO, "starting to build DomainTree", null);
+		AtomTools.log(Level.INFO, "starting to build DomainTree", null);
 		domainTree = createDomainClassForClass(DomainObject.class, null);
 
 //		String name = domainPackageName;
@@ -92,7 +91,7 @@ public class DomainAnalyzer {
 		
 		if (url != null) {
 		
-			AtomTools.log(Log.LOG_LEVEL_INFO, "Launcher found url '" + url
+			AtomTools.log(Level.INFO, "Launcher found url '" + url
 				+ "' for package '" + domainPackagePath + "'", null);
 		// (new File(url.getFile().replace("%20", " "))).list()
 			
@@ -110,15 +109,15 @@ public class DomainAnalyzer {
 					
 			} catch (MalformedURLException e1) {
 				e1.printStackTrace();
-				AtomTools.log(Log.LOG_LEVEL_ERROR,
+				AtomTools.log(Level.SEVERE,
 						"could not open atom-domain URL='" + foundTextUrl + "'", null);
 			}
 			
-			AtomTools.log(Log.LOG_LEVEL_INFO, "finished building DomainTree",
+			AtomTools.log(Level.INFO, "finished building DomainTree",
 					null);
 		} else {
 			// please report a github issue if and when url is null
-			AtomTools.log(Log.LOG_LEVEL_FATAL,
+			AtomTools.log(Level.SEVERE,
 					"could not find url for package '" + domainPackagePath + "'", null);
 		}
 		// handleDirectoryOrFile(new
@@ -148,18 +147,17 @@ public class DomainAnalyzer {
 					int i = entry.getName().lastIndexOf("/");
 					String name = entry.getName().substring(i+1);
 					String path = entry.getName().substring(0, i);
-					AtomTools.log(Log.LOG_LEVEL_INFO, " match found: " + entry.getName() + " --> " + name + " ; " + path,
+					AtomTools.log(Level.INFO, " match found: " + entry.getName() + " --> " + name + " ; " + path,
 							DomainAnalyzer.class);
 					handleClass(path.replace("/", "."), name);
 				}
 				else {
-					AtomTools.log(Log.LOG_LEVEL_INFO, "non-matching: " + entry.getName(),
+					AtomTools.log(Level.INFO, "non-matching: " + entry.getName(),
 							DomainAnalyzer.class);
 				}
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -211,7 +209,7 @@ public class DomainAnalyzer {
 		String simpleClassName = nameInclExtension.substring(0, nameInclExtension.length()
 				- fileExtensionLength);
 
-		AtomTools.log(Log.LOG_LEVEL_INFO, "processing class "
+		AtomTools.log(Level.INFO, "processing class "
 				+ simpleClassName + " in package " + packageString, null);
 
 		integrateClassIntoDomainTree(simpleClassName, packageString);
@@ -236,7 +234,7 @@ public class DomainAnalyzer {
 						false);
 
 		} catch (ClassNotFoundException cnfex) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "No Class found for "
+			AtomTools.log(Level.SEVERE, "No Class found for "
 					+ packageName + "." + simpleClassName + "; exception: "
 					+ cnfex, null);
 			// } catch (InstantiationException iex) {
@@ -260,20 +258,20 @@ public class DomainAnalyzer {
 		if (checkIfAlreadyExists) {
 			foundDomainClass = getDomainClassForName(fullClassName);
 			if (foundDomainClass != null) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "Class " + fullClassName
+				AtomTools.log(Level.INFO, "Class " + fullClassName
 						+ " already in tree, returning", null);
 				return foundDomainClass;
 			}
 		}
 
 		if (theClass.getAnnotation(AnalyzerIgnore.class) != null) {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "Ignoring Class " + fullClassName
+			AtomTools.log(Level.INFO, "Ignoring Class " + fullClassName
 					+ " because of its AnalyzerIgnore Annotation", null);
 		}
 
 		else if (thePackage.contains(domainPackageName)) {
 			AtomTools
-					.log(Log.LOG_LEVEL_INFO,
+					.log(Level.INFO,
 							"Class "
 									+ fullClassName
 									+ " should be created. will search superclass first.",
@@ -291,7 +289,7 @@ public class DomainAnalyzer {
 							theClass.getSuperclass(), true);
 				} else {
 					AtomTools
-							.log(Log.LOG_LEVEL_ERROR,
+							.log(Level.SEVERE,
 									"Superclass of "
 											+ fullClassName
 											+ " is not inside of the domainpackage, therefore it isn't part of the tree. ignoring both classes!",
@@ -304,7 +302,7 @@ public class DomainAnalyzer {
 					parentDomainClass);
 
 		} else {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Class " + fullClassName
+			AtomTools.log(Level.SEVERE, "Class " + fullClassName
 					+ " is from outside the domainPackage!", null);
 		}
 		return foundDomainClass;
@@ -459,7 +457,7 @@ public class DomainAnalyzer {
 			DomainClassAttribute attribute, String fieldName,
 			Annotation anAnnotation) {
 		if (attribute == null) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "cannot process annotation\""
+			AtomTools.log(Level.SEVERE, "cannot process annotation\""
 					+ anAnnotation + "\" of field \"" + fieldName
 					+ "\" --> DomainClassAttribute not found!", null);
 			return;

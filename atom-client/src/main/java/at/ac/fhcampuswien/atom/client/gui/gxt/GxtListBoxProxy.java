@@ -23,7 +23,7 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -62,7 +62,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 			@Override
 			public String getKey(DomainObject item) {
 				if(item == null || item.getObjectID() == null) {
-					AtomTools.log(Log.LOG_LEVEL_WARN, "damn, item is null or has no objectid?!", this);
+					AtomTools.log(Level.WARNING, "damn, item is null or has no objectid?!", this);
 					return "null";
 				}
 				return item.getObjectID().toString();
@@ -78,7 +78,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 
 			@Override
 			public void onSelectionChanged(SelectionChangedEvent<DomainObject> event) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "GxtListBox SelectionChanged: " + "CheckBox ListView (" + event.getSelection().size() + " items selected)",
+				AtomTools.log(Level.FINER, "GxtListBox SelectionChanged: " + "CheckBox ListView (" + event.getSelection().size() + " items selected)",
 						this);
 				for (ChangeHandler changeHandler : changeHandlers) {
 					changeHandler.onChange(null);
@@ -104,8 +104,8 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 					openSelectedElement();
 				}
 
-				// AtomTools.log(Log.LOG_LEVEL_TRACE, "GxtListBox KeyPress BaseEvent fired: " + charCode + ";" + keyCode + ";" + be, this);
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "GxtListBox KeyPressed: Browser='" + ClientConfig.getBrowserType() + "', charCode=" + charCode
+				// AtomTools.log(Level.FINER, "GxtListBox KeyPress BaseEvent fired: " + charCode + ";" + keyCode + ";" + be, this);
+				AtomTools.log(Level.FINER, "GxtListBox KeyPressed: Browser='" + ClientConfig.getBrowserType() + "', charCode=" + charCode
 						+ ", keyCode=" + keyCode + " ; be='" + ne + "'", this);
 
 				// chrome: charCode == 13 && keyCode == 13
@@ -114,7 +114,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 				// NativeEvent nativeEvent = be.get
 				//
 				// int keyCode = nativeEvent.getKeyCode();
-				// // AtomTools.log(Log.LOG_LEVEL_TRACE, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode
+				// // AtomTools.log(Level.FINER, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode
 				// +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
 				//
 				// if(code == '\n' || code == '\r' || (unicode == 0 && keyCode == 13)) {
@@ -146,7 +146,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 	@Override
 	public void onBrowserEvent(Event event) {
 		if (DOM.eventGetType(event) == Event.ONDBLCLICK) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "doubleclick: '" + event + "'", this);
+			AtomTools.log(Level.FINER, "doubleclick: '" + event + "'", this);
 			openSelectedElement();
 			// ListOfDomainObjectsView.this.editItemAtIndex(); elements.get(1)
 		}
@@ -219,7 +219,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 	public int getSelectedIndex() {
 		List<DomainObject> selectedList = myListBox.getSelectionModel().getSelectedItems();
 		if (selectedList.size() > 1)
-			AtomTools.log(Log.LOG_LEVEL_WARN, "this method asks for a single selected index, but the size of the selection is: " + selectedList.size(), this);
+			AtomTools.log(Level.WARNING, "this method asks for a single selected index, but the size of the selection is: " + selectedList.size(), this);
 
 		if (selectedList.size() == 0)
 			return -1;
@@ -257,7 +257,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 
 	@Override
 	public void previewDragStart(int x, int y) throws VetoDragException {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "GxtListBoxProxy.previewDragStart() called with x=" + x + ", y=" + y + ", offsetWidth=" + this.getOffsetWidth(), this);
+		AtomTools.log(Level.FINER, "GxtListBoxProxy.previewDragStart() called with x=" + x + ", y=" + y + ", offsetWidth=" + this.getOffsetWidth(), this);
 		if (myListBox == null || myListBox.getSelectionModel() == null || myListBox.getSelectionModel().getSelectedItems() == null
 				|| myListBox.getSelectionModel().getSelectedItems().size() == 0 || x > this.getOffsetWidth() - 17) {
 			throw new VetoDragException();
@@ -309,7 +309,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 	}
 	
 	public void fixElementBorders() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "GxtListBoxProxy.fixElementBorders() elements.size() = " + myListBox.getElements().size(), this);
+		AtomTools.log(Level.FINER, "GxtListBoxProxy.fixElementBorders() elements.size() = " + myListBox.getElements().size(), this);
 		for(Element el : myListBox.getElements()) {
 			el.getStyle().setBackgroundColor("");
 			if (readOnly) {

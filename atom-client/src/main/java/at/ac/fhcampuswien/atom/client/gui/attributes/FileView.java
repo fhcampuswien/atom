@@ -19,7 +19,7 @@ import java.util.EnumSet;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.FileAttributeRepresentation;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -65,18 +65,18 @@ public class FileView extends AttributeView<String, FileView, String> {
 
 			@Override
 			public void onFinish(IUploader uploader) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG,
+				AtomTools.log(Level.FINE,
 						"SingleUploaderModal.onFinish, getInputName = '"
 								+ uploader.getInputName() + "'", this);
 
 				if (uploader.getStatus() == Status.SUCCESS) {
 					UploadedInfo info = uploader.getServerInfo();
-					AtomTools.log(Log.LOG_LEVEL_INFO, "File name " + info.name, this);
-					AtomTools.log(Log.LOG_LEVEL_INFO, "File content-type " + info.ctype, this);
-					AtomTools.log(Log.LOG_LEVEL_INFO, "File size " + info.size, this);
+					AtomTools.log(Level.INFO, "File name " + info.name, this);
+					AtomTools.log(Level.INFO, "File content-type " + info.ctype, this);
+					AtomTools.log(Level.INFO, "File size " + info.size, this);
 
 					// Here is the string returned in your servlet
-					AtomTools.log(Log.LOG_LEVEL_INFO, "Server message = " + uploader.getServerMessage().getMessage(), this);
+					AtomTools.log(Level.INFO, "Server message = " + uploader.getServerMessage().getMessage(), this);
 					FileView.this.value = uploader.getServerMessage().getMessage();
 					showValue(); 
 				}
@@ -86,7 +86,7 @@ public class FileView extends AttributeView<String, FileView, String> {
 
 			@Override
 			public void onChange(IUploader uploader) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG,
+				AtomTools.log(Level.FINE,
 						"SingleUploaderModal.onChange " + "'", this);
 			}
 		});
@@ -94,7 +94,7 @@ public class FileView extends AttributeView<String, FileView, String> {
 
 			@Override
 			public void onStatusChanged(IUploader uploader) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG,
+				AtomTools.log(Level.FINE,
 						"SingleUploaderModal.onStatusChanged " + "'", this);
 				//uploader.getStatus()
 				if(Status.DELETED.equals(uploader.getStatus()) && downLink != null && !FileView.this.readOnly) {
@@ -120,7 +120,7 @@ public class FileView extends AttributeView<String, FileView, String> {
 	protected void showValue() {
 		//FIXME: This doesn't work as hoped. The Link doesn't show.
 		//link to the servlet "getfile" to retrieve the file. for servlet config see web.xml in AtomServer project
-		AtomTools.log(Log.LOG_LEVEL_INFO, "FileView.showValue() - value = " + FileView.this.value, this);
+		AtomTools.log(Level.INFO, "FileView.showValue() - value = " + FileView.this.value, this);
 		//fileUpload.getFileInput()
 		FileAttributeRepresentation far = new FileAttributeRepresentation(value);
 		//String linkTargetHTML = "<a rel=\"external\" download=\"" + far.getFileName() + "\" target=\"_blank\" href=\"app/getfile?id=" + far.getFileIDString() + "\">" + far.getFileName() + "</a>";

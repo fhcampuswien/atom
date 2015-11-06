@@ -11,7 +11,7 @@ import java.util.Map;
 import at.ac.fhcampuswien.atom.client.gui.attributes.CollectionView;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -94,12 +94,12 @@ public class ObservableListBoxProxy<C extends Collection<T>, T> extends SimplePa
 				getListBoxWidget().getElement().getStyle().setBackgroundColor(color);
 
 			else if(getListBoxWidget() == null)
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxWidget() = null!", this);
+				AtomTools.log(Level.SEVERE, "getListBoxWidget() = null!", this);
 			
 			else if(getListBoxWidget().getElement() == null)
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxWidget().getElement() = null!", this);
+				AtomTools.log(Level.SEVERE, "getListBoxWidget().getElement() = null!", this);
 			
 			else if(getListBoxWidget().getElement().getStyle() == null)
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxWidget().getElement().getStyle() = null!", this);
+				AtomTools.log(Level.SEVERE, "getListBoxWidget().getElement().getStyle() = null!", this);
 		}
 	}

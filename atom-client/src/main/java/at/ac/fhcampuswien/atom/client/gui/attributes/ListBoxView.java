@@ -13,7 +13,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.Notifiable;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -63,7 +63,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 			
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxChoices failed -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "getListBoxChoices failed -> " + reason, this);
 			}
 			
 			@Override
@@ -89,7 +89,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 //			buildRadioButtons();
 //		}
 //		else {
-//			AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown ListBoxDisplayType: " + viewType, this);
+//			AtomTools.log(Level.SEVERE, "unknown ListBoxDisplayType: " + viewType, this);
 //		}
 //	}
 //	
@@ -124,7 +124,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 //		else if(listBoxID.equals(AtomConfig.listBoxKeysNValues)) {
 //			listBox.clear();
 //			if(keys.length != display.length) {
-//				AtomTools.log(Log.LOG_LEVEL_ERROR, "keys and display arrays have different length! cannot build ListBox items!", this);
+//				AtomTools.log(Level.SEVERE, "keys and display arrays have different length! cannot build ListBox items!", this);
 //			}
 //			else for(int i = 0 ; i < keys.length ; i++) {
 //				listBox.addItem(display[i], keys[i]);
@@ -136,7 +136,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 //			listBox.addItem("Weiblich", "W");
 //		}
 //		else {
-//			AtomTools.log(Log.LOG_LEVEL_ERROR, "unkown ListBoxID:" + listBoxID, this);
+//			AtomTools.log(Level.SEVERE, "unkown ListBoxID:" + listBoxID, this);
 //		}
 		
 		listBox.clear();
@@ -156,7 +156,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 			
 			@Override
 			public void onChange(ChangeEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "listBox Value changed", this);
+				AtomTools.log(Level.FINER, "listBox Value changed", this);
 				validateAndMark("irrelevant");
 				if(changeHandlers != null) {
 					readValue();

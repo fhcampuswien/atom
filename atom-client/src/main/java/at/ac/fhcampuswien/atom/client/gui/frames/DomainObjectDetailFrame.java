@@ -29,7 +29,7 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -128,7 +128,7 @@ public class DomainObjectDetailFrame extends Frame {
 		super(AtomTools.getMessages().Detailansicht_von(getName(object, domainClass)), getName(object, domainClass),
 				getState(isEditable, domainClass, object), me, object, domainClass, AtomConfig.FrameType.DETAIL_VIEW);
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectDetailFrame.Constructor started", this);
+		AtomTools.log(Level.FINER, "DomainObjectDetailFrame.Constructor started", this);
 
 		initWidget(uiBinder.createAndBindUi(this));
 
@@ -172,7 +172,7 @@ public class DomainObjectDetailFrame extends Frame {
 			}
 		}
 
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectDetailFrame.Constructor finished", this);
+		AtomTools.log(Level.FINER, "DomainObjectDetailFrame.Constructor finished", this);
 	}
 
 	// private void subscribeMeToChangesOfMyObject() {
@@ -231,7 +231,7 @@ public class DomainObjectDetailFrame extends Frame {
 						if (representedObject.getNullReasons() != null
 								&& representedObject.getNullReasons().containsKey(attribute.getName())) {
 							Integer nullReason = representedObject.getNullReasons().get(attribute.getName());
-							AtomTools.log(Log.LOG_LEVEL_TRACE, "NullReason for Attribute " + attribute.getName()
+							AtomTools.log(Level.FINER, "NullReason for Attribute " + attribute.getName()
 									+ " instance " + representedObject + " = " + nullReason, this);
 
 							if (representedObject.getCompletelyLoaded() == true
@@ -240,7 +240,7 @@ public class DomainObjectDetailFrame extends Frame {
 
 							attributeView.setNullReason(nullReason);
 						} else {
-							AtomTools.log(Log.LOG_LEVEL_TRACE, "NO NullReason for Attribute " + attribute.getName()
+							AtomTools.log(Level.FINER, "NO NullReason for Attribute " + attribute.getName()
 									+ " instance " + representedObject, this);
 							attributeView.setNullReason(null);
 						}
@@ -319,7 +319,7 @@ public class DomainObjectDetailFrame extends Frame {
 			if (representedObject.getNullReasons() != null
 					&& representedObject.getNullReasons().containsKey(attribute.getName())) {
 				Integer nullReason = representedObject.getNullReasons().get(attribute.getName());
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "NullReason for Attribute " + attribute.getName() + " instance "
+				AtomTools.log(Level.FINER, "NullReason for Attribute " + attribute.getName() + " instance "
 						+ representedObject + " = " + nullReason, this);
 
 				if (representedObject.getCompletelyLoaded() == true && nullReason == AtomConfig.nullReasonLazyLoading)
@@ -327,7 +327,7 @@ public class DomainObjectDetailFrame extends Frame {
 
 				attributeView.setNullReason(nullReason);
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "NO NullReason for Attribute " + attribute.getName() + " instance "
+				AtomTools.log(Level.FINER, "NO NullReason for Attribute " + attribute.getName() + " instance "
 						+ representedObject, this);
 				attributeView.setNullReason(null);
 			}
@@ -414,7 +414,7 @@ public class DomainObjectDetailFrame extends Frame {
 					}
 					DomainClassAttribute attr = representedClass.getAttributeNamed(s);
 					if(attr == null) {
-						AtomTools.log(Log.LOG_LEVEL_ERROR, "could not find Attribute named \"" + s + "\" in DomainClass \"" + representedClass.getName() + "\"", this);
+						AtomTools.log(Level.SEVERE, "could not find Attribute named \"" + s + "\" in DomainClass \"" + representedClass.getName() + "\"", this);
 					}
 					else {
 						String attrGroup = attr.getAttributeGroup();
@@ -452,7 +452,7 @@ public class DomainObjectDetailFrame extends Frame {
 					continue;
 				
 				if(group == null) {
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "hidden fields contains group null - this should not happen, any field that is shown or hidden without a specified group should land in the autoGroup group!", this);
+					AtomTools.log(Level.SEVERE, "hidden fields contains group null - this should not happen, any field that is shown or hidden without a specified group should land in the autoGroup group!", this);
 					continue;
 				}
 				
@@ -514,7 +514,7 @@ public class DomainObjectDetailFrame extends Frame {
 
 		@Override
 		public void requestFailed(String reason) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "DomainObject request failed -> " + reason, this);
+			AtomTools.log(Level.SEVERE, "DomainObject request failed -> " + reason, this);
 		}
 
 		@Override
@@ -665,7 +665,7 @@ public class DomainObjectDetailFrame extends Frame {
 	@Override
 	public boolean goingInvisible() {
 		AtomTools
-				.log(Log.LOG_LEVEL_TRACE, "DomainObjectDetailView '" + this.getLongTitle() + "' going invisible", this);
+				.log(Level.FINER, "DomainObjectDetailView '" + this.getLongTitle() + "' going invisible", this);
 		for (AttributeView<?, ?, ?> attributeView : attributeFields.values()) {
 			attributeView.goingInvisible();
 		}
@@ -674,7 +674,7 @@ public class DomainObjectDetailFrame extends Frame {
 
 	@Override
 	public void goingVisible() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectDetailView '" + this.getLongTitle() + "' going visible", this);
+		AtomTools.log(Level.FINER, "DomainObjectDetailView '" + this.getLongTitle() + "' going visible", this);
 		for (AttributeView<?, ?, ?> attributeView : attributeFields.values()) {
 			attributeView.goingVisible();
 		}
@@ -686,7 +686,7 @@ public class DomainObjectDetailFrame extends Frame {
 			attributeView.resize(event);
 		}
 		ScrollPanel activeTab = (ScrollPanel) tabPanel.getWidget(tabPanel.getSelectedIndex());
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "active ScrollPanel = " + activeTab.toString(), this);
+		AtomTools.log(Level.FINER, "active ScrollPanel = " + activeTab.toString(), this);
 	}
 	
 	@Override
@@ -739,7 +739,7 @@ public class DomainObjectDetailFrame extends Frame {
 	// }
 	// AtomGUI.getSinglton().frameChanged(DomainObjectDetailFrame.this);
 	// } else
-	// AtomTools.log(Log.LOG_LEVEL_WARN,
+	// AtomTools.log(Level.WARNING,
 	// "DomainObjectDetailFrame does not understand notifyReason=" +
 	// notifyReason, this);
 	// }

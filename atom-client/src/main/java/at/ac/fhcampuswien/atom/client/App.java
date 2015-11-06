@@ -8,6 +8,33 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+
+import com.allen_sauer.gwt.dnd.client.drop.AbstractDropController;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import at.ac.fhcampuswien.atom.client.gui.AtomClientBundle;
 import at.ac.fhcampuswien.atom.client.gui.CenterHeader;
@@ -36,33 +63,6 @@ import at.ac.fhcampuswien.atom.shared.domain.ClipBoardEntry;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
 
-import com.allen_sauer.gwt.dnd.client.drop.AbstractDropController;
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.Style.Display;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -89,7 +89,7 @@ public class App implements EntryPoint {
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		AtomTools.log(Log.LOG_LEVEL_INFO, "started ATOM onModuleLoad", this);
+		AtomTools.log(Level.INFO, "started ATOM onModuleLoad", this);
 		
 		// Inject the contents of the CSS file
 		AtomClientBundle.INSTANCE.css().ensureInjected();
@@ -151,7 +151,7 @@ public class App implements EntryPoint {
 		searchArrow.addDomHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "searchSimple = " + searchSimpleCheck.getElement().getPropertyString("checked") + " ; " + searchSimpleCheck.getElement().getPropertyBoolean("checked"), this);
+				AtomTools.log(Level.FINE, "searchSimple = " + searchSimpleCheck.getElement().getPropertyString("checked") + " ; " + searchSimpleCheck.getElement().getPropertyBoolean("checked"), this);
 				App.processCommand("SEARCH_" + (searchSimpleCheck.getElement().getPropertyBoolean("checked") ? "SIMPLE_" : "") + searchBox.getElement().getPropertyString("value"));
 			}
 		}, ClickEvent.getType());
@@ -160,7 +160,7 @@ public class App implements EntryPoint {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if(ClientTools.hasEnterKeyBeenPressed(event)) {
-					AtomTools.log(Log.LOG_LEVEL_DEBUG, "searchSimple = " + searchSimpleCheck.getElement().getPropertyString("checked") + " ; " + searchSimpleCheck.getElement().getPropertyBoolean("checked"), this);
+					AtomTools.log(Level.FINE, "searchSimple = " + searchSimpleCheck.getElement().getPropertyString("checked") + " ; " + searchSimpleCheck.getElement().getPropertyBoolean("checked"), this);
 					App.processCommand("SEARCH_" + (searchSimpleCheck.getElement().getPropertyBoolean("checked") ? "SIMPLE_" : "") + searchBox.getElement().getPropertyString("value"));
 				}
 			}
@@ -230,7 +230,7 @@ public class App implements EntryPoint {
 			
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "sliderNS.onMouseDown", this);
+				AtomTools.log(Level.INFO, "sliderNS.onMouseDown", this);
 				startSidePanelNSDrag();
 				event.preventDefault();
 			}
@@ -240,7 +240,7 @@ public class App implements EntryPoint {
 			
 			@Override
 			public void onMouseDown(MouseDownEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "sliderEW.onMouseDown", this);
+				AtomTools.log(Level.INFO, "sliderEW.onMouseDown", this);
 				startSidePanelEWDrag();
 				event.preventDefault();
 			}
@@ -251,7 +251,7 @@ public class App implements EntryPoint {
 		Window.addResizeHandler(new ResizeHandler() {
 
 			public void onResize(ResizeEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "resize event occured!", this);
+				AtomTools.log(Level.FINER, "resize event occured!", this);
 				App.this.resize(event);
 			}
 		});
@@ -260,21 +260,21 @@ public class App implements EntryPoint {
 			
 			@Override
 			public void onSuccess(String result) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "received serverInfo -> " + result, this);
+				AtomTools.log(Level.WARNING, "received serverInfo -> " + result, this);
 				singleton.testarea.getElement().setInnerHTML(result);
 				RootPanel.get("serverinfo").getElement().setInnerHTML(result);
 			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "could not get serverInfo -> " + caught.getMessage(), this);
+				AtomTools.log(Level.WARNING, "could not get serverInfo -> " + caught.getMessage(), this);
 			}
 		});
 		
 		centerHeader.setHeader("Seite geladen, prüfe Identität..");
 		checkLoginState();
 		Window.setTitle("DIA");
-		AtomTools.log(Log.LOG_LEVEL_INFO, "finished ATOM onModuleLoad", this);
+		AtomTools.log(Level.INFO, "finished ATOM onModuleLoad", this);
 	}
 	
 	/**
@@ -349,7 +349,7 @@ public class App implements EntryPoint {
 		rootMouseUpHR = topRoot.addDomHandler(new MouseUpHandler() {
 			@Override
 			public void onMouseUp(MouseUpEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "topRoot.onMouseUp", this);
+				AtomTools.log(Level.FINER, "topRoot.onMouseUp", this);
 				if(stopSidePanelDrag()) {
 					
 					boolean clipboard = clipboardCollapse.getStyleName().contains("restore");
@@ -369,7 +369,7 @@ public class App implements EntryPoint {
 			public void onMouseMove(MouseMoveEvent event) {
 				int relMousePos = event.getClientY() - sidePanel.getAbsoluteTop();
 				sidePanelPctDD = (double)(relMousePos) / (sidePanel.getOffsetHeight());
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "topRoot.onMouseMove - " 
+				AtomTools.log(Level.FINER, "topRoot.onMouseMove - " 
 						+ event.getClientX() + ";" + event.getClientY() + ";" 
 						+ (sidePanel.getOffsetHeight())
 						+ ";" + sidePanelPctDD, this);
@@ -420,7 +420,7 @@ public class App implements EntryPoint {
 		rootMouseUpHR = topRoot.addDomHandler(new MouseUpHandler() {
 			@Override
 			public void onMouseUp(MouseUpEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "topRoot.onMouseUp", this);
+				AtomTools.log(Level.FINER, "topRoot.onMouseUp", this);
 				if(stopSidePanelDrag()) {
 					event.preventDefault();
 				}
@@ -431,7 +431,7 @@ public class App implements EntryPoint {
 			
 			@Override
 			public void onMouseMove(MouseMoveEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "topRoot.onMouseMove - " 
+				AtomTools.log(Level.FINER, "topRoot.onMouseMove - " 
 						+ event.getClientX() + ";" + event.getClientY() + ";" 
 						+ (sidePanel.getOffsetHeight())
 						+ ";" + topRoot.getOffsetWidth() , this);
@@ -462,10 +462,10 @@ public class App implements EntryPoint {
 	}
 
 	private void checkLoginState() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "atom-client.App starting checkExistingSession request to server", this);
+		AtomTools.log(Level.FINER, "atom-client.App starting checkExistingSession request to server", this);
 		RPCCaller.getSinglton().checkExistingSession(null, new Notifiable<String>() {
 			public void doNotify(String notifyReason) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "atom-client.App checkExistingSession response recieved: " + notifyReason, this);
+				AtomTools.log(Level.FINER, "atom-client.App checkExistingSession response recieved: " + notifyReason, this);
 				if (notifyReason.startsWith("session valid;")) {
 					updateLoginState(true, notifyReason.substring("session valid;".length()));
 				} else {
@@ -542,10 +542,10 @@ public class App implements EntryPoint {
 		updateLoginState(null, null);
 		String userName = loginFrame.getEnteredUserName();
 		String password = loginFrame.getEnteredPassword();
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "atom-client.App starting login request to server", this);
+		AtomTools.log(Level.FINER, "atom-client.App starting login request to server", this);
 		RPCCaller.getSinglton().loginUser(userName, password, new Notifiable<String>() {
 			public void doNotify(String notifyReason) {
-				AtomTools.log(Log.LOG_LEVEL_TRACE, "atom-client.App recieved login response from server: " + notifyReason, this);
+				AtomTools.log(Level.FINER, "atom-client.App recieved login response from server: " + notifyReason, this);
 				if (notifyReason.startsWith("login successful;")) {
 					updateLoginState(true, notifyReason.substring("login successful;".length()));
 				} else {
@@ -622,13 +622,13 @@ public class App implements EntryPoint {
 	}
 
 	public static void actionExport() {
-//		AtomTools.log(Log.LOG_LEVEL_INFO, "Window.Location.getQueryString() = " + Window.Location.getQueryString(), singleton);
-//		AtomTools.log(Log.LOG_LEVEL_INFO, "Window.Location.getHref() = " + Window.Location.getHref() , singleton);
-//		AtomTools.log(Log.LOG_LEVEL_INFO, "Window.Location.getPath() = " + Window.Location.getPath() , singleton);
-//		AtomTools.log(Log.LOG_LEVEL_INFO, "Window.Location.getPath() = " + Window.Location.getHost() , singleton);
+//		AtomTools.log(Level.INFO, "Window.Location.getQueryString() = " + Window.Location.getQueryString(), singleton);
+//		AtomTools.log(Level.INFO, "Window.Location.getHref() = " + Window.Location.getHref() , singleton);
+//		AtomTools.log(Level.INFO, "Window.Location.getPath() = " + Window.Location.getPath() , singleton);
+//		AtomTools.log(Level.INFO, "Window.Location.getPath() = " + Window.Location.getHost() , singleton);
 		
 		String url = Window.Location.getHref();
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "originalUrl = " + url , singleton);
+		AtomTools.log(Level.FINER, "originalUrl = " + url , singleton);
 		
 		//String commingFrom = url.substring(url.indexOf("#")+1);
 		
@@ -637,7 +637,7 @@ public class App implements EntryPoint {
 		else if(url.contains("#"))
 			url = url.substring(0, url.indexOf("#"));
 		
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "cutUrl = " + url , singleton);
+		AtomTools.log(Level.FINER, "cutUrl = " + url , singleton);
 		
 		url = AtomTools.ensureEndsWithSlash(url);
 		
@@ -649,13 +649,13 @@ public class App implements EntryPoint {
 			
 		url += "export?class=" + singleton.lastShownFrame.getRepresentedClass().getName();
 		url += "&filter=" + AtomTools.getFilterString(singleton.lastShownFrame.getDataFilters());
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "finishedUrl = " + url , singleton);
+		AtomTools.log(Level.FINER, "finishedUrl = " + url , singleton);
 		
 		Window.open(url, "_blank", "");
 	}
 
 	public static void actionImport() {
-		AtomTools.log(Log.LOG_LEVEL_INFO, "importAction called", singleton);
+		AtomTools.log(Level.INFO, "importAction called", singleton);
 		DomainClass domainClass = singleton.lastShownFrame.getRepresentedClass();
 		if (!singleton.history.activateFrameIfExists(null, domainClass, null, null, AtomConfig.FrameType.IMPORT)) {
 			singleton.centerHeader.setLoading(true);
@@ -712,7 +712,7 @@ public class App implements EntryPoint {
 
 						@Override
 						public void requestFailed(String reason) {
-							AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+							AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 						}
 
 						@Override
@@ -745,12 +745,12 @@ public class App implements EntryPoint {
 					)
 				)
 			) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "User does not have write access to this object, set editable=false!", this);
+			AtomTools.log(Level.SEVERE, "User does not have write access to this object, set editable=false!", this);
 			editable = false;
 		}
 
 		if (object == null && !editable) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "It makes absolutly no sense to create a read-only DetailView for a new instance!", this);
+			AtomTools.log(Level.WARNING, "It makes absolutly no sense to create a read-only DetailView for a new instance!", this);
 			return;
 		}
 
@@ -805,7 +805,7 @@ public class App implements EntryPoint {
 		int returnValue = singleton.testarea.getOffsetWidth();
 		singleton.testarea.getElement().setInnerHTML("");
 		
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "found pixel width = " + returnValue + " for string '" + text + "' ; maxWidth = " + getTextWidthTestAreaMaxWidth(), singleton);
+		AtomTools.log(Level.FINER, "found pixel width = " + returnValue + " for string '" + text + "' ; maxWidth = " + getTextWidthTestAreaMaxWidth(), singleton);
 		return returnValue;
 	}
 
@@ -832,7 +832,7 @@ public class App implements EntryPoint {
 		if (widget instanceof AtomDNDWidget)
 			singleton.dragController.makeDraggable(widget);
 		else
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "only Widgets that implement the interface AtomDNDWidget are allowed to be made dragable in ATOM! given widget='"
+			AtomTools.log(Level.SEVERE, "only Widgets that implement the interface AtomDNDWidget are allowed to be made dragable in ATOM! given widget='"
 					+ widget + "'", singleton);
 	}
 
@@ -840,7 +840,7 @@ public class App implements EntryPoint {
 		try {
 			singleton.dragController.makeNotDraggable(widget);
 		} catch (Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "makeNotDraggable failed: " + t.toString(), singleton);
+			AtomTools.log(Level.SEVERE, "makeNotDraggable failed: " + t.toString(), singleton);
 			t.printStackTrace();
 		}
 	}
@@ -879,7 +879,7 @@ public class App implements EntryPoint {
 	
 						@Override
 						public void requestFailed(String reason) {
-							AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+							AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 						}
 	
 						@Override
@@ -941,14 +941,14 @@ public class App implements EntryPoint {
 					onlyRelated = true;
 				} else {
 					onlyRelated = false;
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown LIST history String format: " + command, singleton);
+					AtomTools.log(Level.SEVERE, "unknown LIST history String format: " + command, singleton);
 				}
 	
 				RPCCaller.getSinglton().getDomainTree(new WaitingFor<DomainClass>() {
 	
 					@Override
 					public void requestFailed(String reason) {
-						AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+						AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 					}
 	
 					@Override
@@ -970,7 +970,7 @@ public class App implements EntryPoint {
 	
 					@Override
 					public void requestFailed(String reason) {
-						AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+						AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 					}
 	
 					@Override
@@ -1078,7 +1078,7 @@ public class App implements EntryPoint {
 
 			@Override
 			public void requestFailed(String reason) {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "could not get domainTree! -> " + reason, this);
+				AtomTools.log(Level.SEVERE, "could not get domainTree! -> " + reason, this);
 			}
 
 			@Override
@@ -1165,7 +1165,7 @@ public class App implements EntryPoint {
 
 	public static void requestSecondResize() {
 		singleton.secondResizeRequested = true;
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "secondResizeRequested", singleton);
+		AtomTools.log(Level.FINER, "secondResizeRequested", singleton);
 	}
 
 	public static void setLoadingState(boolean isCurrentlyLoading, Frame frame) {
@@ -1199,7 +1199,7 @@ public class App implements EntryPoint {
 
 	private PopupPanel cISObjectMenu = null;
 	private void openCISMenue() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "opening cISObjectMenu", this);
+		AtomTools.log(Level.FINER, "opening cISObjectMenu", this);
 		if (loggedIn) {
 			if (cISObjectMenu == null) {
 				makeCISMenue();
@@ -1212,12 +1212,12 @@ public class App implements EntryPoint {
 	}
 
 	private void closeOpenMenue() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "closing cISObjectMenu", this);
+		AtomTools.log(Level.FINER, "closing cISObjectMenu", this);
 		cISObjectMenu.hide();
 	}
 
 	private void makeCISMenue() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "making cISObjectMenu", this);
+		AtomTools.log(Level.FINER, "making cISObjectMenu", this);
 		if (cISObjectMenu == null) {
 			cISObjectMenu = new PopupPanel(true);
 			ObjectSelectorMenue popupObjectSelector = ObjectSelectorMenue.getSinglton();
@@ -1235,13 +1235,13 @@ public class App implements EntryPoint {
 			Timer timer = new Timer() {
 				@Override
 				public void run() {
-					AtomTools.log(Log.LOG_LEVEL_TRACE, "running cISObjectMenu Timer", this);
+					AtomTools.log(Level.FINER, "running cISObjectMenu Timer", this);
 					closeOpenMenue();
 					openCISMenue();
 				}
 			};
 			timer.run();
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "scheduling cISObjectMenu Timer", this);
+			AtomTools.log(Level.FINER, "scheduling cISObjectMenu Timer", this);
 			timer.schedule(200);
 		}
 	}

@@ -17,7 +17,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomConfig.FrameType;
@@ -226,7 +226,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 
 	public FrameType getFrameType() {
 		if(frameType == null)
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "FrameType must never be null!", this);
+			AtomTools.log(Level.SEVERE, "FrameType must never be null!", this);
 		return frameType;
 	}
 
@@ -286,7 +286,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 
 	public int getFrameHashCode() {
 		if(representedClass == null && nameOfRepresentedClass != null && nameOfRepresentedClass.length() > 0)
-			AtomTools.log(Log.LOG_LEVEL_WARN, "cannot calculate frameHashCode since we are missing the representedClass!", this);
+			AtomTools.log(Level.WARNING, "cannot calculate frameHashCode since we are missing the representedClass!", this);
 		return AtomTools.getFrameHashCode(representedClass, representedInstance, representedSearchString, frameType, filters);
 	}
 	
@@ -307,7 +307,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 				value += 71 * f.hashCode();
 			}
 		
-		// AtomTools.log(Log.LOG_LEVEL_INFO, "return hashCode = " + value +
+		// AtomTools.log(Level.INFO, "return hashCode = " + value +
 		// " for frame " + this.shortTitle, this);
 		return value;
 	}

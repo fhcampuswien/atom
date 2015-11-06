@@ -4,10 +4,11 @@
  */
 package at.ac.fhcampuswien.atom.client;
 
-import at.ac.fhcampuswien.atom.shared.AtomTools;
+import java.util.logging.Level;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
+
+import at.ac.fhcampuswien.atom.shared.AtomTools;
 
 public class ClientConfig {
 
@@ -94,7 +95,7 @@ public class ClientConfig {
     public static String getBrowserType() {
 	if (cachedBrowserType == null) {
 		cachedBrowserType = getBrowserTypeNative();
-		AtomTools.log(Log.LOG_LEVEL_INFO, "browser-type: '" + cachedBrowserType + "'", getInstance());
+		AtomTools.log(Level.INFO, "browser-type: '" + cachedBrowserType + "'", getInstance());
 	}
 	return cachedBrowserType;
     }

@@ -83,12 +83,12 @@ public class LoginPage extends Page {
 				public boolean until() {
 					try {
 						System.out.println("starting call of logInOutButtonGlobal.getText() #" + counter);
-//						AtomTools.log(Log.LOG_LEVEL_INFO, "starting call of logInOutButtonGlobal.getText() #" + counter, this);
+//						AtomTools.log(Level.INFO, "starting call of logInOutButtonGlobal.getText() #" + counter, this);
 						String text = logInOutButtonGlobal.getText();
 						if (text == null)
 							text = "NULL";
 						System.out.println("#" + counter + " logInOutButtonGlobal.getText() = " + text);
-//						AtomTools.log(Log.LOG_LEVEL_INFO, "#" + counter + " logInOutButtonGlobal.getText() = " + text, this);
+//						AtomTools.log(Level.INFO, "#" + counter + " logInOutButtonGlobal.getText() = " + text, this);
 						counter++;
 						return AtomTools.getMessages().login().equals(text) || AtomTools.getMessages().logout().equals(text);
 					}

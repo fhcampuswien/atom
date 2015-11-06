@@ -12,29 +12,29 @@ import org.apache.commons.pool.BasePoolableObjectFactory;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 public class PoolableEntityManagerFactory extends BasePoolableObjectFactory<EntityManager> {
 	
 	private EntityManagerFactory emFactory;
 
 	public PoolableEntityManagerFactory() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "creating new EntityManagerFactory", this);
+		AtomTools.log(Level.FINER, "creating new EntityManagerFactory", this);
 		emFactory = Persistence.createEntityManagerFactory("atom");
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "created new EntityManagerFactory", this);
+		AtomTools.log(Level.FINER, "created new EntityManagerFactory", this);
 	}
 
 	@Override
 	public EntityManager makeObject() {
 		try {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "calling EntityManagerFactory.createEntityManager()", this);
+			AtomTools.log(Level.FINER, "calling EntityManagerFactory.createEntityManager()", this);
 			EntityManager val = emFactory.createEntityManager();
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "successfully created EntityManager, returning it to caller", this);
+			AtomTools.log(Level.FINER, "successfully created EntityManager, returning it to caller", this);
 			return val;
 		} catch (Throwable t) {
 			// I think this will happen when a db-connection-timeout happens (or
 			// something like that..)
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "emFactory.createEntityManager() failed! will try to close the factory and create a new one", this);
+			AtomTools.log(Level.SEVERE, "emFactory.createEntityManager() failed! will try to close the factory and create a new one", this);
 			synchronized (emFactory) {
 				try {
 					emFactory.close();

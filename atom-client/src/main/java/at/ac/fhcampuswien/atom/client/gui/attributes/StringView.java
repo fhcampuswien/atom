@@ -6,13 +6,13 @@ package at.ac.fhcampuswien.atom.client.gui.attributes;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 public class StringView extends SimpleView<String> {
 
 	@Override
 	protected void readValue() {
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "StringView readValue() ; textBox=" + textBox, this);
+		AtomTools.log(Level.FINE, "StringView readValue() ; textBox=" + textBox, this);
 		this.value = textBox.getText();
 	}
 

@@ -20,7 +20,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.resources.client.CssResource;
@@ -67,7 +67,7 @@ public class DomainObjectListFrame extends Frame {
 
 		makeRPCCallerCacheListBoxValues();
 		
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectListFrame Constructor finished (" + domainClass.getName() + " - " + relatedOnly + ")", this);
+		AtomTools.log(Level.FINER, "DomainObjectListFrame Constructor finished (" + domainClass.getName() + " - " + relatedOnly + ")", this);
 
 		// RPCCaller.getSinglton().loadListOfDomainObjects(representedClass,
 		// filters, sorters, fromRow, pageSize, false, listNotifier);
@@ -135,7 +135,7 @@ public class DomainObjectListFrame extends Frame {
 
 					@Override
 					public void requestFailed(String reason) {
-						AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxChoices failed -> " + reason, this);
+						AtomTools.log(Level.SEVERE, "getListBoxChoices failed -> " + reason, this);
 						listBoxValuesCachingOpenCalls--;
 					}
 
@@ -191,7 +191,7 @@ public class DomainObjectListFrame extends Frame {
 	// @Override
 	// public void onFailure(Throwable caught) {
 	// domainObjectListWidget.showError("Beim laden der Daten vom Server ist ein Fehler aufgetreten.");
-	// AtomTools.log(Log.LOG_LEVEL_ERROR, "fehler beim laden der liste: " +
+	// AtomTools.log(Level.SEVERE, "fehler beim laden der liste: " +
 	// caught, this);
 	// }
 	//

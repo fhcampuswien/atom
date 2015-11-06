@@ -11,7 +11,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -25,7 +25,7 @@ public class DndPanel extends SimplePanel implements AtomDNDWidget {
 	// private MouseListenerCollection mouseListeners;
 
 	public DndPanel() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DndPanel created", this);
+		AtomTools.log(Level.FINER, "DndPanel created", this);
 		this.sinkEvents(Event.ONDBLCLICK);
 //		this.getElement().getStyle().setProperty("border", "2px inset");
 		
@@ -64,6 +64,6 @@ public class DndPanel extends SimplePanel implements AtomDNDWidget {
 	}
 
 	public void previewDragStart(int x, int y) throws VetoDragException {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DndPanel.previewDragStart called, x=" + x + ", y=" + y, this);
+		AtomTools.log(Level.FINER, "DndPanel.previewDragStart called, x=" + x + ", y=" + y, this);
 	}
 }

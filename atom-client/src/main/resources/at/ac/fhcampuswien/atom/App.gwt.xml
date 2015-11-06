@@ -26,12 +26,14 @@
 
 	<inherits name="com.google.gwt.resources.Resources" />
 
-	<inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
+	<inherits name="com.google.gwt.logging.Logging"/>
+
+	<!-- <inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
 	<set-property name="log_ConsoleLogger" value="ENABLED" />
 	<set-property name="log_DivLogger" value="DISABLED" />
-	<!-- <set-property name="log_FirebugLogger" value="ENABLED" /> -->
+	<set-property name="log_FirebugLogger" value="ENABLED" />
 	<set-property name="log_GWTLogger" value="ENABLED" />
-	<set-property name="log_SystemLogger" value="ENABLED" />
+	<set-property name="log_SystemLogger" value="ENABLED" /> -->
 
 	<!-- Include GWTUpload library -->
 	<inherits name="gwtupload.GWTUpload" />

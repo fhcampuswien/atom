@@ -45,7 +45,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 /**
  * @author kaefert
@@ -104,31 +104,31 @@ public class UploadImportServlet extends HttpServlet {
 		}
 
 		String className = req.getParameter("class");
-		AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost (changed), class=" + className, this);
+		AtomTools.log(Level.INFO, "UploadImportServlet doPost (changed), class=" + className, this);
 
 		// process only multipart requests
 		if (ServletFileUpload.isMultipartContent(req)) {
 
-			AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost isMultipartContent = true", this);
+			AtomTools.log(Level.INFO, "UploadImportServlet doPost isMultipartContent = true", this);
 
 			// Create a factory for disk-based file items
 			FileItemFactory factory = new DiskFileItemFactory();
-			AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost created FileItemFactory instance", this);
+			AtomTools.log(Level.INFO, "UploadImportServlet doPost created FileItemFactory instance", this);
 
 			// Create a new file upload handler
 			ServletFileUpload upload = new ServletFileUpload(factory);
-			AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost created ServletFileUpload instance", this);
+			AtomTools.log(Level.INFO, "UploadImportServlet doPost created ServletFileUpload instance", this);
 
 			// List<FileItem> items = new ServletFileUpload(new
 			// DiskFieleItemFactory()).parseRequest(req);
 
 			// Parse the request
 			try {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost start upload.parseRequest(req)", this);
+				AtomTools.log(Level.INFO, "UploadImportServlet doPost start upload.parseRequest(req)", this);
 
 				List<?> items = upload.parseRequest(req);
 
-				AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost FileItems count = " + items.size(), this);
+				AtomTools.log(Level.INFO, "UploadImportServlet doPost FileItems count = " + items.size(), this);
 				for (Object itemobj : items)
 				if (itemobj instanceof FileItem) {
 
@@ -140,13 +140,13 @@ public class UploadImportServlet extends HttpServlet {
 						// type="text|radio|checkbox|etc", select, etc).
 						String fieldname = item.getFieldName();
 						String fieldvalue = item.getString();
-						AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost FormField:" + fieldname + " ; " + fieldvalue, this);
+						AtomTools.log(Level.INFO, "UploadImportServlet doPost FormField:" + fieldname + " ; " + fieldvalue, this);
 						// ... (do your job here)
 					} else {
 						// Process form file field (input type="file").
 						String fieldname = item.getFieldName();
 						String filename = item.getName();
-						AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost File: " + fieldname + " ; " + filename, this);
+						AtomTools.log(Level.INFO, "UploadImportServlet doPost File: " + fieldname + " ; " + filename, this);
 						// String filename =
 						// FilenameUtils.getName(item.getName());
 						InputStream filecontent = item.getInputStream();
@@ -155,8 +155,8 @@ public class UploadImportServlet extends HttpServlet {
 				}
 
 			} catch (Throwable t) {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "UploadImportServlet doPost error happened: " + t.getClass() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, this);
+				AtomTools.log(Level.SEVERE, "UploadImportServlet doPost error happened: " + t.getClass() + " - " + t.getMessage(), this);
+				AtomTools.logStackTrace(Level.SEVERE, t, this);
 				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while creating the file : " + t.getMessage());
 				// org.apache.commons.io.output.DeferredFileOutputStream
 				if(t instanceof AtomException)
@@ -166,11 +166,11 @@ public class UploadImportServlet extends HttpServlet {
 			}
 
 		} else {
-			AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost isMultipartContent = false", this);
+			AtomTools.log(Level.INFO, "UploadImportServlet doPost isMultipartContent = false", this);
 			resp.sendError(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "Request contents type is not supported by this servlet.");
 		}
 
-		AtomTools.log(Log.LOG_LEVEL_INFO, "UploadImportServlet doPost end of method", this);
+		AtomTools.log(Level.INFO, "UploadImportServlet doPost end of method", this);
 		// super.doPost(req, resp);
 	}
 
@@ -200,7 +200,7 @@ public class UploadImportServlet extends HttpServlet {
 				
 //				for (Iterator<Cell> ic = row.cellIterator(); ic.hasNext();) {
 //					HSSFCell myCell = (HSSFCell) ic.next();
-//					// AtomTools.log(Log.LOG_LEVEL_INFO, "" +
+//					// AtomTools.log(Level.INFO, "" +
 //					// myCell.getStringCellValue(), this);
 //					// rowData.add(myCell.getStringCellValue());
 //					rowData.add(myCell);
@@ -211,8 +211,8 @@ public class UploadImportServlet extends HttpServlet {
 			processData(sheetData, session, className);
 
 		} catch (Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "UploadImportServlet doPost uploaded file could not be parsed as HSSFWorkbook!! " + t.getMessage(), this);
-			AtomTools.logStackTrace(Log.LOG_LEVEL_ERROR, t, this);
+			AtomTools.log(Level.SEVERE, "UploadImportServlet doPost uploaded file could not be parsed as HSSFWorkbook!! " + t.getMessage(), this);
+			AtomTools.logStackTrace(Level.SEVERE, t, this);
 			throw new AtomException(t);
 		}
 	}
@@ -261,21 +261,21 @@ public class UploadImportServlet extends HttpServlet {
 		if (objectID != null) {
 			instance = server.getDomainObject(session, objectID.intValue(), ServerTools.getClassForName(className));
 			if (instance == null)
-				AtomTools.log(Log.LOG_LEVEL_WARN, "Importer: cannot update DomainObject with ID " + objectID + ", since it does not exist. ", this);
+				AtomTools.log(Level.WARNING, "Importer: cannot update DomainObject with ID " + objectID + ", since it does not exist. ", this);
 			else {
 				Boolean delete = getBooleanValueOfCell(fields.get("DELETE"));
 				if (delete != null && delete.booleanValue() == true) {
-					AtomTools.log(Log.LOG_LEVEL_INFO, "Importer: Deleting DomainObject " + objectID, this);
+					AtomTools.log(Level.INFO, "Importer: Deleting DomainObject " + objectID, this);
 					server.deleteDomainObject(session, instance);
 				} else {
-					AtomTools.log(Log.LOG_LEVEL_INFO, "Importer: Updating DomainObject " + objectID, this);
+					AtomTools.log(Level.INFO, "Importer: Updating DomainObject " + objectID, this);
 					updateFields(instance, fields, className, session);
 					server.saveDomainObject(session, instance);
 				}
 			}
 		} else {
 			instance = createInstance(className);
-			AtomTools.log(Log.LOG_LEVEL_INFO, "Importer: Created new DomainObject with ID " + instance.getObjectID(), this);
+			AtomTools.log(Level.INFO, "Importer: Created new DomainObject with ID " + instance.getObjectID(), this);
 			updateFields(instance, fields, className, session);
 			server.saveDomainObject(session, instance);
 		}
@@ -332,17 +332,17 @@ public class UploadImportServlet extends HttpServlet {
 					setAttribute.invoke(instance, new Object[] { objects });
 				
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_ERROR, "setting of attributes with this Class not implemented: " + attributeClass.toString(), this);
+				AtomTools.log(Level.SEVERE, "setting of attributes with this Class not implemented: " + attributeClass.toString(), this);
 			}
 
 		} catch (NoSuchMethodException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "reflClass.getMethod failed, " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "reflClass.getMethod failed, " + e.getMessage(), this);
 		} catch (IllegalAccessException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "setAttribute.invoke failed, " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "setAttribute.invoke failed, " + e.getMessage(), this);
 		} catch (IllegalArgumentException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "setAttribute.invoke failed, " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "setAttribute.invoke failed, " + e.getMessage(), this);
 		} catch (InvocationTargetException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "setAttribute.invoke failed, " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "setAttribute.invoke failed, " + e.getMessage(), this);
 		}
 	}
 	
@@ -371,19 +371,19 @@ public class UploadImportServlet extends HttpServlet {
 			return (DomainObject) instance;
 
 		} catch (ClassNotFoundException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Class.forName failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Class.forName failed! - " + e.getMessage(), this);
 		} catch (NoSuchMethodException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Class.getConstructor failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Class.getConstructor failed! - " + e.getMessage(), this);
 		} catch (SecurityException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Class.getConstructor failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Class.getConstructor failed! - " + e.getMessage(), this);
 		} catch (InstantiationException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Constructor.newInstance failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Constructor.newInstance failed! - " + e.getMessage(), this);
 		} catch (IllegalAccessException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Constructor.newInstance failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Constructor.newInstance failed! - " + e.getMessage(), this);
 		} catch (IllegalArgumentException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Constructor.newInstance failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Constructor.newInstance failed! - " + e.getMessage(), this);
 		} catch (InvocationTargetException e) {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "Constructor.newInstance failed! - " + e.getMessage(), this);
+			AtomTools.log(Level.SEVERE, "Constructor.newInstance failed! - " + e.getMessage(), this);
 		}
 		return null;
 	}
@@ -417,7 +417,7 @@ public class UploadImportServlet extends HttpServlet {
 			return Double.parseDouble(cell.getStringCellValue());
 
 		default:
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
+			AtomTools.log(Level.SEVERE, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
 			return null;
 		}
 	}
@@ -450,10 +450,10 @@ public class UploadImportServlet extends HttpServlet {
 				try {
 					return ServerTools.dateFormat.parse(cell.getStringCellValue());
 				} catch (ParseException e) {
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "SimpleDateFormat.getInstance().parse(value) failed, " + e.getMessage(), this);
+					AtomTools.log(Level.SEVERE, "SimpleDateFormat.getInstance().parse(value) failed, " + e.getMessage(), this);
 				}
 		}
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
+		AtomTools.log(Level.SEVERE, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
 		return null;
 	}
 
@@ -490,7 +490,7 @@ public class UploadImportServlet extends HttpServlet {
 			
 			return (v.toLowerCase().contains("yes") || v.toLowerCase().contains("true") || v.toLowerCase().contains("ja") || v.contains("wahr") || v.equals("1"));
 		}
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
+		AtomTools.log(Level.SEVERE, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
 		return null;
 	}
 
@@ -522,7 +522,7 @@ public class UploadImportServlet extends HttpServlet {
 			return cell.getStringCellValue();
 			
 		}
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
+		AtomTools.log(Level.SEVERE, "unknown celltype: " + cellType + "; content of cell = " + cell.toString(), this);
 		return null;
 		
 	}

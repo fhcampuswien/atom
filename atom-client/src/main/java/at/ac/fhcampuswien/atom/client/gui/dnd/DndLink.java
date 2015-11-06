@@ -11,7 +11,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
@@ -101,7 +101,7 @@ public class DndLink extends FocusPanel implements AtomDNDWidget {
 
 	@Override
 	public void previewDragStart(int x, int y) throws VetoDragException {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DndLabel.previewDragStart(x="+x+",y="+y+")", this);
+		AtomTools.log(Level.FINER, "DndLabel.previewDragStart(x="+x+",y="+y+")", this);
 		if(!draggable())
 			throw new VetoDragException();
 	}

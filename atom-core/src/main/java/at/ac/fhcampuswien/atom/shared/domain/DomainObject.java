@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +25,9 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import com.google.gwt.user.client.rpc.GwtTransient;
+import com.gwtent.reflection.client.Reflectable;
 
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
@@ -44,10 +48,6 @@ import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
 import at.ac.fhcampuswien.atom.shared.annotations.OrderedAttributeGroups;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.GwtTransient;
-import com.gwtent.reflection.client.Reflectable;
 
 /**
  * 
@@ -318,9 +318,9 @@ public class DomainObject implements Serializable, com.google.gwt.user.client.rp
 	@AnalyzerIgnore
 	public void setUserPermissions(Set<String> userPermissions) {
 		if(userPermissions != null && userPermissions.size() == 1 && AtomConfig.accessCreateNew.equals(userPermissions.iterator().next()))
-			AtomTools.log(Log.LOG_LEVEL_INFO, "conditional breakpoint workaround", this);
+			AtomTools.log(Level.INFO, "conditional breakpoint workaround", this);
 		if(userPermissions != null && userPermissions.size() == 0)
-			AtomTools.log(Log.LOG_LEVEL_INFO, "conditional breakpoint workaround2", this);
+			AtomTools.log(Level.INFO, "conditional breakpoint workaround2", this);
 		this.userPermissions = userPermissions;
 	}
 

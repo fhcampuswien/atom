@@ -12,7 +12,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -32,7 +32,7 @@ public class DndListBox extends ListBox implements AtomDNDWidget {
 	public DndListBox() {
 		super(true);
 		this.setVisibleItemCount(5);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DndListBox created", this);
+		AtomTools.log(Level.FINER, "DndListBox created", this);
 		this.sinkEvents(Event.ONDBLCLICK);
 //		this.getElement().getStyle().setProperty("border", "2px inset");
 		
@@ -45,7 +45,7 @@ public class DndListBox extends ListBox implements AtomDNDWidget {
 				char code = event.getCharCode(); 
 				NativeEvent nativeEvent = event.getNativeEvent();
 				int keyCode = nativeEvent.getKeyCode();
-//				AtomTools.log(Log.LOG_LEVEL_TRACE, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
+//				AtomTools.log(Level.FINER, "login_passwordbox_keyPress; UnicodeCharCode=\""+unicode+"\" ; keyCode=\""+ keyCode +" ; CharCode=\""+String.valueOf(code)+"\"<endofline>", this);
 				
 				if(code == '\n' || code == '\r' || (unicode == 0 && keyCode == 13)) { 
 					if (representedObjects.size() > 0 && DndListBox.this.getSelectedIndex() != -1)
@@ -58,7 +58,7 @@ public class DndListBox extends ListBox implements AtomDNDWidget {
 //			
 //			@Override
 //			public void onMouseDown(MouseDownEvent event) {
-//				AtomTools.log(Log.LOG_LEVEL_TRACE, "MouseDownEvent: '" + event + "'", this);
+//				AtomTools.log(Level.FINER, "MouseDownEvent: '" + event + "'", this);
 //			}
 //		});
 	}
@@ -78,12 +78,12 @@ public class DndListBox extends ListBox implements AtomDNDWidget {
 
 	public void onBrowserEvent(Event event) {
 		if (DOM.eventGetType(event) == Event.ONDBLCLICK) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "doubleclick: '" + event + "'", this);
+			AtomTools.log(Level.FINER, "doubleclick: '" + event + "'", this);
 			if (representedObjects.size() > 0 && this.getSelectedIndex() != -1)
 				App.openDetailView(representedObjects.get(this.getSelectedIndex()), null, false);
 		}
 		if (DOM.eventGetType(event) == Event.ONCLICK) {
-			AtomTools.log(Log.LOG_LEVEL_TRACE, "ONCLICK: '" + event + "'", this);
+			AtomTools.log(Level.FINER, "ONCLICK: '" + event + "'", this);
 		}
 		super.onBrowserEvent(event);
 	}

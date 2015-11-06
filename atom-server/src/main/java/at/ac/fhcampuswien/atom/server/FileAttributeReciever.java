@@ -28,7 +28,7 @@ import org.apache.commons.fileupload.FileItem;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 public class FileAttributeReciever extends UploadAction {
 
@@ -54,7 +54,7 @@ public class FileAttributeReciever extends UploadAction {
 		
 		for (FileItem item : sessionFiles) {
 			if (item.isFormField()) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "got FormField " + item.getFieldName() + " = " + item.getString(), this);
+				AtomTools.log(Level.INFO, "got FormField " + item.getFieldName() + " = " + item.getString(), this);
 
 				if(item.getFieldName().contains("className"))
 					className = item.getString();
@@ -65,12 +65,12 @@ public class FileAttributeReciever extends UploadAction {
 						instanceID = Integer.valueOf(item.getString());
 				}
 				else {
-					AtomTools.log(Log.LOG_LEVEL_WARN, "FileAttributeReciever: got unknown FormField " + item.getFieldName() + " = " + item.getString(), this);
+					AtomTools.log(Level.WARNING, "FileAttributeReciever: got unknown FormField " + item.getFieldName() + " = " + item.getString(), this);
 				}
 				
 			} else {
 				if(fileItem != null)
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "FileAttributeReciever: got more than one fileItem!", this);
+					AtomTools.log(Level.SEVERE, "FileAttributeReciever: got more than one fileItem!", this);
 				
 				fileItem = item;
 				fileName = item.getName();

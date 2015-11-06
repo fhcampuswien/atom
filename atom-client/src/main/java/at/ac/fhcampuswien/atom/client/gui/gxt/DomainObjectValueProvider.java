@@ -14,7 +14,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.sencha.gxt.core.client.ValueProvider;
 
 final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, T> {
@@ -48,7 +48,7 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 	@SuppressWarnings("unchecked")
 	@Override
 	public T getValue(DomainObject object) {
-//		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectValueProvider.getValue(" + (object == null ? "null" : object.toString()) + ")", this);
+//		AtomTools.log(Level.FINER, "DomainObjectValueProvider.getValue(" + (object == null ? "null" : object.toString()) + ")", this);
 
 		if (special == Special.objectID)
 			return (T) object.getObjectID();
@@ -78,7 +78,7 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 	
 						@Override
 						public void requestFailed(String reason) {
-							AtomTools.log(Log.LOG_LEVEL_ERROR, "getListBoxChoices failed -> " + reason, this);
+							AtomTools.log(Level.SEVERE, "getListBoxChoices failed -> " + reason, this);
 						}
 	
 						@Override
@@ -121,19 +121,19 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 		}
 
 		else
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "this is wrong!", this);
+			AtomTools.log(Level.SEVERE, "this is wrong!", this);
 		return null;
 	}
 
 	@Override
 	public void setValue(DomainObject object, T value) {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectValueProvider.setValue(" + (object == null ? "null" : object.toString()) + ", "
+		AtomTools.log(Level.FINER, "DomainObjectValueProvider.setValue(" + (object == null ? "null" : object.toString()) + ", "
 				+ (value == null ? "null" : value.toString()) + ")", this);
 		//		if(special != Special.objectID && special != Special.stringRepresentation)
 		if (domainClass != null && attribute != null)
 			ClientTools.setAttributeValue(domainClass, attribute, object, value);
 		else
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "this is wrong!", this);
+			AtomTools.log(Level.SEVERE, "this is wrong!", this);
 	}
 
 	@Override
@@ -153,9 +153,9 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 		//			returnValue = domainClass.getName() + "." + attribute.getName();
 
 		else
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "this is wrong!", this);
+			AtomTools.log(Level.SEVERE, "this is wrong!", this);
 
-//		AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObjectValueProvider.getPath() --> " + returnValue, this);
+//		AtomTools.log(Level.FINER, "DomainObjectValueProvider.getPath() --> " + returnValue, this);
 		return returnValue;
 	}
 }

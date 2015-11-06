@@ -9,7 +9,7 @@ import at.ac.fhcampuswien.atom.client.gui.dnd.DndLabel;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -145,7 +145,7 @@ public class CenterHeader extends Composite {
 
 	public void setHeader(String newHeader) {
 		if(newHeader == null)
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "there is something seriously wrong here, parameter newHeader must not be null!", this);
+			AtomTools.log(Level.SEVERE, "there is something seriously wrong here, parameter newHeader must not be null!", this);
 		
 		String shortened = App.getShortenedString(newHeader, panelStyle.header(), getOffsetWidth() - buttonSpace - 10);
 		centerHeaderLabel.setText(shortened);

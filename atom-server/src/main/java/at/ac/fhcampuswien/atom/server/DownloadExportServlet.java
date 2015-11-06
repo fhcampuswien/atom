@@ -26,7 +26,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 public class DownloadExportServlet extends HttpServlet {
 
@@ -166,11 +166,11 @@ public class DownloadExportServlet extends HttpServlet {
 				}
 				catch (java.lang.IllegalArgumentException e) {
 					e.printStackTrace();
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "this is bad (data?)! data = " + data[rowNum][cellNum], this);
+					AtomTools.log(Level.SEVERE, "this is bad (data?)! data = " + data[rowNum][cellNum], this);
 				}
 				catch(Throwable t) {
 					t.printStackTrace();
-					AtomTools.log(Log.LOG_LEVEL_ERROR, "this is bad! - data = " + data[rowNum][cellNum], this);
+					AtomTools.log(Level.SEVERE, "this is bad! - data = " + data[rowNum][cellNum], this);
 				}
 
 			}

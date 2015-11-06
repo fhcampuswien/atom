@@ -38,7 +38,7 @@ import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 
 public class ServerTools {
 
@@ -75,12 +75,12 @@ public class ServerTools {
 		
 		for(String s : allowedDebugHosts) {
 			if(referer.contains(s)) {
-				AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain found " + s + " in the referer string. Using it as host for authcookie; referer = " + referer, request);
+				AtomTools.log(Level.INFO, "getServerDomain found " + s + " in the referer string. Using it as host for authcookie; referer = " + referer, request);
 				return s;
 			}
 		}
 		
-		AtomTools.log(Log.LOG_LEVEL_INFO, "getServerDomain couldn't find one of the allowedDebugHosts in the referer string. Using '.fh-campuswien.ac.at' as host for authcookie; referer = " + referer, request);
+		AtomTools.log(Level.INFO, "getServerDomain couldn't find one of the allowedDebugHosts in the referer string. Using '.fh-campuswien.ac.at' as host for authcookie; referer = " + referer, request);
 		return ".fh-campuswien.ac.at";
 	}
 
@@ -88,7 +88,7 @@ public class ServerTools {
 		try {
 			return URLDecoder.decode(value, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			AtomTools.log(Log.LOG_LEVEL_FATAL, "This servers java can't decode UTF-8!", ServerTools.class);
+			AtomTools.log(Level.SEVERE, "This servers java can't decode UTF-8!", ServerTools.class);
 			throw new AtomException("This servers java can't decode UTF-8!");
 		}
 	}
@@ -98,7 +98,7 @@ public class ServerTools {
 			try {
 				return URLEncoder.encode(value, "UTF-8");
 			} catch (UnsupportedEncodingException e) {
-				AtomTools.log(Log.LOG_LEVEL_FATAL, "This servers java can't encode UTF-8!", ServerTools.class);
+				AtomTools.log(Level.SEVERE, "This servers java can't encode UTF-8!", ServerTools.class);
 				throw new AtomException("This servers java can't encode UTF-8!");
 			}
 		} else
@@ -111,7 +111,7 @@ public class ServerTools {
 
 	public static void setAuthCookie(HttpServletResponse response, String domain, String cookieValue) {
 		response.addHeader("Set-Cookie", "CAMPUSAUTH=" + encodeAuthCookie(cookieValue) + ";Path=/;Domain=" + domain + ";Secure;httponly");
-		AtomTools.log(Log.LOG_LEVEL_DEBUG, "Set-Cookie\", \"CAMPUSAUTH=\"******\";Path=/;Domain=" + domain + ";Secure;httponly", response);
+		AtomTools.log(Level.FINE, "Set-Cookie\", \"CAMPUSAUTH=\"******\";Path=/;Domain=" + domain + ";Secure;httponly", response);
 	}
 
 	public static void clearAuthCookie(HttpServletResponse response, String domain) {
@@ -199,17 +199,17 @@ public class ServerTools {
 		}
 
 		// TODO: remove debugging stuff
-		AtomTools.log(Log.LOG_LEVEL_TRACE, domainClass.getName() + " - " + domainObject.getStringRepresentation() + "(Task=" + task.name() + ")",
+		AtomTools.log(Level.FINER, domainClass.getName() + " - " + domainObject.getStringRepresentation() + "(Task=" + task.name() + ")",
 				"ServerTools.walkInstanceWeb");
 		// if(domainClass.getName().equals("at.ac.fhcampuswien.atom.shared.domain.Vortrag")) {
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "at.ac.fhcampuswien.atom.shared.domain.Vortrag instance found!", ServerTools.class);
+		// AtomTools.log(Level.FINER, "at.ac.fhcampuswien.atom.shared.domain.Vortrag instance found!", ServerTools.class);
 		// }
 		// if(domainClass.getName().equals("at.ac.fhcampuswien.atom.shared.domain.PortalPerson")) {
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "at.ac.fhcampuswien.atom.shared.domain.PortalPerson instance found!", ServerTools.class);
+		// AtomTools.log(Level.FINER, "at.ac.fhcampuswien.atom.shared.domain.PortalPerson instance found!", ServerTools.class);
 		// }
 
 		// loading the stringRepresentation
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "InstanceWebWalker: " + domainObject.getStringRepresentation(), ServerTools.class);
+		// AtomTools.log(Level.FINER, "InstanceWebWalker: " + domainObject.getStringRepresentation(), ServerTools.class);
 
 		boolean containsLazyStuff = false;
 
@@ -233,7 +233,7 @@ public class ServerTools {
 
 				if (AtomConfig.loadEverythingRelated || domainClassAttribute.isLoadedWhenNotPrimary()
 						|| (primary && (!partOfList || domainClassAttribute.isLoadedWithLists()))) {
-					AtomTools.log(Log.LOG_LEVEL_TRACE, "loading collection " + domainClassAttribute.getName() + " for instance " + domainObject.toString(),
+					AtomTools.log(Level.FINER, "loading collection " + domainClassAttribute.getName() + " for instance " + domainObject.toString(),
 							ServerTools.class);
 
 					@SuppressWarnings("unchecked")
@@ -339,7 +339,7 @@ public class ServerTools {
 		// domainClassAttribute.getName(), new Class[] {});
 		// Object value = getAttribute.invoke(domainObject, new Object[] {});
 		// String stringValue = value!=null ? value.toString() : "null";
-		// AtomTools.log(Log.LOG_LEVEL_TRACE, "DomainObject class \"" +
+		// AtomTools.log(Level.FINER, "DomainObject class \"" +
 		// domainClass.getSimpleName() +
 		// "\" instance \"" + domainObject.getStringRepresentation() +
 		// "\" attribute \"" + domainClassAttribute.getName() +
@@ -370,7 +370,7 @@ public class ServerTools {
 			} else if (source instanceof ArrayList || source.getClass().getName().endsWith("List")) {
 				destination = new ArrayList<Object>();
 			} else {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "unknownCollectionType passing through:" + source, ServerTools.class);
+				AtomTools.log(Level.WARNING, "unknownCollectionType passing through:" + source, ServerTools.class);
 				// FeaturedObject has special Lists which must be allowed to be
 				// sent to the client!
 				// throw new AtomException("unknown collection type!");
@@ -427,7 +427,7 @@ public class ServerTools {
 		if (fullRead)
 			return true;
 		else if (!linkage) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "user has no read and not even linkage permissions on this object instance! id=" + domainObject.getObjectID(),
+			AtomTools.log(Level.WARNING, "user has no read and not even linkage permissions on this object instance! id=" + domainObject.getObjectID(),
 					ServerTools.class);
 			return false;
 		} else {
@@ -449,7 +449,7 @@ public class ServerTools {
 							domainObject.addNullReasons(attribute.getName(), AtomConfig.nullReasonNotRelationEssential);
 						} catch (NoSuchMethodException e) {
 							AtomTools
-							.log(Log.LOG_LEVEL_ERROR,
+							.log(Level.SEVERE,
 									"Could not find get and/or set method for attribute "
 											+ attribute.getName()
 											+ ", therefore could not clear this attribute although it is not relationEssential and the user has only linkagePermission --> will not send this object to the client for safty reasons.",
@@ -506,12 +506,12 @@ public class ServerTools {
 //			for(DataFilter f : filters) {
 //				if(AtomConfig.specialFilterDeepSearch.equals(f.getColumn())) {
 //					if(deepSearch != null)
-//						AtomTools.log(Log.LOG_LEVEL_ERROR, "multiple DataFilters for the same column recieved! Server-Logic is not designed to return meaningful results for such requests!", ServerTools.class);
+//						AtomTools.log(Level.SEVERE, "multiple DataFilters for the same column recieved! Server-Logic is not designed to return meaningful results for such requests!", ServerTools.class);
 //					deepSearch = f;
 //				}
 //				else if(AtomConfig.specialFilterQuickSearch.equals(f.getColumn())) {
 //					if(quickSearch != null)
-//						AtomTools.log(Log.LOG_LEVEL_ERROR, "multiple DataFilters for the same column recieved! Server-Logic is not designed to return meaningful results for such requests!", ServerTools.class);
+//						AtomTools.log(Level.SEVERE, "multiple DataFilters for the same column recieved! Server-Logic is not designed to return meaningful results for such requests!", ServerTools.class);
 //					quickSearch = f;
 //				}
 //			}
@@ -533,7 +533,7 @@ public class ServerTools {
 //					onlyScanStringRepresentation = false;
 //				}
 //				else {
-//					AtomTools.log(Log.LOG_LEVEL_ERROR, "the result for this request will not be correct. multiple deepSearch commands recieved.", ServerTools.class);
+//					AtomTools.log(Level.SEVERE, "the result for this request will not be correct. multiple deepSearch commands recieved.", ServerTools.class);
 //				}
 //			}
 //			if(quickSearch != null) {
@@ -885,7 +885,7 @@ public class ServerTools {
 								else
 									fromDB.add(em.find(obj.getClass(), obj.getObjectID()));
 							} else {
-								AtomTools.log(Log.LOG_LEVEL_FATAL, "this cannot happen", ServerTools.class);
+								AtomTools.log(Level.SEVERE, "this cannot happen", ServerTools.class);
 							}
 						}
 						setAttribute.invoke(domainObject, new Object[] { fromDB });
@@ -960,14 +960,14 @@ public class ServerTools {
 			}
 		}
 		catch(Throwable t) {
-			AtomTools.log(Log.LOG_LEVEL_WARN, "Transaction rollback failed", null, t);
+			AtomTools.log(Level.WARNING, "Transaction rollback failed", null, t);
 		}
 		if (em != null) {
 			try {
 				em.close();
 			}
 			catch(Throwable t) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "could not close EntityManager", null, t);
+				AtomTools.log(Level.WARNING, "could not close EntityManager", null, t);
 			}
 		}
 	}

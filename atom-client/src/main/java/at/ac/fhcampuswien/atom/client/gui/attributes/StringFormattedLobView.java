@@ -8,7 +8,7 @@ import at.ac.fhcampuswien.atom.client.gui.attributes.components.RichTextArea;
 import at.ac.fhcampuswien.atom.client.gui.attributes.components.RichTextToolbar;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.AttachEvent;
@@ -76,7 +76,7 @@ public class StringFormattedLobView extends AttributeView<String, RichTextArea, 
 			
 			@Override
 			public void onAttachOrDetach(AttachEvent event) {
-				AtomTools.log(Log.LOG_LEVEL_DEBUG, "textArea.onAttachOrDetach - " + event.toDebugString(), this);
+				AtomTools.log(Level.FINE, "textArea.onAttachOrDetach - " + event.toDebugString(), this);
 				fixIFrameDefaultFont(true);
 			}
 		});

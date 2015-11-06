@@ -18,7 +18,7 @@ import at.ac.fhcampuswien.atom.client.gui.attributes.components.ObservableListBo
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 
-import com.allen_sauer.gwt.log.client.Log;
+import java.util.logging.Level;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -76,7 +76,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 
 	@UiHandler("removeButton")
 	protected void onClick_removeButton(ClickEvent event) {
-		AtomTools.log(Log.LOG_LEVEL_INFO, "remove selected", this);
+		AtomTools.log(Level.INFO, "remove selected", this);
 		for (int i = listBox.getItemCount() - 1; i >= 0; i--) {
 			if (listBox.isItemSelected(i)) {
 				value.remove(elementsStrings.get(listBox.getItemText(i)));
@@ -106,7 +106,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 
 	@Override
 	protected void showValue() {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "CollectionView.showValue() called", this);
+		AtomTools.log(Level.FINER, "CollectionView.showValue() called", this);
 		
 		listBox.clear();
 
@@ -137,7 +137,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 			}
 				
 				
-			AtomTools.log(Log.LOG_LEVEL_DEBUG, "CollectionView.value.type = " + value.getClass().toString(), this);
+			AtomTools.log(Level.FINE, "CollectionView.value.type = " + value.getClass().toString(), this);
 			for (T item : displayList) {
 				String string = item.toString();
 				listBox.addItem(item);
@@ -171,7 +171,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 		listBox.setReadOnly(readOnly);
 		searchButton.setEnabled(!readOnly);
 		addButton.setEnabled(!readOnly);
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "CollectionView setReadOnly removeButtonLogic = " + (!readOnly && listBox.getSelectedIndex() != -1 && !empty), this);
+		AtomTools.log(Level.FINER, "CollectionView setReadOnly removeButtonLogic = " + (!readOnly && listBox.getSelectedIndex() != -1 && !empty), this);
 		removeButton.setEnabled(!readOnly && listBox.getSelectedIndex() != -1 && !empty);
 	}
 
@@ -184,7 +184,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	protected void addNewItem(Object newItem) {
 		if (newItem != null) {
 			if (value == null) {
-				AtomTools.log(Log.LOG_LEVEL_WARN, "creating arraylist for generic collection, this could be wrong!", this);
+				AtomTools.log(Level.WARNING, "creating arraylist for generic collection, this could be wrong!", this);
 				value = (C) new ArrayList<Object>();
 			}
 			value.add((T) newItem);
@@ -192,7 +192,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	}
 
 	protected void findOrCreateItemAndAddToCollection(boolean search) {
-		AtomTools.log(Log.LOG_LEVEL_INFO, "show popup to enter a new entry", this);
+		AtomTools.log(Level.INFO, "show popup to enter a new entry", this);
 		
 		new InputDialogBox(null, null, new InputDialogBox.Callback() {
 			
@@ -209,7 +209,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 			}
 		});
 		
-		AtomTools.log(Log.LOG_LEVEL_INFO, "popup showed", this);
+		AtomTools.log(Level.INFO, "popup showed", this);
 	}
 
 	/**
@@ -224,13 +224,13 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	}
 
 	public void onChange(ChangeEvent event) {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "ListBox onChange called: " + listBox.getSelectedIndex(), this);
+		AtomTools.log(Level.FINER, "ListBox onChange called: " + listBox.getSelectedIndex(), this);
 		setReadOnly(readOnly);
 		// decideDragable();
 	}
 
 	public void editItemAtIndex(int index) {
-		AtomTools.log(Log.LOG_LEVEL_TRACE, "edit index " + index, this);
+		AtomTools.log(Level.FINER, "edit index " + index, this);
 		if (!this.readOnly) {
 			new InputDialogBox(index == -1 ? null : listBox.getItem(index), null, new Callback() {
 				
@@ -248,12 +248,12 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	}
 
 	public void editItem(Object item, String newStrinValue) {
-		AtomTools.log(Log.LOG_LEVEL_ERROR, "If the Edit String Mechanism of the CollectionView is used, the editItem method must be overwritten", this);
+		AtomTools.log(Level.SEVERE, "If the Edit String Mechanism of the CollectionView is used, the editItem method must be overwritten", this);
 	}
 
 	// @Override
 	// public void onClick(ClickEvent event) {
-	// AtomTools.log(Log.LOG_LEVEL_TRACE, "ListBox onClick called; "
+	// AtomTools.log(Level.FINER, "ListBox onClick called; "
 	// + event.getSource().hashCode() + ";"
 	// + event.getNativeEvent().hashCode() + ";"
 	// + event.getRelativeElement().hashCode() + ";"

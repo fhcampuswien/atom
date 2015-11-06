@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.logging.Level;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 import at.ac.fhcampuswien.atom.shared.annotations.AttributePlacement;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class DomainClassAttribute implements Serializable, IsSerializable {
 
@@ -192,7 +192,7 @@ public class DomainClassAttribute implements Serializable, IsSerializable {
 		} else if (AttributePlacement.inGroupType.equals(type)) {
 			setPositionInGroup(value);
 		} else {
-			AtomTools.log(Log.LOG_LEVEL_ERROR, "unknown AttributePlacement Type", this);
+			AtomTools.log(Level.SEVERE, "unknown AttributePlacement Type", this);
 			setPosition(value);
 		}
 	}
