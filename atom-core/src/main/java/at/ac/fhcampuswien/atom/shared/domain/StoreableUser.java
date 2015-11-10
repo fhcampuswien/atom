@@ -81,7 +81,7 @@ public class StoreableUser extends DomainObject {
 	private Set<FeaturedObject> updatedInstances;
 	
 	public HashSet<Access> accessForMatchingOes(HashSet<AccessForOes> oeas) {
-		return null;
+		return new HashSet<Access>();
 	}
 	
 	public Set<FeaturedObject> getCreatedInstances() {
