@@ -146,6 +146,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 			listBox.getElement().getStyle().setHeight(60, Unit.PX);
 		}
 		
+		if(keyDisplayMap != null)
 		for (Map.Entry<String, String> entry : keyDisplayMap.entrySet()) {
 			listBox.addItem(entry.getValue(), entry.getKey());
 		}
