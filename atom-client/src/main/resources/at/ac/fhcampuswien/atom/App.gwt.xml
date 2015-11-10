@@ -27,6 +27,10 @@
 	<inherits name="com.google.gwt.resources.Resources" />
 
 	<inherits name="com.google.gwt.logging.Logging"/>
+	
+	<!-- <set-property name="gwt.logging.popupLogHandler" value="DISABLED"/> -->
+	<set-property name='gwt.logging.popupHandler' value='DISABLED'/>
+	<set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED" />
 
 	<!-- <inherits name="com.allen_sauer.gwt.log.gwt-log-TRACE" />
 	<set-property name="log_ConsoleLogger" value="ENABLED" />
