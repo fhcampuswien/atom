@@ -7,6 +7,7 @@ package at.ac.fhcampuswien.atom.shared.domain;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.logging.Level;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,10 +15,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomConfig.FrameType;
@@ -109,6 +109,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	//cascade = { CascadeType.ALL }, 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@AttributeLoadingPolicy(requiredForStringRepresentation=true, whenNotPrimary=true, withLists=true)
+	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	private StoreableUser visitor;
 
 	@Enumerated
@@ -119,7 +120,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 //	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
-//	@Cascade({org.hibernate.annotations.CascadeType.ALL})
+	@Cascade(value = {})
 	private DomainObject representedInstance;
 
 	private transient DomainClass representedClass;
