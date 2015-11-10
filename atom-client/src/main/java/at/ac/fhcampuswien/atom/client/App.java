@@ -253,7 +253,7 @@ public class App implements EntryPoint {
 		Window.addResizeHandler(new ResizeHandler() {
 
 			public void onResize(ResizeEvent event) {
-				AtomTools.log(Level.FINER, "resize event occured!", this);
+				AtomTools.log(Level.FINEST, "resize event occured!", this);
 				App.this.resize(event);
 			}
 		});
@@ -278,7 +278,7 @@ public class App implements EntryPoint {
 			
 			@Override
 			public void onSuccess(String result) {
-				AtomTools.log(Level.WARNING, "received serverInfo -> " + result, this);
+				AtomTools.log(Level.INFO, "received serverInfo -> " + result, this);
 				singleton.testarea.getElement().setInnerHTML(result);
 				serverInfo.getElement().setInnerHTML(result);
 			}
