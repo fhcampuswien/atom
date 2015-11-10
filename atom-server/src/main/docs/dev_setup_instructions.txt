@@ -8,6 +8,11 @@ Eclipse IDE for Java EE Developers --> http://www.eclipse.org/downloads/
 Google Eclipse Plugin, via Update Site in Eclipse installieren --> http://code.google.com/intl/de-DE/eclipse/docs/download.html
 <-- GWT-SDK muss nicht mit dem Google Eclipse Plugin gedownloaded werden, dieses beziehen wir über Maven
 
+Google Eclipse Plugin bug
+https://github.com/gwt-plugins/gwt-eclipse-plugin/issues/70
+--> bugfix -->
+http://storage.googleapis.com/gwt-eclipse-plugin/release
+
 m2eclipse = maven eclipse integration --> http://www.eclipse.org/m2e/download/
 
 
