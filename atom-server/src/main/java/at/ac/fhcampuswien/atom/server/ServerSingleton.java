@@ -324,9 +324,11 @@ public class ServerSingleton {
 
 				if (queryResult != null) {
 					for (Object obj : queryResult) {
-						AtomTools.log(Level.INFO, obj.toString(), this);
+						AtomTools.log(Level.FINE, "getListOfDomainObject processing object: " + obj.toString(), this);
 						if (obj instanceof Object[]) {
+							AtomTools.log(Level.FINE, "getListOfDomainObject object is an array! " + obj.toString(), this);
 							for (Object obj1 : ((Object[]) obj)) {
+								AtomTools.log(Level.FINE, "getListOfDomainObject array contained object: " + obj1.toString(), this);
 								if (obj1 instanceof DomainObject) {
 									DomainObject dobj1 = (DomainObject) obj1;
 									resultList.add(dobj1);
