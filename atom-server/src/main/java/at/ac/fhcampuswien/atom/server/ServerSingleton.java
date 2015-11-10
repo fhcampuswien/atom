@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -22,8 +23,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
 import javax.servlet.http.HttpServletRequest;
-
-import net.lightoze.gwt.i18n.server.LocaleProxy;
 
 import org.apache.commons.fileupload.FileItem;
 import org.hibernate.Hibernate;
@@ -51,8 +50,7 @@ import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
-
-import java.util.logging.Level;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
 
 public class ServerSingleton {
 
@@ -63,35 +61,6 @@ public class ServerSingleton {
 			singelton = new ServerSingleton();
 		return singelton;
 	}
-
-	// recommendation seems to be to use a new em per request, therefore
-	// disabled
-	// pooling & using the Factory directly.
-	// private ObjectPool<EntityManager> emPool = new
-	// SoftReferenceObjectPool<EntityManager>(new
-	// PoolableEntityManagerFactory());
-	//
-	// private void freeEm(EntityManager em) {
-	// try {
-	// if (em != null)
-	// emPool.returnObject(em);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// private void freeEMDelayed(final EntityManager em) {
-	// Timer t = new Timer();
-	// t.schedule(new TimerTask() {
-	//
-	// @Override
-	// public void run() {
-	// freeEm(em);
-	// }
-	// }, 100);
-	// }
-	private PoolableEntityManagerFactory emFactory = null;
-
 	
 	private Authenticator auth = null;
 	
@@ -102,8 +71,7 @@ public class ServerSingleton {
 	private ServerSingleton() {
 		LocaleProxy.initialize();
 		
-		emFactory = new PoolableEntityManagerFactory();
-		auth = new Authenticator(emFactory);
+		auth = new Authenticator();
 		
 		if(AtomConfig.updateAllStringRepresentationsOnApplicationStartup)
 			updateAllStringRepresentations();
@@ -118,7 +86,7 @@ public class ServerSingleton {
 	
 	protected String getDatabaseInfo(HttpServletRequest request) {
 		//auth.getSessionFromCookie(request, false); //giving out this info without authentication?
-		return emFactory.getConnectionInfo();
+		return AtomEMFactory.getConnectionInfo();
 	}
 	
 
@@ -207,11 +175,11 @@ public class ServerSingleton {
 			AtomTools.log(Level.WARNING, "Selecting DomainObject without any class info - performance problem!!", this);
 			Thread.dumpStack();
 		}
-		AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - getting entity from entityManager now", this);
+		AtomTools.log(Level.FINEST, "ServerSingelton.getDomainObject - getting entity from entityManager now", this);
 		DomainObject result = (DomainObject) em.find(classOfObject, id);
-		AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - got entity, preparing for client", this);
+		AtomTools.log(Level.FINEST, "ServerSingelton.getDomainObject - got entity, preparing for client", this);
 		ServerTools.fillAndDetachInstance(result, em, session, false);
-		AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - prepared for client, returning", this);
+		AtomTools.log(Level.FINEST, "ServerSingelton.getDomainObject - prepared for client, returning", this);
 		return result;
 	}
 
@@ -220,7 +188,7 @@ public class ServerSingleton {
 		EntityManager em = null;
 		try {
 			AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject - creating entityManager for query", this);
-			em = emFactory.makeObject();
+			em = AtomEMFactory.getEntityManager();
 			return getDomainObject(session, id, classOfObject, em);
 		} catch (Exception e) {
 			AtomTools.log(Level.SEVERE, "ServerSingelton.getDomainObject - Exception happened! ", this, e);
@@ -310,7 +278,7 @@ public class ServerSingleton {
 
 			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - getting EntityManager now", this);
 
-			em = emFactory.makeObject();
+			em = AtomEMFactory.getEntityManager();
 			Query query = null;
 
 			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got my EntityManger, selecting count", this);
@@ -380,16 +348,15 @@ public class ServerSingleton {
 					searchString, onlyRelated);
 
 		} catch (NoResultException noResultException) {
-			AtomTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this);
+			AtomTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this, noResultException);
 			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
 		} catch (Exception e) {
-			AtomTools.log(Level.SEVERE, "getListOfDomainObject exception happened:" + e.getMessage(), this);
-			e.printStackTrace();
+			AtomTools.log(Level.SEVERE, "getListOfDomainObject exception happened:" + e.getMessage(), this, e);
 			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Exception happened, see cause", e);
 		} finally {
 			if (em != null) {
 				AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
-				em.close();
+				ServerTools.closeDBConnection(null, em);
 			}	
 		}
 	}
@@ -417,9 +384,10 @@ public class ServerSingleton {
 		
 		
 		EntityManager em = null;
+		EntityTransaction tx = null;
 		try {
-			em = emFactory.makeObject();
-			EntityTransaction tx = em.getTransaction();
+			em = AtomEMFactory.getEntityManager();
+			tx = em.getTransaction();
 //			tx.begin();
 
 			Query query = em.createQuery("SELECT obj from " + dc + " obj");
@@ -456,8 +424,7 @@ public class ServerSingleton {
 				AtomTools.logStackTrace(Level.SEVERE, t, this);
 			}
 		} finally {
-			if (em != null)
-				em.close();
+			ServerTools.closeDBConnection(tx, em);
 		}
 	}
 
@@ -505,7 +472,7 @@ public class ServerSingleton {
 			domainObject.prepareSave(session);
 			ServerTools.validateDomainObject(domainObject);
 
-			em = emFactory.makeObject();
+			em = AtomEMFactory.getEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
 
@@ -515,18 +482,12 @@ public class ServerSingleton {
 
 			tx.commit();
 
+		} catch (AtomException ae) {
+			throw ae;
 		} catch (Throwable t) {
-			if(tx != null && tx.isActive())
-				tx.rollback();
-			if (t instanceof AtomException) {
-				throw (AtomException) t;
-			} else {
-				AtomTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Level.SEVERE, t, this);
-			}
+			AtomTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
 		} finally {
-			if (em != null)
-				em.close();
+			ServerTools.closeDBConnection(tx, em);
 		}
 
 		if(domainObject != null && domainObject.getObjectID() != null)
@@ -582,7 +543,7 @@ public class ServerSingleton {
 		
 		EntityManager em = null;
 		try {
-			em = emFactory.makeObject();
+			em = AtomEMFactory.getEntityManager();
 			PersistedFileAttribute pfa = em.find(PersistedFileAttribute.class, id);
 			
 			if(pfa == null)
@@ -610,7 +571,7 @@ public class ServerSingleton {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			em.close();
+			ServerTools.closeDBConnection(null, em);
 		}
 		return null;
 	}
@@ -622,7 +583,7 @@ public class ServerSingleton {
 		EntityTransaction tx = null;
 		
 		try {
-			em = emFactory.makeObject();
+			em = AtomEMFactory.getEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
 			
@@ -652,8 +613,7 @@ public class ServerSingleton {
 				AtomTools.logStackTrace(Level.SEVERE, t, this);
 			}
 		} finally {
-			if (em != null)
-				em.close();
+			ServerTools.closeDBConnection(tx, em);
 		}
 		
 		return pfa;
@@ -677,7 +637,7 @@ public class ServerSingleton {
 			EntityManager em = null;
 			EntityTransaction tx = null;
 			try {
-				em = emFactory.makeObject();
+				em = AtomEMFactory.getEntityManager();
 				
 				DomainObject dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
 				//getDomainObject(session, domainObject.getObjectID(), domainObject.getClass(), em);
@@ -709,7 +669,7 @@ public class ServerSingleton {
 				return true;
 				
 			} catch (Exception e) {
-				e.printStackTrace();
+				AtomTools.log(Level.WARNING, "deleteDomainObject failed", this, e);
 			} finally {
 				ServerTools.closeDBConnection(tx, em);
 			}
@@ -737,10 +697,13 @@ public class ServerSingleton {
 					"you should not ask server for static ListBoxValues that the client can read out of the DomainTree metadata himself..", this);
 			return attr.getListBoxMapped();
 		} else {
+			
+			EntityManager em = null;
+			EntityTransaction tx = null;
 
 			try {
-				EntityManager em = emFactory.makeObject();
-				EntityTransaction tx = em.getTransaction();
+				em = AtomEMFactory.getEntityManager();
+				tx = em.getTransaction();
 				tx.begin();
 
 				final LinkedHashMap<String, String> returnValue = new LinkedHashMap<String, String>();
@@ -767,6 +730,9 @@ public class ServerSingleton {
 
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+			finally {
+				ServerTools.closeDBConnection(tx, em);
 			}
 		}
 

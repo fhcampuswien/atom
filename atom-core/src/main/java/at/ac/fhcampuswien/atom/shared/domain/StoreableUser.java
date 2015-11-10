@@ -99,4 +99,7 @@ public class StoreableUser extends DomainObject {
 	public void setUpdatedInstances(Set<FeaturedObject> updatedInstances) {
 		this.updatedInstances = updatedInstances;
 	}
+	
+	public void loadRelevantSeverSessionInfos() {
+	}
 }
