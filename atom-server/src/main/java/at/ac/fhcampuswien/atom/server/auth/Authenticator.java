@@ -7,14 +7,13 @@ package at.ac.fhcampuswien.atom.server.auth;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import at.ac.fhcampuswien.atom.server.PoolableEntityManagerFactory;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
 
 public class Authenticator {
 	
 	ClientSession session = new ClientSession(0, "sessionToken", "*", "everybody");
 		
-	public Authenticator(PoolableEntityManagerFactory emFactory) {
+	public Authenticator() {
 	}
 	
 
