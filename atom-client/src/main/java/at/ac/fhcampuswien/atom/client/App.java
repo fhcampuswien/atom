@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 import com.allen_sauer.gwt.dnd.client.drop.AbstractDropController;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -68,7 +69,7 @@ import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
  */
 public class App implements EntryPoint {
 
-	private RootPanel topRoot, frameArea, sidePanelRestore, sidePanel, frameTitle, frameSpace, historyLabel, historyClear, historyCollapse, historyRoot, historyPanel, clipboardLabel, clipboardCollapse, clipboardRoot, clipboardPanel, searchBox, searchArrow, searchSimpleLabel, searchSimpleCheck, loginPan, homeLogo, appLogo, helpLogo, testarea, navPan2, sliderNS, sliderEW;
+	private RootPanel topRoot, frameArea, sidePanelRestore, sidePanel, frameTitle, frameSpace, historyLabel, historyClear, historyCollapse, historyRoot, historyPanel, clipboardLabel, clipboardCollapse, clipboardRoot, clipboardPanel, searchBox, searchArrow, searchSimpleLabel, searchSimpleCheck, loginPan, homeLogo, appLogo, helpLogo, testarea, navPan2, sliderNS, sliderEW, serverInfo;
 
 	private double sidePanelPct = 0.5, sidePanelPctDD = 0.5;
 	
@@ -124,6 +125,7 @@ public class App implements EntryPoint {
 		frameArea = RootPanel.get("frame-area");
 		navPan2 = RootPanel.get("nav-pan2"); 
 		sidePanel = RootPanel.get("side-panel-container");
+		serverInfo = RootPanel.get("serverinfo");
 
 		searchVisible(false);
 		
@@ -255,6 +257,22 @@ public class App implements EntryPoint {
 				App.this.resize(event);
 			}
 		});
+		
+		serverInfo.getElement().getStyle().setColor("white");
+		serverInfo.addDomHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				Style style = serverInfo.getElement().getStyle();
+				String currentColor = style.getColor();
+				if("white".equals(currentColor)) {
+					style.setColor("#e1e1e1");
+				}
+				else {
+					style.setColor("white");
+				}
+			}
+		}, ClickEvent.getType());
 
 		RPCCaller.getSinglton().getServerInfo(new AsyncCallback<String>() {
 			
@@ -262,7 +280,7 @@ public class App implements EntryPoint {
 			public void onSuccess(String result) {
 				AtomTools.log(Level.WARNING, "received serverInfo -> " + result, this);
 				singleton.testarea.getElement().setInnerHTML(result);
-				RootPanel.get("serverinfo").getElement().setInnerHTML(result);
+				serverInfo.getElement().setInnerHTML(result);
 			}
 			
 			@Override
