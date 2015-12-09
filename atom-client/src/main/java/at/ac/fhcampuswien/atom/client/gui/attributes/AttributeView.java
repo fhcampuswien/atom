@@ -102,7 +102,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 			returnValue = new BooleanView(attributeName, attribute.getBooleanMeanings());
 		} else if ("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)
 				|| "java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)) {
-			returnValue = new ListOfPersistentStringsView();
+			returnValue = new ListOfPersistentStringsView(type);
 //		} else if ("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PermittedOE>".equals(type)) {
 //			returnValue = new SetOfPermittedOEsView(attributeName, forFrame);
 //		} else if ("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PermittedRole>".equals(type)) {
