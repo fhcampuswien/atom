@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -35,10 +36,9 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
+import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
-
-import java.util.logging.Level;
 
 public class ServerTools {
 
@@ -880,12 +880,26 @@ public class ServerTools {
 						for (Object relObj : related) {
 							if (relObj instanceof DomainObject) {
 								DomainObject obj = (DomainObject) relObj;
-								if (domainClassAttribute.getType().equals("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>"))
-									fromDB.add(em.merge(obj));
+								if(relObj instanceof PersistentString) {
+									//handle PersistentStrings special, since we don't want those "DomainObjects" to be handled manually by the user but simply persisted with whatever other DomainObject they are linked to.
+									//those are also the only DomainObjects that can be linked to others without being saved first (UI limitation by design)
+									PersistentString ps = (PersistentString) relObj;
+									ps.setOwner(domainObject);
+									if(ps.getObjectID() != null) {
+										//has been saved before, check if owner is the same, to prevent pirating
+										PersistentString psDB = em.find(ps.getClass(), ps.getObjectID());
+										if(psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())) {
+											throw new AtomException("User tried to hijack a PersistentString from another Object!");
+										}
+									}
+//									PersistentString psDB = em.merge(ps);
+//									fromDB.add(psDB);
+									fromDB.add(ps);
+								}
 								else
 									fromDB.add(em.find(obj.getClass(), obj.getObjectID()));
 							} else {
-								AtomTools.log(Level.SEVERE, "this cannot happen", ServerTools.class);
+								AtomTools.log(Level.SEVERE, "this cannot happen, someone seriously messed with my code!", ServerTools.class);
 							}
 						}
 						setAttribute.invoke(domainObject, new Object[] { fromDB });

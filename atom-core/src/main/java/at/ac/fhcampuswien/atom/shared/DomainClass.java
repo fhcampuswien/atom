@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -183,41 +184,35 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 	// private HashMap<String, DomainClassAttribute> allAttributes = new
 	// HashMap<String, DomainClassAttribute>();
 
+	HashMap<String, DomainClassAttribute> allAttributesCache = null;
+	
 	@SuppressWarnings("unchecked")
 	public HashMap<String, DomainClassAttribute> getAllAttributes() {
-		// if(allAttributes.size() == 0) {
-		HashMap<String, DomainClassAttribute> allAttributes = (HashMap<String, DomainClassAttribute>) attributes.clone();
+		if(allAttributesCache == null) {
+			HashMap<String, DomainClassAttribute> allAttributes = (HashMap<String, DomainClassAttribute>) attributes.clone();
 
-		if (getSuperClass() != null) {
-			HashMap<String, DomainClassAttribute> supersAttributes = getSuperClass().getAllAttributes();
-			for (String attributeName : supersAttributes.keySet()) {
-				if (allAttributes.containsKey(attributeName)) {
-					DomainClassAttribute myAttribute = allAttributes.get(attributeName);
-					DomainClassAttribute superAttribute = supersAttributes.get(attributeName);
-					if (superAttribute.isReadAble())
-						myAttribute.makeReadAble();
-					if (superAttribute.isWriteAble())
-						myAttribute.makeWriteAble();
-					for (String annotation : superAttribute.getAnnotations()) {
-						myAttribute.addAnnotation(annotation);
+			if (getSuperClass() != null) {
+				HashMap<String, DomainClassAttribute> supersAttributes = getSuperClass().getAllAttributes();
+				for (String attributeName : supersAttributes.keySet()) {
+					if (allAttributes.containsKey(attributeName)) {
+						DomainClassAttribute myAttribute = allAttributes.get(attributeName);
+						DomainClassAttribute superAttribute = supersAttributes.get(attributeName);
+						if (superAttribute.isReadAble())
+							myAttribute.makeReadAble();
+						if (superAttribute.isWriteAble())
+							myAttribute.makeWriteAble();
+						for (String annotation : superAttribute.getAnnotations()) {
+							myAttribute.addAnnotation(annotation);
+						}
+					} else {
+						allAttributes.put(attributeName, supersAttributes.get(attributeName));
 					}
-				} else {
-					allAttributes.put(attributeName, supersAttributes.get(attributeName));
 				}
 			}
+			allAttributesCache = allAttributes;
 		}
-		// }
 
-		return allAttributes;
-	}
-	
-	public HashSet<DomainClassAttribute> getAllFileAttributes() {
-		HashSet<DomainClassAttribute> returnValue = new HashSet<DomainClassAttribute>();
-		for(DomainClassAttribute a : getAllAttributes().values()) {
-			if(a.getAnnotation("FileAttribute") != null)
-				returnValue.add(a);
-		}
-		return returnValue;
+		return (HashMap<String, DomainClassAttribute>) allAttributesCache.clone();
 	}
 	
 	private static final DomainClassAttribute deepSearch = new DomainClassAttribute(null, AtomConfig.specialFilterDeepSearch, AtomConfig.specialFilterDeepSearch, true, false);
@@ -399,32 +394,44 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 	}
 
 	public Collection<DomainClassAttribute> getAttributesOfTypeDomainObject() {
-		HashSet<DomainClassAttribute> returnSet = new HashSet<DomainClassAttribute>();
-
-		if (superClass != null)
-			returnSet.addAll(superClass.getAttributesOfTypeDomainObject());
-
-		for (DomainClassAttribute domainClassAttribute : getAttributes()) {
-			if (domainClassAttribute.getType().startsWith("at.ac.fhcampuswien.atom.shared.domain")) {
-				returnSet.add(domainClassAttribute);
-			}
+		Collection<DomainClassAttribute> attributes = this.getAllAttributes().values();
+		
+		for (Iterator<DomainClassAttribute> iterator = attributes.iterator(); iterator.hasNext();) {
+			DomainClassAttribute domainClassAttribute = iterator.next();
+			String type = domainClassAttribute.getType();
+			if (!type.startsWith("at.ac.fhcampuswien.atom.shared.domain")) {
+				// Remove the current element from the iterator and the list.
+		        iterator.remove();
+		    }
 		}
-
-		return returnSet;
+		return attributes;
 	}
 
 	public Collection<DomainClassAttribute> getCollectionAttributes() {
-		HashSet<DomainClassAttribute> returnSet = new HashSet<DomainClassAttribute>();
-		if (superClass != null)
-			returnSet.addAll(superClass.getCollectionAttributes());
-
-		for (DomainClassAttribute domainClassAttribute : getAttributes()) {
-			if (domainClassAttribute.getType().startsWith("java.util.Set")
-					|| domainClassAttribute.getType().startsWith("java.util.List")) {
-				returnSet.add(domainClassAttribute);
-			}
+		Collection<DomainClassAttribute> attributes = this.getAllAttributes().values();
+		
+		for (Iterator<DomainClassAttribute> iterator = attributes.iterator(); iterator.hasNext();) {
+			DomainClassAttribute domainClassAttribute = iterator.next();
+			String type = domainClassAttribute.getType();
+			if (!type.startsWith("java.util.Set") && !type.startsWith("java.util.List")) {
+				// Remove the current element from the iterator and the list.
+		        iterator.remove();
+		    }
 		}
-		return returnSet;
+		return attributes;
+	}
+	
+	public Collection<DomainClassAttribute> getAllFileAttributes() {
+		Collection<DomainClassAttribute> attributes = this.getAllAttributes().values();
+		
+		for (Iterator<DomainClassAttribute> iterator = attributes.iterator(); iterator.hasNext();) {
+			DomainClassAttribute domainClassAttribute = iterator.next();
+			if (domainClassAttribute.getAnnotation("FileAttribute") == null) {
+				// Remove the current element from the iterator and the list.
+		        iterator.remove();
+		    }
+		}
+		return attributes;
 	}
 
 	public Collection<DomainClassAttribute> getSimpleAttributes() {

@@ -504,7 +504,7 @@ public class ServerSingleton {
 	private void handleFileAttributesForSaveAction(EntityManager em, DomainObject domainObject, DomainClass requestedClass) {
 		if(domainObject == null)
 			return;
-		HashSet<DomainClassAttribute> fas = requestedClass.getAllFileAttributes();
+		Collection<DomainClassAttribute> fas = requestedClass.getAllFileAttributes();
 		if(fas != null && fas.size() > 0) {
 			Class<?> rc = domainObject.getClass();
 			for(DomainClassAttribute a : fas) {

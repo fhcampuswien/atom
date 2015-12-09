@@ -80,56 +80,51 @@ public class DomainAnalyzer {
 		AtomTools.log(Level.INFO, "starting to build DomainTree", null);
 		domainTree = createDomainClassForClass(DomainObject.class, null);
 
-//		String name = domainPackageName;
-//		name = name.replace('.', '/');
-//		if (!name.startsWith("/")) {
-//			name = "/" + name;
-//		}
+		// String name = domainPackageName;
+		// name = name.replace('.', '/');
+		// if (!name.startsWith("/")) {
+		// name = "/" + name;
+		// }
 
 		// Get a File object for the package
 		URL url = DomainObject.class.getResource("/" + domainPackagePath);
-		
+
 		if (url != null) {
-		
-			AtomTools.log(Level.INFO, "Launcher found url '" + url
-				+ "' for package '" + domainPackagePath + "'", null);
-		// (new File(url.getFile().replace("%20", " "))).list()
-			
+
+			AtomTools.log(Level.INFO, "Launcher found url '" + url + "' for package '" + domainPackagePath + "'", null);
+			// (new File(url.getFile().replace("%20", " "))).list()
+
 			handleResource(url);
-			
-			//find and analyze "the other" project that contains domain classes (atom-core & atom-domain)
+
+			// find and analyze "the other" project that contains domain classes
+			// (atom-core & atom-domain)
 			String foundTextUrl = url.toString();
 			try {
-				if(foundTextUrl.contains("/atom-core")) {
+				if (foundTextUrl.contains("/atom-core")) {
 					handleResource(new URL(foundTextUrl.replace("/atom-core", "/atom-domain")));
-				}
-				else {
+				} else {
 					handleResource(new URL(foundTextUrl.replace("/atom-domain", "/atom-core")));
 				}
-					
+
 			} catch (MalformedURLException e1) {
 				e1.printStackTrace();
-				AtomTools.log(Level.SEVERE,
-						"could not open atom-domain URL='" + foundTextUrl + "'", null);
+				AtomTools.log(Level.SEVERE, "could not open atom-domain URL='" + foundTextUrl + "'", null);
 			}
-			
-			AtomTools.log(Level.INFO, "finished building DomainTree",
-					null);
+
+			AtomTools.log(Level.INFO, "finished building DomainTree", null);
 		} else {
 			// please report a github issue if and when url is null
-			AtomTools.log(Level.SEVERE,
-					"could not find url for package '" + domainPackagePath + "'", null);
+			AtomTools.log(Level.SEVERE, "could not find url for package '" + domainPackagePath + "'", null);
 		}
 		// handleDirectoryOrFile(new
 		// File("/var/lib/tomcat6/webapps/ATOM_v7/WEB-INF/classes" + name));
 	}
-	
+
 	private static void handleResource(URL url) {
 		if (url.getProtocol().equals("jar")) {
 			handleJarUrl(url);
 		} else {
-			handleDirectoryOrFile(new File(url.getFile()
-					.replace("%20", " ")));
+			handleDirectoryOrFile(new File(url.getFile().replace("%20", " ")));
 		}
 	}
 
@@ -145,15 +140,12 @@ public class DomainAnalyzer {
 				JarEntry entry = entries.nextElement();
 				if (entry.getName().startsWith(domainPackagePath) && (entry.getName().endsWith(".class") || entry.getName().endsWith(".java"))) {
 					int i = entry.getName().lastIndexOf("/");
-					String name = entry.getName().substring(i+1);
+					String name = entry.getName().substring(i + 1);
 					String path = entry.getName().substring(0, i);
-					AtomTools.log(Level.INFO, " match found: " + entry.getName() + " --> " + name + " ; " + path,
-							DomainAnalyzer.class);
+					AtomTools.log(Level.INFO, " match found: " + entry.getName() + " --> " + name + " ; " + path, DomainAnalyzer.class);
 					handleClass(path.replace("/", "."), name);
-				}
-				else {
-					AtomTools.log(Level.INFO, "non-matching: " + entry.getName(),
-							DomainAnalyzer.class);
+				} else {
+					AtomTools.log(Level.INFO, "non-matching: " + entry.getName(), DomainAnalyzer.class);
 				}
 			}
 
@@ -163,8 +155,7 @@ public class DomainAnalyzer {
 	}
 
 	private static void handleDirectoryOrFile(File directoryOrFile) {
-		if (!directoryOrFile.getName().contains("gwtr")
-				&& !directoryOrFile.getName().contains("annotations")) {
+		if (!directoryOrFile.getName().contains("gwtr") && !directoryOrFile.getName().contains("annotations")) {
 			if (!directoryOrFile.isFile())
 				handleDirectory(directoryOrFile);
 			else
@@ -185,18 +176,15 @@ public class DomainAnalyzer {
 		String fileName = file.getName();
 		// we are only interested in .class or .java files and not in the root
 		// DomainObject
-		if ((fileName.toLowerCase().endsWith(".class") || fileName
-				.toLowerCase().endsWith(".java"))
-				&& !fileName.startsWith("DomainObject.")) {
+		if ((fileName.toLowerCase().endsWith(".class") || fileName.toLowerCase().endsWith(".java")) && !fileName.startsWith("DomainObject.")) {
 
-			String packagePath = file.getParentFile().getAbsolutePath()
-					.replace("\\", ".").replace("/", ".");
+			String packagePath = file.getParentFile().getAbsolutePath().replace("\\", ".").replace("/", ".");
 			handleClass(packagePath.substring(packagePath.indexOf(domainPackageName)), fileName);
 		}
 	}
-	
+
 	private static void handleClass(String packageString, String nameInclExtension) {
-		
+
 		int fileExtensionLength = 0;
 		if (nameInclExtension.endsWith(".class"))
 			fileExtensionLength = 6;
@@ -206,17 +194,14 @@ public class DomainAnalyzer {
 			throw new AtomException("unknown DomainClass file extension!! -> " + nameInclExtension);
 
 		// removes the extension
-		String simpleClassName = nameInclExtension.substring(0, nameInclExtension.length()
-				- fileExtensionLength);
+		String simpleClassName = nameInclExtension.substring(0, nameInclExtension.length() - fileExtensionLength);
 
-		AtomTools.log(Level.INFO, "processing class "
-				+ simpleClassName + " in package " + packageString, null);
+		AtomTools.log(Level.INFO, "processing class " + simpleClassName + " in package " + packageString, null);
 
 		integrateClassIntoDomainTree(simpleClassName, packageString);
 	}
 
-	private static DomainClass integrateClassIntoDomainTree(
-			String simpleClassName, String packageName) {
+	private static DomainClass integrateClassIntoDomainTree(String simpleClassName, String packageName) {
 
 		// search if the class is already contained by the tree, and return it
 		// if it is.
@@ -227,28 +212,23 @@ public class DomainAnalyzer {
 
 		try {
 			// get the class of the found class definition
-			Class<?> foundClass = Class.forName(packageName + "."
-					+ simpleClassName);
-			if (foundClass != null)
-				foundDomainClass = integrateClassIntoDomainTree(foundClass,
-						false);
+			Class<?> foundClass = Class.forName(packageName + "." + simpleClassName);
+			foundDomainClass = integrateClassIntoDomainTree(foundClass, false);
 
 		} catch (ClassNotFoundException cnfex) {
-			AtomTools.log(Level.SEVERE, "No Class found for "
-					+ packageName + "." + simpleClassName + "; exception: "
-					+ cnfex, null);
-			// } catch (InstantiationException iex) {
-			// // We try to instantiate an interface
-			// // or an object that does not have a
-			// // default constructor
-			// } catch (IllegalAccessException iaex) {
-			// // The class is not public
+			AtomTools.log(Level.SEVERE, "No Class found for " + packageName + "." + simpleClassName + "; exception: " + cnfex, null);
 		}
 		return foundDomainClass;
 	}
 
-	private static DomainClass integrateClassIntoDomainTree(Class<?> theClass,
-			boolean checkIfAlreadyExists) {
+	/**
+	 * 
+	 * 
+	 * @param theClass is ensured by the caller methods to be a DomainClass inside the domain's package.
+	 * @param checkIfAlreadyExists
+	 * @return
+	 */
+	private static DomainClass integrateClassIntoDomainTree(Class<?> theClass, boolean checkIfAlreadyExists) {
 		String simpleClassName = theClass.getSimpleName();
 		String thePackage = theClass.getPackage().getName();
 		String fullClassName = thePackage + "." + simpleClassName;
@@ -258,112 +238,54 @@ public class DomainAnalyzer {
 		if (checkIfAlreadyExists) {
 			foundDomainClass = getDomainClassForName(fullClassName);
 			if (foundDomainClass != null) {
-				AtomTools.log(Level.INFO, "Class " + fullClassName
-						+ " already in tree, returning", null);
+				AtomTools.log(Level.INFO, "Class " + fullClassName + " already in tree, returning", null);
 				return foundDomainClass;
 			}
 		}
 
 		if (theClass.getAnnotation(AnalyzerIgnore.class) != null) {
-			AtomTools.log(Level.INFO, "Ignoring Class " + fullClassName
-					+ " because of its AnalyzerIgnore Annotation", null);
+			AtomTools.log(Level.INFO, "Ignoring Class " + fullClassName + " because of its AnalyzerIgnore Annotation", null);
 		}
 
 		else if (thePackage.contains(domainPackageName)) {
-			AtomTools
-					.log(Level.INFO,
-							"Class "
-									+ fullClassName
-									+ " should be created. will search superclass first.",
-							null);
+			AtomTools.log(Level.INFO, "Class " + fullClassName + " should be created. will search superclass first.", null);
 
 			DomainClass parentDomainClass = null;
-			if (theClass.getSuperclass() == DomainObject.class) {
+			Class<?> superClass = theClass.getSuperclass();
+			if (superClass == DomainObject.class) {
 				parentDomainClass = domainTree;
 			} else {
-				Class<?> superClass = theClass.getSuperclass();
-				if (superClass != null
-						&& superClass.getPackage().getName()
-								.contains(domainPackageName)) {
-					parentDomainClass = integrateClassIntoDomainTree(
-							theClass.getSuperclass(), true);
+				if (superClass != null && superClass.getPackage().getName().contains(domainPackageName)) {
+					parentDomainClass = integrateClassIntoDomainTree(theClass.getSuperclass(), true);
 				} else {
-					AtomTools
-							.log(Level.SEVERE,
-									"Superclass of "
-											+ fullClassName
-											+ " is not inside of the domainpackage, therefore it isn't part of the tree. ignoring both classes!",
-									null);
+					AtomTools.log(Level.SEVERE, "Superclass of " + fullClassName + " is not inside of the domainpackage, therefore it isn't part of the tree. ignoring both classes! FIX YOUR DOMAIN HIERARCHY!", null);
 					foundDomainClass = null;
 				}
 			}
 
-			foundDomainClass = createDomainClassForClass(theClass,
-					parentDomainClass);
+			foundDomainClass = createDomainClassForClass(theClass, parentDomainClass);
 
 		} else {
-			AtomTools.log(Level.SEVERE, "Class " + fullClassName
-					+ " is from outside the domainPackage!", null);
+			AtomTools.log(Level.SEVERE, "Class " + fullClassName + " is from outside the domainPackage!", null);
 		}
 		return foundDomainClass;
 	}
 
-	private static DomainClass createDomainClassForClass(Class<?> theClass,
-			DomainClass parentClass) {
-		DomainClass domainClass = new DomainClass(theClass.getSimpleName(),
-				theClass.getPackage().getName(), Modifier.toString(
-						theClass.getModifiers()).contains("abstract"),
-				parentClass);
-
-		// Class<?> superClass = theClass.getSuperclass();
-
-		// markLoop:
-		// while(superClass != Object.class) {
-		// addClassFeaturesToDomainClass(superClass, domainClass);
-		// if(superClass == DomainObject.class)
-		// break markLoop;
-		// superClass = superClass.getSuperclass();
-		// }
-
-		addFeaturesToDomainClassRecursive(theClass, domainClass);
-
-		// theClass.getFields() theClass.getDeclaredFields()
-		// theClass.getMethods() theClass.getDeclaredMethods()
-		// theClass.getDeclaredConstructors()
-		// theClass.getInterfaces() aMethod.g
-
+	private static DomainClass createDomainClassForClass(Class<?> theClass, DomainClass parentClass) {
+		DomainClass domainClass = new DomainClass(theClass.getSimpleName(), theClass.getPackage().getName(), Modifier.toString(theClass.getModifiers()).contains("abstract"), parentClass);
+		addClassFeaturesToDomainClass(theClass, domainClass);
 		return domainClass;
 	}
 
-	private static void addFeaturesToDomainClassRecursive(Class<?> theClass,
-			DomainClass domainClass) {
-		if (theClass == Object.class) {
-			return;
-		}
-		if (theClass != DomainObject.class && theClass.getSuperclass() != null) {
-			// addFeaturesToDomainClassRecursive(theClass.getSuperclass(),
-			// domainClass);
-			// TODO: check if we really need this recursive stuff
-			// suggestion: every getter should handle emptiness of its attribute
-			// and use the superClass getter
-		}
-		addClassFeaturesToDomainClass(theClass, domainClass);
-	}
-
-	private static void addClassFeaturesToDomainClass(Class<?> theClass,
-			DomainClass domainClass) {
+	private static void addClassFeaturesToDomainClass(Class<?> theClass, DomainClass domainClass) {
 
 		for (Annotation anAnnotation : theClass.getAnnotations()) {
 			if (anAnnotation instanceof ClassNamePlural) {
-				domainClass.setPluralName(((ClassNamePlural) anAnnotation)
-						.value());
+				domainClass.setPluralName(((ClassNamePlural) anAnnotation).value());
 			} else if (anAnnotation instanceof ClassNameSingular) {
-				domainClass.setSingularName(((ClassNameSingular) anAnnotation)
-						.value());
+				domainClass.setSingularName(((ClassNameSingular) anAnnotation).value());
 			} else if (anAnnotation instanceof DefaultAttributeGroupName) {
-				domainClass
-						.setDefaultAttributeGroup(((DefaultAttributeGroupName) anAnnotation)
-								.value());
+				domainClass.setDefaultAttributeGroup(((DefaultAttributeGroupName) anAnnotation).value());
 			} else if (anAnnotation instanceof OrderedAttributeGroups) {
 				OrderedAttributeGroups ac = ((OrderedAttributeGroups) anAnnotation);
 				domainClass.setOrderedAttributeGroups(ac.value(), ac.attributes());
@@ -373,19 +295,17 @@ public class DomainAnalyzer {
 				OrderedAttributesList oalv = (OrderedAttributesList) anAnnotation;
 				domainClass.setOrderedAttributesListView(oalv.value());
 			} else if (anAnnotation instanceof RelationDefinitions) {
-				for(RelationDefinition rd : ((RelationDefinitions) anAnnotation).value()) {
+				for (RelationDefinition rd : ((RelationDefinitions) anAnnotation).value()) {
 					domainClass.addRelationDefinition(rd);
 				}
 			} else if (anAnnotation instanceof RelationDefinition) {
 				domainClass.addRelationDefinition((RelationDefinition) anAnnotation);
 			} else if (anAnnotation instanceof AccessListRoles) {
 				AccessListRoles list = (AccessListRoles) anAnnotation;
-				domainClass.getAccessHandler().addAccessRoles(list.accessTypes(), list.requiredRelations(),
-						list.value());
+				domainClass.getAccessHandler().addAccessRoles(list.accessTypes(), list.requiredRelations(), list.value());
 			} else if (anAnnotation instanceof AccessListOrgEinheiten) {
 				AccessListOrgEinheiten list = (AccessListOrgEinheiten) anAnnotation;
-				domainClass.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(),
-						list.onlyHauptrolle(), list.onlyLeiter(), list.value());
+				domainClass.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(), list.onlyHauptrolle(), list.onlyLeiter(), list.value());
 			} else if (anAnnotation instanceof ObjectImage) {
 				ObjectImage objectImage = (ObjectImage) anAnnotation;
 				domainClass.setObjectLogoImageData(objectImage.value());
@@ -400,11 +320,8 @@ public class DomainAnalyzer {
 				for (AccessListRoles list : accessLists.rolesLists()) {
 					domainClass.getAccessHandler().addAccessRoles(list.accessTypes(), list.requiredRelations(), list.value());
 				}
-				for (AccessListOrgEinheiten list : accessLists
-						.orgEinheitenLists()) {
-					domainClass.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(),
-							list.onlyHauptrolle(), list.onlyLeiter(),
-							list.value());
+				for (AccessListOrgEinheiten list : accessLists.orgEinheitenLists()) {
+					domainClass.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(), list.onlyHauptrolle(), list.onlyLeiter(), list.value());
 				}
 			} else {
 				domainClass.addClassAnnotation(anAnnotation.toString());
@@ -416,77 +333,58 @@ public class DomainAnalyzer {
 				String fieldName = aField.getName();
 				// String fieldName = aField.getName().substring(0,
 				// 1).toUpperCase() + aField.getName().substring(1);
-				DomainClassAttribute newAttribute = domainClass
-						.createAttribute(fieldName, aField.getGenericType()
-								.toString(), true);
+				DomainClassAttribute newAttribute = domainClass.createAttribute(fieldName, aField.getGenericType().toString(), true);
 				for (Annotation anAnnotation : aField.getAnnotations()) {
-					handleAttributeAnnotation(newAttribute, fieldName,
-							anAnnotation);
+					handleAttributeAnnotation(newAttribute, fieldName, anAnnotation);
 				}
 			}
 		}
 
 		for (Method aMethod : theClass.getDeclaredMethods()) {
 			// check if public
-			if (Modifier.isPublic(aMethod.getModifiers()) && !Modifier.isStatic(aMethod.getModifiers())
-					&& aMethod.getAnnotation(AnalyzerIgnore.class) == null) {
+			if (Modifier.isPublic(aMethod.getModifiers()) && !Modifier.isStatic(aMethod.getModifiers()) && aMethod.getAnnotation(AnalyzerIgnore.class) == null) {
 				String methodName = aMethod.getName();
 				DomainClassAttribute attribute = null;
 				if (methodName.startsWith("get")) {
-					attribute = domainClass.updateAttribute(methodName
-							.substring(3), aMethod.getGenericReturnType()
-							.toString(), false, false);
+					attribute = domainClass.updateAttribute(methodName.substring(3), aMethod.getGenericReturnType().toString(), false, false);
 				} else if (methodName.startsWith("set")) {
-					attribute = domainClass.updateAttribute(
-							methodName.substring(3),
-							aMethod.getGenericParameterTypes()[0].toString(),
-							false, true);
+					attribute = domainClass.updateAttribute(methodName.substring(3), aMethod.getGenericParameterTypes()[0].toString(), false, true);
 				}
-				if (methodName.startsWith("get")
-						|| methodName.startsWith("set")) {
+				if (methodName.startsWith("get") || methodName.startsWith("set")) {
 					for (Annotation anAnnotation : aMethod.getAnnotations()) {
-						handleAttributeAnnotation(attribute,
-								methodName.substring(3), anAnnotation);
+						handleAttributeAnnotation(attribute, methodName.substring(3), anAnnotation);
 					}
 				}
 			}
 		}
 	}
 
-	private static void handleAttributeAnnotation(
-			DomainClassAttribute attribute, String fieldName,
-			Annotation anAnnotation) {
+	private static void handleAttributeAnnotation(DomainClassAttribute attribute, String fieldName, Annotation anAnnotation) {
 		if (attribute == null) {
-			AtomTools.log(Level.SEVERE, "cannot process annotation\""
-					+ anAnnotation + "\" of field \"" + fieldName
-					+ "\" --> DomainClassAttribute not found!", null);
+			AtomTools.log(Level.SEVERE, "cannot process annotation\"" + anAnnotation + "\" of field \"" + fieldName + "\" --> DomainClassAttribute not found!", null);
 			return;
 		}
 
 		if (anAnnotation instanceof AttributePlacement) {
 			AttributePlacement ap = (AttributePlacement) anAnnotation;
-			if(ap.value() != Double.MAX_VALUE)
+			if (ap.value() != Double.MAX_VALUE)
 				attribute.setPosition(ap.value(), ap.type());
-			if(ap.inGroup() != Double.MAX_VALUE)
+			if (ap.inGroup() != Double.MAX_VALUE)
 				attribute.setPositionInGroup(ap.inGroup());
-			if(ap.overall() != Double.MAX_VALUE)
+			if (ap.overall() != Double.MAX_VALUE)
 				attribute.setPositionOverall(ap.overall());
 		} else if (anAnnotation instanceof AttributeGroup) {
-			attribute
-					.setAttributeGroup(((AttributeGroup) anAnnotation).value());
+			attribute.setAttributeGroup(((AttributeGroup) anAnnotation).value());
 		} else if (anAnnotation instanceof Transient) {
 			attribute.setTransient();
 		} else if (anAnnotation instanceof AttributeDisplayName) {
-			attribute.setDisplayName(((AttributeDisplayName) anAnnotation)
-					.value());
+			attribute.setDisplayName(((AttributeDisplayName) anAnnotation).value());
 		} else if (anAnnotation instanceof AttributeValidators) {
 			attribute.setValidators(((AttributeValidators) anAnnotation).value());
 		} else if (anAnnotation instanceof HideFromListGui) {
-			attribute.setHideFromListGui(((HideFromListGui) anAnnotation)
-					.value());
+			attribute.setHideFromListGui(((HideFromListGui) anAnnotation).value());
 		} else if (anAnnotation instanceof HideFromDetailGui) {
-			attribute.setHideFromDetailGui(((HideFromDetailGui) anAnnotation)
-					.value());
+			attribute.setHideFromDetailGui(((HideFromDetailGui) anAnnotation).value());
 		} else if (anAnnotation instanceof HideFromGui) {
 			attribute.setHideFromDetailGui(true);
 			attribute.setHideFromListGui(true);
@@ -499,36 +397,28 @@ public class DomainAnalyzer {
 			AttributeLoadingPolicy ann = (AttributeLoadingPolicy) anAnnotation;
 			attribute.setLoadedWithLists(ann.withLists());
 			attribute.setLoadedWhenNotPrimary(ann.whenNotPrimary());
-			attribute.setRequiredForStringRepresentation(ann
-					.requiredForStringRepresentation());
+			attribute.setRequiredForStringRepresentation(ann.requiredForStringRepresentation());
 		} else if (anAnnotation instanceof RelationEssential) {
 			attribute.setRelationEssential(true);
 		} else if (anAnnotation instanceof ListBoxDefinition) {
 			ListBoxDefinition def = (ListBoxDefinition) anAnnotation;
-			attribute.setListBox(def.keys(), def.display(), def.sql(),
-					def.viewType(), def.multiSelectSeperator());
+			attribute.setListBox(def.keys(), def.display(), def.sql(), def.viewType(), def.multiSelectSeperator());
 		} else if (anAnnotation instanceof SliderAttribute) {
 			SliderAttribute ann = (SliderAttribute) anAnnotation;
-			attribute.setSlider(ann.minValue(), ann.maxValue(),
-					ann.defaultValue(), ann.stepSize(), ann.roundTo());
+			attribute.setSlider(ann.minValue(), ann.maxValue(), ann.defaultValue(), ann.stepSize(), ann.roundTo());
 		} else if (anAnnotation instanceof AccessListRoles) {
 			AccessListRoles list = (AccessListRoles) anAnnotation;
-			attribute.getAccessHandler().addAccessRoles(list.accessTypes(), list.requiredRelations(),
-					list.value());
+			attribute.getAccessHandler().addAccessRoles(list.accessTypes(), list.requiredRelations(), list.value());
 		} else if (anAnnotation instanceof AccessListOrgEinheiten) {
 			AccessListOrgEinheiten list = (AccessListOrgEinheiten) anAnnotation;
-			attribute.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(),
-					list.onlyHauptrolle(), list.onlyLeiter(), list.value());
+			attribute.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(), list.onlyHauptrolle(), list.onlyLeiter(), list.value());
 		} else if (anAnnotation instanceof AccessLists) {
 			AccessLists accessLists = (AccessLists) anAnnotation;
 			for (AccessListRoles list : accessLists.rolesLists()) {
 				attribute.getAccessHandler().addAccessRoles(list.accessTypes(), list.requiredRelations(), list.value());
 			}
-			for (AccessListOrgEinheiten list : accessLists
-					.orgEinheitenLists()) {
-				attribute.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(),
-						list.onlyHauptrolle(), list.onlyLeiter(),
-						list.value());
+			for (AccessListOrgEinheiten list : accessLists.orgEinheitenLists()) {
+				attribute.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(), list.onlyHauptrolle(), list.onlyLeiter(), list.value());
 			}
 		} else {
 			attribute.addAnnotation(anAnnotation.toString());
@@ -539,13 +429,11 @@ public class DomainAnalyzer {
 		return getDomainClassForNameBelowDomainClass(classname, domainTree);
 	}
 
-	private static DomainClass getDomainClassForNameBelowDomainClass(
-			String classname, DomainClass belowThis) {
+	private static DomainClass getDomainClassForNameBelowDomainClass(String classname, DomainClass belowThis) {
 		if (belowThis.getName().equals(classname))
 			return belowThis;
 		for (DomainClass subClass : belowThis.getSubClasses()) {
-			DomainClass classForName = getDomainClassForNameBelowDomainClass(
-					classname, subClass);
+			DomainClass classForName = getDomainClassForNameBelowDomainClass(classname, subClass);
 			if (classForName != null)
 				return classForName;
 		}
