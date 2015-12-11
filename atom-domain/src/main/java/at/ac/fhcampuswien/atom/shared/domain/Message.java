@@ -6,14 +6,16 @@ package at.ac.fhcampuswien.atom.shared.domain;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.logging.Level;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import java.util.logging.Level;
+import org.hibernate.annotations.Where;
 
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
@@ -70,6 +72,12 @@ public class Message extends FeaturedObject {
 
 	@ListBoxDefinition(viewType = ViewType.RadioTable, multiSelectSeperator=",", keys = { "1", "2", "3", "4" }, display = { "ms1", "ms2", "ms3", "ms4" })
 	private String multiSelect;
+	
+	@OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.ALL)
+    @Where(clause = "ownersAttribute='persistentStrings'")
+	@AttributeDisplayName("persistent Strings")
+	@AttributeValidators(AttributeValidators.notEmpty)
+	private Set<PersistentString> persistentStrings;
 
 	public Message() {
 	}
@@ -181,6 +189,14 @@ public class Message extends FeaturedObject {
 
 	public void setMultiSelect(String multiSelect) {
 		this.multiSelect = multiSelect;
+	}
+
+	public Set<PersistentString> getPersistentStrings() {
+		return persistentStrings;
+	}
+
+	public void setPersistentStrings(Set<PersistentString> persistentStrings) {
+		this.persistentStrings = persistentStrings;
 	}
 
 	@Override
