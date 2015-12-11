@@ -885,11 +885,13 @@ public class ServerTools {
 									//those are also the only DomainObjects that can be linked to others without being saved first (UI limitation by design)
 									PersistentString ps = (PersistentString) relObj;
 									ps.setOwner(domainObject);
+									ps.setOwnersAttribute(domainClassAttribute.getName());
 									if(ps.getObjectID() != null) {
 										//has been saved before, check if owner is the same, to prevent pirating
 										PersistentString psDB = em.find(ps.getClass(), ps.getObjectID());
-										if(psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())) {
-											throw new AtomException("User tried to hijack a PersistentString from another Object!");
+										if(psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())
+												|| psDB.getOwnersAttribute() != null && !psDB.getOwnersAttribute().equals(ps.getOwnersAttribute())) {
+											throw new AtomException("User tried to hijack a PersistentString from another Object or attribute! DBowner = " + psDB.getOwner().getObjectID() + "; newOwner = " + ps.getOwner().getObjectID() + "; DBattribute = " + psDB.getOwnersAttribute() + "; newAttribute = " + ps.getOwnersAttribute());
 										}
 									}
 //									PersistentString psDB = em.merge(ps);

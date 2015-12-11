@@ -15,9 +15,9 @@ import at.ac.fhcampuswien.atom.shared.annotations.HideFromGui;
 
 @Entity
 @ClassNamePlural("PersistentStrings")
-//@AnalyzerIgnore
+// @AnalyzerIgnore
 @HideFromGui
-@AccessListRoles(accessTypes={AtomConfig.accessLinkage, AtomConfig.accessReadOnly},value="*")
+@AccessListRoles(accessTypes = { AtomConfig.accessLinkage, AtomConfig.accessReadOnly }, value = "*")
 public class PersistentString extends DomainObject {
 
 	@AnalyzerIgnore
@@ -27,6 +27,8 @@ public class PersistentString extends DomainObject {
 
 	@ManyToOne
 	private DomainObject owner;
+
+	private String ownersAttribute;
 
 	private int type;
 
@@ -51,6 +53,14 @@ public class PersistentString extends DomainObject {
 
 	public void setOwner(DomainObject owner) {
 		this.owner = owner;
+	}
+
+	public String getOwnersAttribute() {
+		return ownersAttribute;
+	}
+
+	public void setOwnersAttribute(String ownersAttribute) {
+		this.ownersAttribute = ownersAttribute;
 	}
 
 	public void setType(int type) {
