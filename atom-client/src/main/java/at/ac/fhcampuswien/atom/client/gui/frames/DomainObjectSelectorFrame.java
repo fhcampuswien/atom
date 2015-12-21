@@ -122,12 +122,8 @@ public class DomainObjectSelectorFrame extends Frame {
 				DomainClass representedClass = domainTree.getDomainClassNamed(representedClassName);
 				DomainObjectSelectorFrame.this.representedClass = representedClass;
 				
-				if (multiSelect) {
-					 DomainObjectSelectorFrame.this.setTitles("Bitte wählen Sie " + representedClass.getPluralName() + " für Attribut " + attributeName, "wähle " + attributeName);
-				 } else {
-					 DomainObjectSelectorFrame.this.setTitles("Bitte wählen Sie " + representedClass.getSimpleName() + " für Attribut " + attributeName, "wähle " + attributeName);
-				 }
-				
+				DomainObjectSelectorFrame.this.setTitles("Bitte wählen Sie " + (multiSelect ? representedClass.getPluralName() : representedClass.getSimpleName()) + " für Attribut " + attributeName, "wähle " + attributeName, false);
+								
 				DomainObjectSelectorFrame.this.changeCenterHeaderButtonPanelState(getCenterHeaderState(representedClass));
 
 				DomainObjectListWidget.ActionMode mode;
