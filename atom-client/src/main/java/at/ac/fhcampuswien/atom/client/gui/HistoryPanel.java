@@ -397,9 +397,8 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 	private void continueClearing(ArrayList<SidePanelLabel<FrameVisit>> needToDelete, boolean showTopAfter) {
 		if(needToDelete != null && needToDelete.size() > 0) {
 			SidePanelLabel<FrameVisit> lbl = needToDelete.get(0);
-			if(lbl.identifier.getFrameType() != FrameType.WELCOME)
-				HistoryPanel.this.removeElement(lbl.identifier);
 			needToDelete.remove(lbl);
+			HistoryPanel.this.removeElement(lbl.identifier, !showTopAfter, needToDelete);
 		}
 		else if(showTopAfter) {
 			showTopFrame();
