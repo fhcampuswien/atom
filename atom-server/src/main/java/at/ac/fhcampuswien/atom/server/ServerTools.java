@@ -889,7 +889,7 @@ public class ServerTools {
 									if(ps.getObjectID() != null) {
 										//has been saved before, check if owner is the same, to prevent pirating
 										PersistentString psDB = em.find(ps.getClass(), ps.getObjectID());
-										if(psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())
+										if(!psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())
 												|| psDB.getOwnersAttribute() != null && !psDB.getOwnersAttribute().equals(ps.getOwnersAttribute())) {
 											throw new AtomException("User tried to hijack a PersistentString from another Object or attribute! DBowner = " + psDB.getOwner().getObjectID() + "; newOwner = " + ps.getOwner().getObjectID() + "; DBattribute = " + psDB.getOwnersAttribute() + "; newAttribute = " + ps.getOwnersAttribute());
 										}
