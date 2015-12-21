@@ -262,26 +262,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 		if (obj == null || !(obj instanceof FrameVisit))
 			return false;
 		else {
-			FrameVisit other = (FrameVisit) obj;
-
-			boolean equalFrameType = ((getFrameType() != null && getFrameType().equals(other.getFrameType())) || (getFrameType() == null && other
-					.getFrameType() == null));
-
-			boolean equalClass = ((getNameOfRepresentedClass() != null && getNameOfRepresentedClass().equals(
-					other.getNameOfRepresentedClass())) || (getNameOfRepresentedClass() == null && other.getNameOfRepresentedClass() == null));
-
-			boolean equalInstance = ((getRepresentedInstance() != null && getRepresentedInstance().equals(
-					other.getRepresentedInstance())) || (getRepresentedInstance() == null && other.getRepresentedInstance() == null));
-
-			boolean equalSearchStrings = ((getRepresentedSearchString() != null && getRepresentedSearchString().equals(
-					other.getRepresentedSearchString())) || (getRepresentedSearchString() == null && other
-					.getRepresentedSearchString() == null));
-			
-			boolean equalVisitor = ((getVisitor() != null && getVisitor().equals(
-					other.getVisitor())) || (getVisitor() == null && other
-					.getVisitor() == null));
-
-			return equalFrameType && equalClass && equalInstance && equalSearchStrings && equalVisitor;
+			return this.hashCode() == obj.hashCode();
 		}
 	}
 
