@@ -8,7 +8,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 
 import at.ac.fhcampuswien.atom.client.App;
 import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
@@ -24,13 +32,6 @@ import at.ac.fhcampuswien.atom.shared.DomainObjectList;
 import at.ac.fhcampuswien.atom.shared.Notifiable;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
-
-import java.util.logging.Level;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 
 public class HistoryPanel extends SidePanel<FrameVisit> {
 
@@ -50,10 +51,14 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 	}
 
 	public void addFrame(final Frame frame) {
+		addFrame(frame, true);
+	}
+
+	public void addFrame(final Frame frame, boolean sendToServer) {
 		FrameVisit visit = frameVisits.get(frame);
 
 		if (visit != null) {
-			this.showFrame(frame);
+			this.showFrame(frame, sendToServer);
 		} else {
 
 			visit = showFrame(frame);
@@ -130,12 +135,17 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 	}
 
 	public FrameVisit showFrame(final Frame frame) {
-
+		return showFrame(frame, true);
+	}
+	
+	public FrameVisit showFrame(final Frame frame, boolean sendToServer) {
+		
 		// currently active frame doesn't want to leave, no visit happens, return null.
 		if (!App.showFrame(frame))
 			return null;
 
 		FrameVisit visit = frameVisits.get(frame);
+		
 		if (visit == null) {
 			visit = new FrameVisit(RPCCaller.getSinglton().getClientSession().getUser(), frame.getFrameType(), frame.getRepresentedObject(),
 					frame.getRepresentedClass(), frame.getRepresentedSearchTerm(), frame.isSimpleSearch(), frame.getDataFilters(), frame.getShortTitle());
@@ -149,8 +159,8 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 		}
 		visit.setLastVisit(new Date());
 
-		if (loadingEntriesFromServerFinished != null && loadingEntriesFromServerFinished == true && visit != null
-				&& visit.getFrameType() != FrameType.OBJECT_SELECTOR) {
+		if (sendToServer && loadingEntriesFromServerFinished != null && loadingEntriesFromServerFinished == true
+				 && visit != null && visit.getFrameType() != FrameType.OBJECT_SELECTOR) {
 			sendVisitToServer(frame, visit);
 		}
 
@@ -227,17 +237,21 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 
 	@Override
 	public void removeElement(FrameVisit identifier) {
-		removeElement(identifier, false);
+		removeElement(identifier, false, null);
+	}
+	
+	public void removeElement(FrameVisit identifier, boolean keepVisible) {
+		removeElement(identifier, false, null);
 	}
 
-	public void removeElement(FrameVisit identifier, boolean keepVisible) {
+	public void removeElement(FrameVisit identifier, final boolean keepVisible, final ArrayList<SidePanelLabel<FrameVisit>> needToDelete) {
 		super.removeElement(identifier);
 		RPCCaller.getSinglton().deleteDomainObject(identifier, new Notifiable<String>() {
 			
 			@Override
 			public void doNotify(String reason) {
 				AtomTools.log(Level.INFO, "HistoryPanel.removeElement - deleteDomainObject -> got response from server, notifying clearTimer to continue", this);
-				continueClearing();
+				continueClearing(needToDelete, !keepVisible);
 			}
 		});
 
@@ -331,67 +345,64 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 		}
 	}
 
+	/**
+	 * @param pdo A DomainObject that has been deleted and should not continue to exist
+	 */
 	@Override
 	public void removeFromUI(final DomainObject pdo) {
 		if (pdo == null)
 			return;
+		
+		HashSet<Frame> matchedFrames = new HashSet<Frame>();
 
 		if (pdo.getObjectID() != null) {
-			//FIXME: this can't work
 			FrameVisit visit = framelessVisits.get(pdo.getObjectID());
-			if (visit != null)
+			if (visit != null) {
 				this.removeElement(visit, true);
-
-			framelessVisits.remove(pdo.getObjectID());
-
-			for (FrameVisit v : frameVisits.values()) {
-				if (FrameType.DETAIL_VIEW.equals(v.getFrameType()) && v.getRepresentedInstance() != null
-						&& v.getRepresentedInstance().getObjectID().equals(pdo.getObjectID())) {
-					HistoryPanel.this.removeElement(v, true);
-					frameVisits.inverse().remove(v);
-					break;
-				}
+				framelessVisits.remove(pdo.getObjectID());
 			}
+			
+			for (Frame f : frameVisits.keySet()) {
+				if (FrameType.DETAIL_VIEW.equals(f.getFrameType()) && f.getRepresentedObject() != null && f.getRepresentedObject().getObjectID() != null
+						&& f.getRepresentedObject().getObjectID().equals(pdo.getObjectID())) {
+					matchedFrames.add(f);
+			    }
+			}
+			
 		} else {
-			// if I haven't got an ID, I have to look for the class.
+			// if I haven't got an ID, I have to look for the class. (DETAIL_VIEW_new views)
 			DomainClass dt = RPCCaller.getSinglton().getLoadedDomainTree();
 			DomainClass dc = dt.getDomainClassNamed(pdo.getConcreteClass());
-			for (FrameVisit v : frameVisits.values()) {
-				if (FrameType.DETAIL_VIEW.equals(v.getFrameType()) && dc.getName().equals(v.getNameOfRepresentedClass())) {
-					HistoryPanel.this.removeElement(v, true);
-					frameVisits.inverse().remove(v);
-					break;
-				}
+			for (Frame f : frameVisits.keySet()) {
+				if (FrameType.DETAIL_VIEW.equals(f.getFrameType()) && dc.equals(f.getRepresentedClass()) && (f.getRepresentedObject() == null || f.getRepresentedObject().getObjectID() == null)) {
+					matchedFrames.add(f);
+			    }
 			}
+		}
+		for(Frame f : matchedFrames) {
+			FrameVisit v = frameVisits.get(f);
+			this.removeElement(v, true);
 		}
 	}
 
-	private ArrayList<SidePanelLabel<FrameVisit>> needToDelete = new ArrayList<SidePanelLabel<FrameVisit>>();
 	public void clear() {
 		// looping through all labels starting at the last ending at the second (leaving the first untouched)
-		needToDelete.clear();
+		ArrayList<SidePanelLabel<FrameVisit>> needToDelete = new ArrayList<SidePanelLabel<FrameVisit>>();
 		needToDelete.addAll(lablesList);
 		needToDelete.remove(lablesList.get(0)); //don't delete the first one (=currently viewed)
 //		App.processCommand("WELCOME");
-		continueClearing();
+		continueClearing(needToDelete, false);
 	}
 	
-	private void continueClearing() {
-		if(needToDelete.size() > 0) {
+	private void continueClearing(ArrayList<SidePanelLabel<FrameVisit>> needToDelete, boolean showTopAfter) {
+		if(needToDelete != null && needToDelete.size() > 0) {
 			SidePanelLabel<FrameVisit> lbl = needToDelete.get(0);
 			if(lbl.identifier.getFrameType() != FrameType.WELCOME)
 				HistoryPanel.this.removeElement(lbl.identifier);
 			needToDelete.remove(lbl);
 		}
-		else {
+		else if(showTopAfter) {
 			showTopFrame();
 		}
 	}
-
-	// public void frameIdentityChanged(Frame frame) {
-	// FrameVisit visit = frameVisits.get(frame);
-	// visit.setRepresentedInstance(frame.getRepresentedObject());
-	// visit.setLastVisit(new Date());
-	// sendVisitToServer(frame, visit);
-	// }
 }

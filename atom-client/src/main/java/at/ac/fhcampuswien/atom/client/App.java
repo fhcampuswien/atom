@@ -699,9 +699,9 @@ public class App implements EntryPoint {
 		return false;
 	}
 
-	public static void frameChanged(Frame frame) {
+	public static void frameChanged(Frame frame, boolean sendToServer) {
 		if (isActiveFrame(frame)) {
-			singleton.history.addFrame(frame);
+			singleton.history.addFrame(frame, sendToServer);
 			
 			//gets called by history //showFrame(frame);
 		}

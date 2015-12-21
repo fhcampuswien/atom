@@ -523,11 +523,9 @@ public class DomainObjectDetailFrame extends Frame {
 
 			// change titles to represent the new instance state.
 			String name = getName(instance, representedClass);
-			DomainObjectDetailFrame.this.setTitles("Detailansicht von " + name, name);
+			DomainObjectDetailFrame.this.setTitles("Detailansicht von " + name, name, true);
 			
 			DomainObject oldInstanceVersion = DomainObjectDetailFrame.this.representedObject;
-			DomainObjectDetailFrame.this.representedObject = instance;
-			boolean wasNew = (oldInstanceVersion.getObjectID() == null);
 			
 			if(instance.getNullReasons().containsValue(AtomConfig.nullReasonNotRelationEssential)) {
 				//the object we got back from the server got cleared because user doesn't have read access!
@@ -537,23 +535,28 @@ public class DomainObjectDetailFrame extends Frame {
 				applyValuesOf(oldInstanceVersion, true);
 			}
 			
-			if(wasNew) {
-				//if we save an instance for the first time, then we didn't have an objectid before.
-				//the identity changed --> remove the old thing from the userinterface, and add the new one.
+			instance.setShownFields(oldInstanceVersion.getShownFields());
+			oldInstanceVersion.unregisterWatcher(shownFieldsNotifiable);
+			instance.registerWatcher(shownFieldsNotifiable);
+
+			//remove old version from UI while frame is still associated with it
+			if(unsavedNew) {
 				App.removeFromUI(oldInstanceVersion);
-				App.addFrame(DomainObjectDetailFrame.this);
 			}
-			else {
-				instance.setShownFields(oldInstanceVersion.getShownFields());
-				oldInstanceVersion.unregisterWatcher(shownFieldsNotifiable);
-				instance.registerWatcher(shownFieldsNotifiable);
+			
+			//save new instance version into Frame only after the old view could have been removed (if it was @unsavedNew)
+			DomainObjectDetailFrame.this.representedObject = instance;
+			
+			if(unsavedNew) {
+				// if we save an instance for the first time, then we didn't have an objectid before.
+				// the identity changed --> the old thing has been removed from the userinterface (5 lines above)
+				// now we'll add it again with the new identity!
+				App.addFrame(DomainObjectDetailFrame.this);
 				unsavedNew = false;
 			}
- 
+
 			loadNullReasons();
 			loadValues();
-			
-//			AtomGUI.getSinglton().frameIdentityChanged(DomainObjectDetailFrame.this);
 
 			if (objectReciever != null)
 				objectReciever.recieve(instance);
@@ -631,24 +634,26 @@ public class DomainObjectDetailFrame extends Frame {
 			centerHeaderButtonPanelState = State.EMPTY;
 			this.content = null;
 			this.setTitles(AtomTools.getMessages().deleting(representedObject.getStringRepresentation()), AtomTools
-					.getMessages().deleting(representedObject.getStringRepresentation()));
+					.getMessages().deleting(representedObject.getStringRepresentation()), false);
 			RPCCaller.getSinglton().deleteDomainObject(representedObject, new Notifiable<String>() {
 
 				public void doNotify(String notifyReason) {
 					if ("deletion successful".equals(notifyReason)) {
 						String title = AtomTools.getMessages().delete_success(representedObject.getStringRepresentation());
-						DomainObjectDetailFrame.this.setTitles(title, title);
+						DomainObjectDetailFrame.this.setTitles(title, title, false);
 						App.removeFromUI(DomainObjectDetailFrame.this.representedObject);
 						DomainObjectDetailFrame.this.representedObject = null;
 					}
 					if ("deletion failed".equals(notifyReason)) {
 						DomainObjectDetailFrame.this.setTitles(
 								AtomTools.getMessages().delete_error(representedObject.getStringRepresentation()),
-								AtomTools.getMessages().delete_error(representedObject.getStringRepresentation()));
+								AtomTools.getMessages().delete_error(representedObject.getStringRepresentation()), false);
 					}
 				}
 			});
-			App.frameChanged(this);
+			
+			//this call is included in setTitles!
+			//App.frameChanged(this);
 		}
 	}
 

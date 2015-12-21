@@ -43,7 +43,7 @@ public class Frame extends Composite {
 	protected String representedSearchTerm = null;
 	protected DataFilter[] dataFilters = null;
 	
-	protected void setTitles(String longTitle, String shortTitle) {
+	protected void setTitles(String longTitle, String shortTitle, boolean sendToServer) {
 		this.longTitle = longTitle;
 		this.shortTitle = shortTitle;
 		
@@ -57,12 +57,12 @@ public class Frame extends Composite {
 			}); 
 			//setText(AtomGUI.getSinglton().getShortenedString(shortTitle, null, 165));
 		
-		App.frameChanged(this);
+		App.frameChanged(this, sendToServer);
 	}
 	
 	protected void changeCenterHeaderButtonPanelState(CenterHeader.State centerHeaderButtonPanelState) {
 		this.centerHeaderButtonPanelState = centerHeaderButtonPanelState;
-		App.frameChanged(this);
+		App.frameChanged(this, false);
 	}
 
 	public Frame(String longTitle, String shortTitle,
@@ -134,7 +134,7 @@ public class Frame extends Composite {
 				frameType = FrameType.FILTERCLASS;
 			}
 			updateTitles();
-			App.frameChanged(this);
+			App.frameChanged(this, true);
 		}
 	}
 	
