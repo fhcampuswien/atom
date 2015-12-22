@@ -80,6 +80,7 @@ public class AtomTools {
 
 	/**
 	 * Defines a custom format for the stack trace as String.
+	 * @param aThrowable the throwable for which the stacktrace should be returned as single string
 	 */
 	public static String getCustomStackTrace(Throwable aThrowable) {
 		// add the class name and any message passed to constructor

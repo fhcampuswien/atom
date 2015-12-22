@@ -71,6 +71,10 @@
 				java.lang.AbstractMethodError: Method com/mchange/v2/c3p0/impl/NewProxyDatabaseMetaData.getSchemas(Ljava/lang/String;Ljava/lang/String;)Ljava/sql/ResultSet; is abstract
 		 -->
 		<!-- <hibernate.version>5.0.0.CR1</hibernate.version> -->
+		
+		<!-- prevent javadoc generator from making a build fail.. -->
+		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+		<maven.javadoc.overview>${basedir}/javadoc_aggregate_home.html</maven.javadoc.overview>
 	</properties>
 
 	<modules>
@@ -79,8 +83,26 @@
 		<module>atom-client</module>
 		<module>atom-server</module>
 	</modules>
-	
+		
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 		<pluginManagement>
 			<plugins>
 				<plugin> <!-- globally setting java version here -->

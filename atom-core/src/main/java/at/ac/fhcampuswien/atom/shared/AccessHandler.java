@@ -39,7 +39,7 @@ public class AccessHandler implements java.io.Serializable, com.google.gwt.user.
 	private boolean isForAttribute = false;
 	
 	/**
-	 * use this for AttributeAccessHandlers -->
+	 * use this for AttributeAccessHandlers
 	 * they never have parents, and must not store found access in instances,
 	 * since its only access to one of the instances attributes.
 	 */
