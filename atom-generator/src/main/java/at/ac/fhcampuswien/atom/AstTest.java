@@ -2,15 +2,24 @@ package at.ac.fhcampuswien.atom;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+
+import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.Notifiable;
  
 public class AstTest {
 	public static void main(String args[]){
+		
+		System.out.println("pre start");
+		AtomTools.log(Level.INFO, "starting AstTest main", null);
+		
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource("public class A { int i = 9;  \n int j; \n ArrayList<Integer> al = new ArrayList<Integer>();j=1000; }".toCharArray());
 		//parser.setSource("/*abc*/".toCharArray());
@@ -38,6 +47,17 @@ public class AstTest {
 				return true;
 			}
  
+		});
+
+		System.out.println("----------------------------------------------");
+		System.out.println("----------------------------------------------");
+		
+		DomainResourceFinder.findResources(true, new Notifiable<String>() {
+			
+			@Override
+			public void doNotify(String reason) {
+				System.out.println(reason);
+			}
 		});
 	}
 }
