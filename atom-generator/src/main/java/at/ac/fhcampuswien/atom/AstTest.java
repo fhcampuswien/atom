@@ -13,7 +13,20 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.Notifiable;
- 
+
+/**
+ * 
+ * @author kaefert
+ *
+ * adapted sample copied from:
+ * http://www.programcreek.com/2011/01/a-complete-standalone-example-of-astparser/
+ *
+ * more pointers:
+ * http://help.eclipse.org/mars/index.jsp?topic=/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/core/dom/AST.html
+ * http://www.vogella.com/tutorials/EclipseJDT/article.html
+ * http://stackoverflow.com/questions/10148802/eclipse-jdt-ast-how-to-write-generated-ast-to-java-file
+ * 
+ */
 public class AstTest {
 	public static void main(String args[]){
 		
