@@ -147,7 +147,15 @@ public class AtomTools {
 
 		String logString = getCurrentTimeStamp() + " ; " + callerString + ": " + message;
 
-		if (GWT.isClient()) {
+		boolean isGwtClient = false;
+		try{
+			isGwtClient = GWT.isClient();
+		} catch(Throwable t1) {
+			//in Java standalone calling GWT.* might trigger ClassNotFoundException
+			//we don't care. we're not on the client side for sure.
+		}
+		
+		if (isGwtClient) {
 			Window.setStatus("[" + logLevel + "] " + logString);
 			logString = callerString + ": " + message;
 //			speedTracerLog(logString);

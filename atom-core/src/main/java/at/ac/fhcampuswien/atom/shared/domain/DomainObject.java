@@ -102,7 +102,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
 //@AccessListRoles(accessTypes = AtomConfig.accessReadWrite, value = { "Administrator" }) })
 // orgEinheitenLists = { @AccessListOrgEinheiten(accessType = "accessReadWrite",
 // value = { "Online-Services" }, onlyLeiter = false, onlyHauptrolle = false) }
-public class DomainObject implements Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class DomainObject implements Serializable {
 
 	@AnalyzerIgnore
 	private static final long serialVersionUID = 8875224958340977068L;
