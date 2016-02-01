@@ -595,7 +595,12 @@ public class DomainObjectDetailFrame extends Frame {
 				aView.setValue(ClientTools.getAttributeValue(representedClass, anAttribute, representedObject));
 		}
 
-		representedObject.prepareSave(RPCCaller.getSinglton().getClientSession());
+		try {
+			representedObject.prepareSave(RPCCaller.getSinglton().getClientSession());
+		}
+		catch(ValidationError ve) {
+			validationError = ve;
+		}
 		
 		// validation done above already by AttributeViews
 		//ClientTools.validateDomainObject(representedObject, representedClass);
