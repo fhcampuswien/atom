@@ -90,7 +90,11 @@ public class ClientTools {
 		// + domainObject.getStringRepresentation() + ")", null);
 		
 		if("java.lang.Integer".equals(domainClassAttribute.getType()) && value instanceof String) {
-			value = Integer.parseInt((String) value);
+			String sval = (String) value;
+			if(sval.length() == 0)
+				value = null;
+			else
+				value = Integer.parseInt(sval);
 		}
 
 		try {
