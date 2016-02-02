@@ -1,5 +1,13 @@
 package at.ac.fhcampuswien.atom;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,13 +28,26 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.NullLiteral;
+import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jdt.core.dom.rewrite.ITrackedNodePosition;
+import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
+import org.eclipse.text.edits.MalformedTreeException;
+import org.eclipse.text.edits.TextEdit;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
-import at.ac.fhcampuswien.atom.shared.Notifiable;
 
 /**
  * 
@@ -43,29 +64,155 @@ import at.ac.fhcampuswien.atom.shared.Notifiable;
  */
 public class AstTest {
 	public static void main(String args[]) {
-		
+
+		System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
 		AtomTools.log(Level.INFO, "parseInlineJavaCodeSample", null);
 		parseInlineJavaCodeSample();
 
-		AtomTools.log(Level.INFO, "analyseWorkspaceProjects", null);
-		analyseWorkspaceProjects();
+		AtomTools.log(Level.INFO, "loadAndModifySourceOfClientTools", null);
+		loadAndModifySourceOfClientTools();
 
-		AtomTools.log(Level.INFO, "DomainResourceFinder.findResources", null);
-		DomainResourceFinder.findResources(true, new Notifiable<String>() {
+		// AtomTools.log(Level.INFO, "analyseWorkspaceProjects", null);
+		// analyseWorkspaceProjects();
 
-			@Override
-			public void doNotify(String reason) {
-				System.out.println(reason);
+		// AtomTools.log(Level.INFO, "DomainResourceFinder.findResources",
+		// null);
+		// DomainResourceFinder.findResources(true, new Notifiable<String>() {
+		//
+		// @Override
+		// public void doNotify(String reason) {
+		// System.out.println(reason);
+		// }
+		// });
+	}
+
+
+	private static void loadAndModifySourceOfClientTools() {
+
+		try {
+			// "/" = root of classes, outside of packages.
+			URL classRootUrl = AtomTools.class.getResource("/");
+			String classRootPath = classRootUrl.getPath();
+			AtomTools.log(Level.INFO, "got url: " + classRootPath, null);
+
+			URI classRootUri = new URI(classRootPath);
+			URI parentProject = classRootUri.resolve("../../..");
+			AtomTools.log(Level.INFO, "parent: " + parentProject, null);
+			File srcFile = new File(parentProject + "atom-core/src/main/java-stubs/DomainReflectionEmulator.java");
+			// "atom-core/src/main/java/at/ac/fhcampuswien/atom/shared/AtomTools.java");
+			AtomTools.log(Level.INFO, "atomToolsSrc: " + srcFile, null);
+			
+			byte[] encoded = Files.readAllBytes(srcFile.toPath());
+			String srcContent = new String(encoded, StandardCharsets.UTF_8);
+			Document document = new Document(srcContent);
+			// AtomTools.log(Level.INFO, "atomToolsSrc content = " + srcContent,
+			// null);
+
+			// http://stackoverflow.com/questions/13453811/eclipse-ast-variable-binding-on-standalone-java-application
+			ASTParser parser = ASTParser.newParser(AST.JLS8);
+			parser.setSource(srcContent.toCharArray());
+
+			// parser.setKind(ASTParser.K_COMPILATION_UNIT);
+			// //parser.setEnvironment(classpath, new String[] { rootDir }, new
+			// String[] { "UTF8" }, true);
+			// parser.setResolveBindings(true);
+			// parser.setBindingsRecovery(true);
+			CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
+			AST ast = astRoot.getAST();
+			ASTRewrite rewriter = ASTRewrite.create(ast);
+			
+			
+			//////// http://www.programcreek.com/2012/06/insertadd-statements-to-java-source-code-by-using-eclipse-jdt-astrewrite/
+			// for getting insertion position
+			TypeDeclaration typeDecl = (TypeDeclaration) astRoot.types().get(0);
+			for( MethodDeclaration methodDecl : typeDecl.getMethods()) {
+				if("getAttributeValue".equals(methodDecl.getName().toString())) {
+					Block block = methodDecl.getBody();
+//					block.statements()
+					ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
+					ReturnStatement returnStatement = ast.newReturnStatement();
+					returnStatement.setExpression(ast.newNullLiteral());
+					listRewrite.insertLast(returnStatement, null);
+				}
+				else if("setAttributeValue".equals(methodDecl.getName().toString())) {
+					
+				}
 			}
-		});
+			//Block block = methodDecl.getBody();
+	 
+			// create new statements for insertion
+			MethodInvocation newInvocation = ast.newMethodInvocation();
+			newInvocation.setName(ast.newSimpleName("add"));
+			Statement newStatement = ast.newExpressionStatement(newInvocation);
+	 
+			//create ListRewrite
+//			ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
+//			listRewrite.insertFirst(newStatement, null);
+
+			
+		    //////// sample from ASTRewrite javadoc
+//			ImportDeclaration id = ast.newImportDeclaration();
+//			id.setName(ast.newName(new String[] { "java", "util", "RegularEnumSet" }));
+//			TypeDeclaration td = (TypeDeclaration) astRoot.types().get(0);
+//			ITrackedNodePosition tdLocation = rewriter.track(td);
+//			ListRewrite lrw = rewriter.getListRewrite(astRoot, CompilationUnit.IMPORTS_PROPERTY);
+//			lrw.insertLast(id, null);
+
+			// http://stackoverflow.com/questions/10148802/eclipse-jdt-ast-how-to-write-generated-ast-to-java-file
+			TextEdit edits = rewriter.rewriteAST(document, null);
+			edits.apply(document);
+			AtomTools.log(Level.INFO, "result: " + document.get(), null);
+			
+			PrintWriter out = new PrintWriter(parentProject + "atom-core/target/generated-sources/gwt/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java");
+			out.print(document.get());
+			out.close();
+
+			// RewriteEventStore s;
+			// ASTRewriteFlattener f;
+
+			// astRoot.recordModifications();
+			//
+			// astRoot.accept(new ASTVisitor() {
+			//
+			// @Override
+			// public void endVisit(VariableDeclarationFragment node) {
+			// AtomTools.log(Level.INFO, "endVisit node = " + node.toString(),
+			// null);
+			// super.endVisit(node);
+			// }
+			// });
+
+			// AST ast = CompilationUnit.getAST();
+
+		} catch (URISyntaxException e) {
+			AtomTools.log(Level.SEVERE, "URISyntaxException!", null, e);
+		} catch (IOException e) {
+			AtomTools.log(Level.SEVERE, "IOException!", null, e);
+			// } catch (JavaModelException e) {
+			// AtomTools.log(Level.SEVERE, "JavaModelException!", null, e);
+		} catch (IllegalArgumentException e) {
+			AtomTools.log(Level.SEVERE, "IllegalArgumentE	xception!", null, e);
+		} catch (MalformedTreeException e) {
+			AtomTools.log(Level.SEVERE, "MalformedTreeException!", null, e);
+		} catch (BadLocationException e) {
+			AtomTools.log(Level.SEVERE, "BadLocationException!", null, e);
+		}
+
+		// File file = new File( classRootUrl.getPath( ) );
+		// String parentProjectDir = file.getParent();
+		// URI parent = classRootUrl.getPath().endsWith("/") ? uri.resolve("..")
+		// : uri.resolve(".")
+
 	}
 
 	/**
 	 * adapted sample copied from:
-	 * http://www.programcreek.com/2011/01/a-complete-standalone-example-of-astparser/
+	 * http://www.programcreek.com/2011/01/a-complete-standalone-example-of-
+	 * astparser/
 	 */
 	private static void parseInlineJavaCodeSample() {
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		ASTParser parser = ASTParser.newParser(AST.JLS8);
 		parser.setSource("public class A { int i = 9;  \n int j; \n ArrayList<Integer> al = new ArrayList<Integer>();j=1000; }".toCharArray());
 		// parser.setSource("/*abc*/".toCharArray());
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
