@@ -312,6 +312,8 @@ public class AstTest {
 				ifAttribute.setThenStatement(returnStatement);
 			}
 			else {
+				Block block = ast.newBlock();
+				
 				MethodInvocation methodInvocation = ast.newMethodInvocation();
 				simpleName = ast.newSimpleName("set" + AtomTools.upperFirstChar(attribute.getName()));
 				methodInvocation.setName(simpleName);
@@ -332,8 +334,11 @@ public class AstTest {
 				castExpression.setType(simpleType);
 
 				methodInvocation.arguments().add(castExpression);
+				block.statements().add(ast.newExpressionStatement(methodInvocation));
+				block.statements().add(ast.newReturnStatement());
 				
-				ifAttribute.setThenStatement(ast.newExpressionStatement(methodInvocation));
+				ifAttribute.setThenStatement(block);
+				//ast.newExpressionStatement(methodInvocation)
 			}
 			
 			classBlock.statements().add(ifAttribute);
