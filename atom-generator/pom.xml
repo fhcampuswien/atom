@@ -9,11 +9,11 @@
 	<artifactId>atom-generator</artifactId>
 	<dependencies>
 
-		<!-- shared code, domain depends on core, so core will be imported through 
-			domain -->
+		<!-- shared code, server depends on domain which depends on core
+		      -> so we only need to import server to get those 3 -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-domain</artifactId>
+			<artifactId>atom-server</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
