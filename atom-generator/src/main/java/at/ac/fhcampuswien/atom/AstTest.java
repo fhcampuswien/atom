@@ -30,17 +30,14 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.NullLiteral;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
 import org.eclipse.jdt.core.dom.Statement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
-import org.eclipse.jdt.core.dom.rewrite.ITrackedNodePosition;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -63,6 +60,7 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
  * 
  */
 public class AstTest {
+	
 	public static void main(String args[]) {
 
 		System.out.println("Working Directory = " + System.getProperty("user.dir"));
@@ -71,7 +69,7 @@ public class AstTest {
 		parseInlineJavaCodeSample();
 
 		AtomTools.log(Level.INFO, "loadAndModifySourceOfClientTools", null);
-		loadAndModifySourceOfClientTools();
+		loadAndImplementDomainReflectionEmulator();
 
 		// AtomTools.log(Level.INFO, "analyseWorkspaceProjects", null);
 		// analyseWorkspaceProjects();
@@ -87,8 +85,11 @@ public class AstTest {
 		// });
 	}
 
+//	private static final String 
 
-	private static void loadAndModifySourceOfClientTools() {
+	private static void loadAndImplementDomainReflectionEmulator() {
+		final String stubPath = "atom-core/src/main/java-stubs/DomainReflectionEmulator.java";
+		final String outPath = "atom-core/target/generated-sources/gwt/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java";
 
 		try {
 			// "/" = root of classes, outside of packages.
@@ -99,7 +100,7 @@ public class AstTest {
 			URI classRootUri = new URI(classRootPath);
 			URI parentProject = classRootUri.resolve("../../..");
 			AtomTools.log(Level.INFO, "parent: " + parentProject, null);
-			File srcFile = new File(parentProject + "atom-core/src/main/java-stubs/DomainReflectionEmulator.java");
+			File srcFile = new File(parentProject + stubPath);
 			// "atom-core/src/main/java/at/ac/fhcampuswien/atom/shared/AtomTools.java");
 			AtomTools.log(Level.INFO, "atomToolsSrc: " + srcFile, null);
 			
@@ -164,7 +165,7 @@ public class AstTest {
 			edits.apply(document);
 			AtomTools.log(Level.INFO, "result: " + document.get(), null);
 			
-			PrintWriter out = new PrintWriter(parentProject + "atom-core/target/generated-sources/gwt/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java");
+			PrintWriter out = new PrintWriter(parentProject + outPath);
 			out.print(document.get());
 			out.close();
 
