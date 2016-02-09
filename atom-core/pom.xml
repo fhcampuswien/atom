@@ -28,23 +28,6 @@
 				assigned to a different entity." ) -->
 		</dependency>
 
-		<!-- Client Side Reflection Library - is used to be able to read and write 
-			attributes of all domain classes although we only program against the generic 
-			top-lvl domainclass "DomainObject". Required in atom-core because @DomainObject 
-			needs to be marked with an annotation for the reflection to work. Because 
-			of this required annotation on @DomainObject it also needs to transverse 
-			into the server side. Used in: at.ac.fhcampuswien.atom.client.ClientTools.getAttributeValue(..) 
-			and setAttributeValue(..) -->
-		<dependency>
-			<type>jar</type>
-			<scope>compile</scope>
-			<groupId>gwtent</groupId>
-			<artifactId>gwtent</artifactId>
-			<version>2.0_RC1_GWT2.3</version>
-			<!-- <version>2.0_GWT2.2</version> -->
-		</dependency>
-
-
 		<!--used for logging in method at.ac.fhcampuswien.atom.shared.AtomTools.log(..) 
 			which is located here in the atom-core subproject -->
 			<!-- currently in progress to replace with default gwt logging, see:

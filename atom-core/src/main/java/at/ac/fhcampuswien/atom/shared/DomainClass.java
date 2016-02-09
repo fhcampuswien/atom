@@ -787,4 +787,14 @@ public class DomainClass implements java.io.Serializable, com.google.gwt.user.cl
 //		if(attributes != null) for(DomainClassAttribute d : attributes.values())
 //			d.getAccessHandler().fillUsersAccess(session);
 	}
+
+	private boolean hasPublicEmptyConstructor = false;
+	
+	public void setHasPublicEmptyConstructor() {
+		hasPublicEmptyConstructor = true;
+	}
+
+	public boolean getHasPublicEmptyConstructor() {
+		return hasPublicEmptyConstructor;
+	}
 }

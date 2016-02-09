@@ -26,7 +26,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.google.gwt.user.client.rpc.GwtTransient;
-import com.gwtent.reflection.client.Reflectable;
 
 import at.ac.fhcampuswien.atom.shared.ClientSession;
 import at.ac.fhcampuswien.atom.shared.DataFilter;
@@ -86,7 +85,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
  */
 
 //gwt-ent reflection, currently concidering to replace it with https://github.com/WeTheInternet/xapi/tree/master/gwt/gwt-reflect 
-@Reflectable(superClasses = false, assignableClasses = true, relationTypes = false, fields = false, methods = true, constructors = true, classAnnotations = false, fieldAnnotations = false)
+//@Reflectable(superClasses = false, assignableClasses = true, relationTypes = false, fields = false, methods = true, constructors = true, classAnnotations = false, fieldAnnotations = false)
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -107,6 +106,14 @@ public class DomainObject implements Serializable {
 	@AnalyzerIgnore
 	private static final long serialVersionUID = 8875224958340977068L;
 
+	/**
+	 * this should not be used, it only exists for GWT serialization purposes!
+	 */
+	@SuppressWarnings("unused")
+	@Deprecated()
+	protected DomainObject() {
+	}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer objectID;

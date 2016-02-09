@@ -143,9 +143,6 @@ public class AtomTools {
 			else
 				callerString = caller.getClass().getName() + "@" + caller.hashCode();
 		}
-			
-
-		String logString = getCurrentTimeStamp() + " ; " + callerString + ": " + message;
 
 		boolean isGwtClient = false;
 		try{
@@ -154,11 +151,16 @@ public class AtomTools {
 			//in Java standalone calling GWT.* might trigger ClassNotFoundException
 			//we don't care. we're not on the client side for sure.
 		}
-		
+
+		String logString;
 		if (isGwtClient) {
+			logString = getCurrentTimeStamp() + " ; " + callerString + ": " + message;
 			Window.setStatus("[" + logLevel + "] " + logString);
 			logString = callerString + ": " + message;
 //			speedTracerLog(logString);
+		}
+		else {
+			logString = callerString + ": " + message;
 		}
 
 		// GWT.log(logString);

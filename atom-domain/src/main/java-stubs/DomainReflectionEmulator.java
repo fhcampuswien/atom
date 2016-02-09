@@ -21,13 +21,19 @@ public class DomainReflectionEmulator {
 		String className = domainClass.getName();
 		String attributeName = domainClassAttribute.getName();
 
-//		throw new AtomException("Attribute " + className + "." + attributeName " not found. Could not get value!");
+		//throw new AtomException("Attribute " + className + "." + attributeName " not found. Could not get value!");
 	}
 	
 	public static void setAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject, Object value) {
 		String className = domainClass.getName();
 		String attributeName = domainClassAttribute.getName();
 		
-//		throw new AtomException("Attribute " + className + "." + attributeName " not found. Could not set value!");
+		//throw new AtomException("Attribute " + className + "." + attributeName " not found. Could not set value!");
+	}
+	
+	public static DomainObject makeInstance(DomainClass domainClass) {
+		String className = domainClass.getName();
+
+		//throw new AtomException("DomainClass " + domainClass.getName() + " not found. Could not create instance!");
 	}
 }

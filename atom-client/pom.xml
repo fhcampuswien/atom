@@ -64,6 +64,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-domain</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<!-- at.ac.fhcampuswien.atom.client.gui.HistoryPanel uses BiMap from guava -->
 		<dependency>
 			<groupId>com.google.guava</groupId>

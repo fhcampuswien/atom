@@ -34,20 +34,10 @@
 	<set-property name="log_GWTLogger" value="DISABLED" />
 	<set-property name="log_SystemLogger" value="ENABLED" />
 
-	<!-- Inherit the GWT Reflection stuff. (client side reflection) <inherits 
-		name="pl.rmalinowski.gwtreflect.GWTReflect" /> -->
-	<!-- 
-	
-	<inherits name="com.gwtent.reflection.Reflection" />
-	-->
-	<inherits name='com.gwtent.GwtEnt' />
-
 	<!-- Inherit gwt-dnd support -->
 	<inherits name='com.allen_sauer.gwt.dnd.gwt-dnd' />
 
 	<!-- <inherits name='com.extjs.gxt.ui.GXT' />
 	<inherits name="com.smartgwt.SmartGwt"/> -->
-
-	
 
 </module>

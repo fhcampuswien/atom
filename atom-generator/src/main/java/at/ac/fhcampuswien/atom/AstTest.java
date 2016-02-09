@@ -5,38 +5,33 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMethod;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.CastExpression;
+import org.eclipse.jdt.core.dom.ClassInstanceCreation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.IfStatement;
+import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
+import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.Statement;
+import org.eclipse.jdt.core.dom.StringLiteral;
+import org.eclipse.jdt.core.dom.ThrowStatement;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jface.text.BadLocationException;
@@ -44,7 +39,12 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 
+import at.ac.fhcampuswien.atom.server.DomainAnalyzer;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
+import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
 
 /**
  * 
@@ -62,90 +62,113 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 public class AstTest {
 	
 	public static void main(String args[]) {
-
-		System.out.println("Working Directory = " + System.getProperty("user.dir"));
-
-		AtomTools.log(Level.INFO, "parseInlineJavaCodeSample", null);
-		parseInlineJavaCodeSample();
-
-		AtomTools.log(Level.INFO, "loadAndModifySourceOfClientTools", null);
+		LocaleProxy.initialize();
+		
+		adaptLogger();
 		loadAndImplementDomainReflectionEmulator();
+	}
+	
+	private enum GenerationPhase {
+		get, set, make;
+	}
+	
+	/**
+	 * http://stackoverflow.com/questions/6315699/why-are-the-level-fine-logging-messages-not-showing
+	 */
+	private static void adaptLogger() {
+		AtomTools.log(Level.INFO, "will set log level now", null);
+		Logger applog = Logger.getLogger("atom");
 
-		// AtomTools.log(Level.INFO, "analyseWorkspaceProjects", null);
-		// analyseWorkspaceProjects();
+		// Create and set handler
+		Handler systemOut = new ConsoleHandler();
+		systemOut.setLevel( Level.FINER );
+		applog.addHandler( systemOut );
+		applog.setLevel( Level.FINER );
 
-		// AtomTools.log(Level.INFO, "DomainResourceFinder.findResources",
-		// null);
-		// DomainResourceFinder.findResources(true, new Notifiable<String>() {
-		//
-		// @Override
-		// public void doNotify(String reason) {
-		// System.out.println(reason);
-		// }
-		// });
+		// Prevent logs from processed by default Console handler.
+		applog.setUseParentHandlers( false ); // Solution 1
+		Logger.getLogger("").setLevel( Level.OFF ); // Solution 2
+		
+		AtomTools.log(Level.INFO, "have set log level", null);
 	}
 
-//	private static final String 
-
 	private static void loadAndImplementDomainReflectionEmulator() {
-		final String stubPath = "atom-core/src/main/java-stubs/DomainReflectionEmulator.java";
-		final String outPath = "atom-core/target/generated-sources/gwt/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java";
+		// final String relStubPath = "atom-core/src/main/java-stubs/DomainReflectionEmulator.java";
+		// final String relOutPath = "atom-domain/target/generated-sources/ast/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java";
+		// target-survives-clean
+		// "atom-core/src/main/java/at/ac/fhcampuswien/atom/shared/AtomTools.java");
+		
+		final String relStubPath = "atom-domain/src/main/java-stubs/DomainReflectionEmulator.java";
+		final String relOutPath = "atom-generator/target-survives-clean/DomainReflectionEmulator.java";
+		final String relOutPath2 = "atom-domain/target/generated-sources/ast/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java";
 
 		try {
-			// "/" = root of classes, outside of packages.
-			URL classRootUrl = AtomTools.class.getResource("/");
-			String classRootPath = classRootUrl.getPath();
-			AtomTools.log(Level.INFO, "got url: " + classRootPath, null);
-
-			URI classRootUri = new URI(classRootPath);
-			URI parentProject = classRootUri.resolve("../../..");
-			AtomTools.log(Level.INFO, "parent: " + parentProject, null);
-			File srcFile = new File(parentProject + stubPath);
-			// "atom-core/src/main/java/at/ac/fhcampuswien/atom/shared/AtomTools.java");
-			AtomTools.log(Level.INFO, "atomToolsSrc: " + srcFile, null);
+			// String workdir = System.getProperty("user.dir");
 			
-			byte[] encoded = Files.readAllBytes(srcFile.toPath());
-			String srcContent = new String(encoded, StandardCharsets.UTF_8);
-			Document document = new Document(srcContent);
-			// AtomTools.log(Level.INFO, "atomToolsSrc content = " + srcContent,
-			// null);
+			// "/" = root of classes, outside of packages.
+			URI classRootUri = new URI(AstTest.class.getResource("/").getPath());
+			URI parentProject = classRootUri.resolve("../../..");
+			File srcFile = new File(parentProject + relStubPath);
+
+			AtomTools.log(Level.FINER, "classRootUri: " + classRootUri, null);
+			AtomTools.log(Level.FINER, "parentProject: " + parentProject, null);
+			AtomTools.log(Level.FINER, "DomainReflectionEmulator stub: " + srcFile, null);
+			
+			String stubContent = new String(Files.readAllBytes(srcFile.toPath()), StandardCharsets.UTF_8);
+			AtomTools.log(Level.FINEST, "stubContent content = " + stubContent, null);
 
 			// http://stackoverflow.com/questions/13453811/eclipse-ast-variable-binding-on-standalone-java-application
 			ASTParser parser = ASTParser.newParser(AST.JLS8);
-			parser.setSource(srcContent.toCharArray());
+			parser.setSource(stubContent.toCharArray());
 
 			// parser.setKind(ASTParser.K_COMPILATION_UNIT);
-			// //parser.setEnvironment(classpath, new String[] { rootDir }, new
-			// String[] { "UTF8" }, true);
+			// parser.setEnvironment(classpath, new String[] { rootDir }, new String[] { "UTF8" }, true);
 			// parser.setResolveBindings(true);
 			// parser.setBindingsRecovery(true);
+			
 			CompilationUnit astRoot = (CompilationUnit) parser.createAST(null);
 			AST ast = astRoot.getAST();
 			ASTRewrite rewriter = ASTRewrite.create(ast);
 			
+			DomainClass domainTree = DomainAnalyzer.getDomainTree();
 			
 			//////// http://www.programcreek.com/2012/06/insertadd-statements-to-java-source-code-by-using-eclipse-jdt-astrewrite/
-			// for getting insertion position
 			TypeDeclaration typeDecl = (TypeDeclaration) astRoot.types().get(0);
 			for( MethodDeclaration methodDecl : typeDecl.getMethods()) {
+				AtomTools.log(Level.FINEST, "found method: " + methodDecl.getName(), null);
+				Block block = methodDecl.getBody();
+				ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
+				
 				if("getAttributeValue".equals(methodDecl.getName().toString())) {
-					Block block = methodDecl.getBody();
-//					block.statements()
-					ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
-					ReturnStatement returnStatement = ast.newReturnStatement();
-					returnStatement.setExpression(ast.newNullLiteral());
-					listRewrite.insertLast(returnStatement, null);
+					addCodeForClassTree(domainTree, ast, listRewrite, true);
+					
+					//// results in: throw AtomException().new MISSING();
+//					SimpleName atomExceptionName = ast.newSimpleName(AtomException.class.getSimpleName());
+//					MethodInvocation methodInvocation = ast.newMethodInvocation();
+//					methodInvocation.setName(atomExceptionName);
+//					classInstanceCreation.setExpression(methodInvocation);
+					
+					listRewrite.insertLast(getNotFoundExceptionThrow(ast, GenerationPhase.get), null);
+					
+//					ReturnStatement returnStatement = ast.newReturnStatement();
+//					returnStatement.setExpression(ast.newNullLiteral());
+//					listRewrite.insertLast(returnStatement, null);
 				}
 				else if("setAttributeValue".equals(methodDecl.getName().toString())) {
-					
+					addCodeForClassTree(domainTree, ast, listRewrite, false);
+					listRewrite.insertLast(getNotFoundExceptionThrow(ast, GenerationPhase.set), null);
+				}
+				else if("makeInstance".equals(methodDecl.getName().toString())) {
+					addInvocationsForClassTree(domainTree, ast, listRewrite);
+					listRewrite.insertLast(getNotFoundExceptionThrow(ast, GenerationPhase.make), null);
 				}
 			}
 			//Block block = methodDecl.getBody();
 	 
 			// create new statements for insertion
-			MethodInvocation newInvocation = ast.newMethodInvocation();
-			newInvocation.setName(ast.newSimpleName("add"));
-			Statement newStatement = ast.newExpressionStatement(newInvocation);
+//			MethodInvocation newInvocation = ast.newMethodInvocation();
+//			newInvocation.setName(ast.newSimpleName("add"));
+//			Statement newStatement = ast.newExpressionStatement(newInvocation);
 	 
 			//create ListRewrite
 //			ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
@@ -161,13 +184,25 @@ public class AstTest {
 //			lrw.insertLast(id, null);
 
 			// http://stackoverflow.com/questions/10148802/eclipse-jdt-ast-how-to-write-generated-ast-to-java-file
+			Document document = new Document(stubContent);
 			TextEdit edits = rewriter.rewriteAST(document, null);
 			edits.apply(document);
-			AtomTools.log(Level.INFO, "result: " + document.get(), null);
+			AtomTools.log(Level.FINEST, "result: " + document.get(), null);
 			
-			PrintWriter out = new PrintWriter(parentProject + outPath);
+			File file = new File(parentProject + relOutPath);
+			file.getParentFile().mkdirs();
+			PrintWriter out = new PrintWriter(file);
+			
 			out.print(document.get());
 			out.close();
+			
+			file = new File(parentProject + relOutPath2);
+			file.getParentFile().mkdirs();
+			out = new PrintWriter(file);
+			
+			out.print(document.get());
+			out.close();
+
 
 			// RewriteEventStore s;
 			// ASTRewriteFlattener f;
@@ -193,132 +228,203 @@ public class AstTest {
 			// } catch (JavaModelException e) {
 			// AtomTools.log(Level.SEVERE, "JavaModelException!", null, e);
 		} catch (IllegalArgumentException e) {
-			AtomTools.log(Level.SEVERE, "IllegalArgumentE	xception!", null, e);
+			AtomTools.log(Level.SEVERE, "IllegalArgumentException!", null, e);
 		} catch (MalformedTreeException e) {
 			AtomTools.log(Level.SEVERE, "MalformedTreeException!", null, e);
 		} catch (BadLocationException e) {
 			AtomTools.log(Level.SEVERE, "BadLocationException!", null, e);
 		}
-
-		// File file = new File( classRootUrl.getPath( ) );
-		// String parentProjectDir = file.getParent();
-		// URI parent = classRootUrl.getPath().endsWith("/") ? uri.resolve("..")
-		// : uri.resolve(".")
-
 	}
+	
+	private static void addInvocationsForClassTree(DomainClass currentClass, AST ast, ListRewrite listRewrite) {
+		if(!currentClass.getIsAbstract() && currentClass.getHasPublicEmptyConstructor()) {
+			IfStatement ifClass = ast.newIfStatement();
+			SimpleName simpleName = ast.newSimpleName("className");
+			MethodInvocation equals = ast.newMethodInvocation();
+			equals.setName(ast.newSimpleName("equals"));
+			StringLiteral stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue(currentClass.getName());
+			equals.setExpression(stringLiteral);
+			equals.arguments().add(simpleName);
+			
+			ReturnStatement returnStatement = ast.newReturnStatement();
+			ClassInstanceCreation classInstanceCreation = ast.newClassInstanceCreation();
+			Name name = ast.newName(currentClass.getName());
+			SimpleType atomExceptionType = ast.newSimpleType(name);
+			classInstanceCreation.setType(atomExceptionType);
+			returnStatement.setExpression(classInstanceCreation);
+			
+			ifClass.setThenStatement(returnStatement);		
+			
+			listRewrite.insertLast(ifClass, null);
+			
+			ifClass.setExpression(equals);
+		}
+		
+		for(DomainClass subClass : currentClass.getSubClasses()) {
+			addInvocationsForClassTree(subClass, ast, listRewrite);
+		}
+	}
+	
+	private static void addCodeForClassTree(DomainClass currentClass, AST ast, ListRewrite listRewrite, boolean get) {
+		IfStatement ifClass;
+		SimpleName simpleName;
+		MethodInvocation equals;
+		StringLiteral stringLiteral;
+		Block classBlock = ast.newBlock();
+		
+		HashMap<String, DomainClassAttribute> allAttributes = currentClass.getAllAttributes();
+		for (DomainClassAttribute attribute : allAttributes.values()) {
+			if(get && !attribute.isReadAble())
+				continue;
+			if(!get && !attribute.isWriteAble())
+				continue;
+			
+			IfStatement ifAttribute = ast.newIfStatement();
+			simpleName = ast.newSimpleName("attributeName");
+			equals = ast.newMethodInvocation();
+			equals.setName(ast.newSimpleName("equals"));
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue(attribute.getName());
+			equals.setExpression(stringLiteral);
+			equals.arguments().add(simpleName);
+			ifAttribute.setExpression(equals);
+			
 
-	/**
-	 * adapted sample copied from:
-	 * http://www.programcreek.com/2011/01/a-complete-standalone-example-of-
-	 * astparser/
-	 */
-	private static void parseInlineJavaCodeSample() {
-		ASTParser parser = ASTParser.newParser(AST.JLS8);
-		parser.setSource("public class A { int i = 9;  \n int j; \n ArrayList<Integer> al = new ArrayList<Integer>();j=1000; }".toCharArray());
-		// parser.setSource("/*abc*/".toCharArray());
-		parser.setKind(ASTParser.K_COMPILATION_UNIT);
-		// ASTNode node = parser.createAST(null);
+			CastExpression castExpression = ast.newCastExpression();
+			simpleName = ast.newSimpleName("domainObject");
+			castExpression.setExpression(simpleName);
 
-		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-
-		cu.accept(new ASTVisitor() {
-
-			Set<String> names = new HashSet<String>();
-
-			public boolean visit(VariableDeclarationFragment node) {
-				SimpleName name = node.getName();
-				this.names.add(name.getIdentifier());
-				System.out.println("Declaration of '" + name + "' at line" + cu.getLineNumber(name.getStartPosition()));
-				return false; // do not continue to avoid usage info
+			Name name = ast.newName(currentClass.getName());
+			SimpleType simpleType = ast.newSimpleType(name);
+			castExpression.setType(simpleType);
+			
+			ParenthesizedExpression parenthesizedExpression = ast.newParenthesizedExpression();
+			parenthesizedExpression.setExpression(castExpression);
+			
+			if(get) {
+				ReturnStatement returnStatement = ast.newReturnStatement();
+				MethodInvocation methodInvocation = ast.newMethodInvocation();
+				simpleName = ast.newSimpleName("get" + AtomTools.upperFirstChar(attribute.getName()));
+				methodInvocation.setName(simpleName);
+				methodInvocation.setExpression(parenthesizedExpression);
+				returnStatement.setExpression(methodInvocation);
+				ifAttribute.setThenStatement(returnStatement);
 			}
-
-			public boolean visit(SimpleName node) {
-				if (this.names.contains(node.getIdentifier())) {
-					System.out.println("Usage of '" + node + "' at line " + cu.getLineNumber(node.getStartPosition()));
+			else {
+				MethodInvocation methodInvocation = ast.newMethodInvocation();
+				simpleName = ast.newSimpleName("set" + AtomTools.upperFirstChar(attribute.getName()));
+				methodInvocation.setName(simpleName);
+				methodInvocation.setExpression(parenthesizedExpression);
+				
+				castExpression = ast.newCastExpression();
+				simpleName = ast.newSimpleName("value");
+				castExpression.setExpression(simpleName);
+				
+				String attributeType = attribute.getType();
+				if(attributeType.contains("<")) {
+					attributeType = attributeType.substring(0,attributeType.indexOf('<'));
+					//need to deal with parametized type
+					AtomTools.log(Level.WARNING, "found parameterized type: " + attribute.getType(), null);
 				}
-				return true;
+				name = ast.newName(attributeType);
+				simpleType = ast.newSimpleType(name);
+				castExpression.setType(simpleType);
+
+				methodInvocation.arguments().add(castExpression);
+				
+				ifAttribute.setThenStatement(ast.newExpressionStatement(methodInvocation));
 			}
-
-		});
-	}
-
-	/**
-	 * adapted sample copied from:
-	 * http://www.vogella.com/tutorials/EclipseJDT/article.html#jdt_example
-	 */
-	private static void analyseWorkspaceProjects() {
-
-		// Get the root of the workspace
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IWorkspaceRoot root = workspace.getRoot();
-		// Get all projects in the workspace
-		IProject[] projects = root.getProjects();
-		// Loop over all projects
-		for (IProject project : projects) {
-			try {
-				printProjectInfo(project);
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
+			
+			classBlock.statements().add(ifAttribute);
+		}
+		
+		if(!classBlock.statements().isEmpty()) {
+			ifClass = ast.newIfStatement();
+			simpleName = ast.newSimpleName("className");
+			equals = ast.newMethodInvocation();
+			equals.setName(ast.newSimpleName("equals"));
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue(currentClass.getName());
+			equals.setExpression(stringLiteral);
+			equals.arguments().add(simpleName);
+			ifClass.setExpression(equals);
+			
+			ifClass.setThenStatement(classBlock);		
+			listRewrite.insertLast(ifClass, null);
+		}
+		
+		for(DomainClass subClass : currentClass.getSubClasses()) {
+			addCodeForClassTree(subClass, ast, listRewrite, get);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	private static Statement getNotFoundExceptionThrow(AST ast, GenerationPhase get) {
 
-	private static void printProjectInfo(IProject project) throws CoreException, JavaModelException {
-		System.out.println("Working in project " + project.getName());
-		// check if we have a Java project
-		if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
-			IJavaProject javaProject = JavaCore.create(project);
-			printPackageInfos(javaProject);
+		ThrowStatement throwStatement = ast.newThrowStatement();
+		ClassInstanceCreation classInstanceCreation = ast.newClassInstanceCreation();
+		Name atomExceptionName = ast.newName(AtomException.class.getSimpleName());
+		SimpleType atomExceptionType = ast.newSimpleType(atomExceptionName);
+		classInstanceCreation.setType(atomExceptionType);
+		
+		StringLiteral stringLiteral;
+		InfixExpression infixExpression, infixExpression2;
+		
+		SimpleName localClassName = ast.newSimpleName("className");
+		
+		if(get == GenerationPhase.get || get == GenerationPhase.set) {
+			SimpleName localAttributeName = ast.newSimpleName("attributeName");
+			
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue("Attribute ");
+			
+			infixExpression = ast.newInfixExpression();
+			infixExpression.setOperator(InfixExpression.Operator.PLUS);
+			infixExpression.setLeftOperand(stringLiteral);
+			infixExpression.setRightOperand(localClassName);
+			
+			infixExpression2 = ast.newInfixExpression();
+			infixExpression2.setOperator(InfixExpression.Operator.PLUS);
+			infixExpression2.setLeftOperand(infixExpression);
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue(".");
+			infixExpression2.setRightOperand(stringLiteral);
+			
+			infixExpression = ast.newInfixExpression();
+			infixExpression.setOperator(InfixExpression.Operator.PLUS);
+			infixExpression.setLeftOperand(infixExpression2);
+			infixExpression.setRightOperand(localAttributeName);
+
+			infixExpression2 = ast.newInfixExpression();
+			infixExpression2.setOperator(InfixExpression.Operator.PLUS);
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue(" not found. Could not " + get.toString() + " value!");
+			infixExpression2.setLeftOperand(infixExpression);
+			infixExpression2.setRightOperand(stringLiteral);
+
+			classInstanceCreation.arguments().add(infixExpression2);
 		}
-	}
+		else {
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue("DomainClass ");
+			infixExpression = ast.newInfixExpression();
+			infixExpression.setOperator(InfixExpression.Operator.PLUS);
+			infixExpression.setLeftOperand(stringLiteral);
+			infixExpression.setRightOperand(localClassName);
 
-	private static void printPackageInfos(IJavaProject javaProject) throws JavaModelException {
-		IPackageFragment[] packages = javaProject.getPackageFragments();
-		for (IPackageFragment mypackage : packages) {
-			// Package fragments include all packages in the
-			// classpath
-			// We will only look at the package from the source
-			// folder
-			// K_BINARY would include also included JARS, e.g.
-			// rt.jar
-			if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
-				System.out.println("Package " + mypackage.getElementName());
-				printICompilationUnitInfo(mypackage);
-
-			}
-
+			infixExpression2 = ast.newInfixExpression();
+			infixExpression2.setOperator(InfixExpression.Operator.PLUS);
+			stringLiteral = ast.newStringLiteral();
+			stringLiteral.setLiteralValue(" not found. Could not create instance!");
+			infixExpression2.setLeftOperand(infixExpression);
+			infixExpression2.setRightOperand(stringLiteral);
+			
+			classInstanceCreation.arguments().add(infixExpression2);
 		}
-	}
-
-	private static void printICompilationUnitInfo(IPackageFragment mypackage) throws JavaModelException {
-		for (ICompilationUnit unit : mypackage.getCompilationUnits()) {
-			printCompilationUnitDetails(unit);
-
-		}
-	}
-
-	private static void printIMethods(ICompilationUnit unit) throws JavaModelException {
-		IType[] allTypes = unit.getAllTypes();
-		for (IType type : allTypes) {
-			printIMethodDetails(type);
-		}
-	}
-
-	private static void printCompilationUnitDetails(ICompilationUnit unit) throws JavaModelException {
-		System.out.println("Source file " + unit.getElementName());
-		Document doc = new Document(unit.getSource());
-		System.out.println("Has number of lines: " + doc.getNumberOfLines());
-		printIMethods(unit);
-	}
-
-	private static void printIMethodDetails(IType type) throws JavaModelException {
-		IMethod[] methods = type.getMethods();
-		for (IMethod method : methods) {
-
-			System.out.println("Method name " + method.getElementName());
-			System.out.println("Signature " + method.getSignature());
-			System.out.println("Return Type " + method.getReturnType());
-
-		}
+		
+		throwStatement.setExpression(classInstanceCreation);
+		
+		return throwStatement;
 	}
 }

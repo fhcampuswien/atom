@@ -9,6 +9,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.i18n.client.DateTimeFormat;
 
 import at.ac.fhcampuswien.atom.client.gui.attributes.components.FilterSpecificationDialogBox;
 import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
@@ -17,16 +22,8 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DataFilter;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
+import at.ac.fhcampuswien.atom.shared.DomainReflectionEmulator;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
-import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
-
-import java.util.logging.Level;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.gwtent.reflection.client.ClassType;
-import com.gwtent.reflection.client.NotFoundException;
-import com.gwtent.reflection.client.TypeOracle;
 
 public class ClientTools {
 	private ClientTools() {
@@ -42,83 +39,11 @@ public class ClientTools {
 	}
 
 	public static Object getAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject) {
-		
-//		AtomTools.log(Level.FINER,
-//				"AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", " + domainObject.getStringRepresentation()
-//						+ ") started", null);
-
-		try {
-			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
-			Object returnValue = classType.invoke(domainObject, "get" + AtomTools.upperFirstChar(domainClassAttribute.getName()), (Object[]) null);
-			// AtomTools.log(Level.FINER,
-			// "AtomTools.getAttributeValue successful", null);
-//			String stringValue;
-//			if (returnValue != null)
-//				stringValue = returnValue.toString();
-//			else
-//				stringValue = "null";
-//			AtomTools.log(Level.FINER, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
-//					+ domainObject.getStringRepresentation() + ") found value '" + stringValue + "', returning", null);
-			return returnValue;
-		} catch (NotFoundException e) {
-			if (domainClass.getSuperClass() != null) {
-				AtomTools.log(Level.FINER, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
-						+ domainObject.getStringRepresentation() + ") did not find getMethod in this class, will try superclass", null);
-				return getAttributeValue(domainClass.getSuperClass(), domainClassAttribute, domainObject);
-			} else {
-				AtomTools.log(Level.SEVERE, "AtomTools.getAttributeValue(" + domainClass.getName() + ", " + domainClassAttribute.getName() + ", "
-						+ domainObject.getStringRepresentation() + ") could not find method 'get" + AtomTools.upperFirstChar(domainClassAttribute.getName())
-						+ "' anywhere in the domaintree on the client-side!", null);
-			}
-		} catch (Throwable t) {
-			AtomTools.log(Level.SEVERE, "AtomTools.getAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
-			StackTraceElement[] st = t.getStackTrace();
-			for (StackTraceElement e : st) {
-				AtomTools.log(Level.SEVERE, "AtomTools.getAttributeValue - stacktrace: " + e.toString(), null);
-			}
-			// t.printStackTrace();
-			// throw t;
-		}
-		return null;
+		return DomainReflectionEmulator.getAttributeValue(domainClass, domainClassAttribute, domainObject);
 	}
 
 	public static void setAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject, Object value) {
-		// AtomTools.log(
-		// Level.FINER,
-		// "setAttributeValue(" + domainClass.getName() + ", "
-		// + domainClassAttribute.getName() + ", "
-		// + domainObject.getStringRepresentation() + ")", null);
-		
-		if("java.lang.Integer".equals(domainClassAttribute.getType()) && value instanceof String) {
-			String sval = (String) value;
-			if(sval.length() == 0)
-				value = null;
-			else
-				value = Integer.parseInt(sval);
-		}
-
-		try {
-			ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
-			classType.invoke(domainObject, "set" + AtomTools.upperFirstChar(domainClassAttribute.getName()), new Object[] { value });
-		} catch (NotFoundException e) {
-			if (domainClass.getSuperClass() != null) {
-				setAttributeValue(domainClass.getSuperClass(), domainClassAttribute, domainObject, value);
-			} else {
-				AtomTools.log(Level.SEVERE, "could not find method 'set" + AtomTools.upperFirstChar(domainClassAttribute.getName())
-						+ "' anywhere in the domaintree on the client-side!", null);
-			}
-		} catch (Throwable t) {
-			if(t instanceof ValidationError) {
-				throw (ValidationError) t;
-			}
-			AtomTools.log(Level.SEVERE, "AtomTools.setAttributeValue - throwable: {" + t.getClass().getName() + "}" + t.getMessage(), null);
-			AtomTools.logStackTrace(Level.SEVERE, t, null);
-		}
-
-		// classType.invoke(domainObject, "set" +
-		// domainClassAttribute.getName(), new Object[] { value });
-		// AtomTools.log(Level.FINE,
-		// "END-OF AtomTools.setAttributeValue", null);
+		DomainReflectionEmulator.setAttributeValue(domainClass, domainClassAttribute, domainObject, value);
 	}
 
 	public static HashSet<DomainObject> getDirectlyRelatedObjects(DomainClass domainClass, DomainObject domainObject) {
@@ -158,9 +83,7 @@ public class ClientTools {
 
 	public static DomainObject createInstance(DomainClass domainClass) {
 		AtomTools.log(Level.FINE, "createInstance(" + domainClass.getName() + ")", null);
-		ClassType<?> classType = TypeOracle.Instance.getClassType(domainClass.getName());
-		String[] params = new String[] {};
-		return (DomainObject) classType.findConstructor(params).newInstance();
+		return DomainReflectionEmulator.makeInstance(domainClass);
 	}
 
 	private static Map<Object, Date> recordedCalls = new HashMap<Object, Date>();

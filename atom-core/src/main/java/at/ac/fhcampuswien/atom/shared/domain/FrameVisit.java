@@ -143,8 +143,11 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	// @AnalyzerIgnore @Transient @GwtTransient
 	// private transient boolean createdLabel = false;
 
+	/**
+	 * this should not be used, it only exists for GWT serialization purposes!
+	 */
 	@SuppressWarnings("unused")
-	// for GWT serialization
+	@Deprecated()
 	private FrameVisit() {
 	}
 	

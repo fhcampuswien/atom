@@ -7,6 +7,7 @@ package at.ac.fhcampuswien.atom.server;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -355,6 +356,12 @@ public class DomainAnalyzer {
 						handleAttributeAnnotation(attribute, methodName.substring(3), anAnnotation);
 					}
 				}
+			}
+		}
+		
+		for(Constructor<?> constructor : theClass.getConstructors()) {
+			if (Modifier.isPublic(constructor.getModifiers()) && constructor.getParameters().length <= 0) {
+				domainClass.setHasPublicEmptyConstructor();
 			}
 		}
 	}
