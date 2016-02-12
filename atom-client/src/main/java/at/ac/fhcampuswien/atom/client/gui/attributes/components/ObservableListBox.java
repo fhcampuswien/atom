@@ -22,7 +22,7 @@ public class ObservableListBox<C extends Collection<T>, T> extends ListBox {
 	private final CollectionView<C, T> collectionView;
 
 	public ObservableListBox(CollectionView<C, T> collectionView) {
-		super(true);
+		setMultipleSelect(true);
 		this.collectionView = collectionView;
 		this.setVisibleItemCount(5);
 		this.sinkEvents(Event.ONDBLCLICK);

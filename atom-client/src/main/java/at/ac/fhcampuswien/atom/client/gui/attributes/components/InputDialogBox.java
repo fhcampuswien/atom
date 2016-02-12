@@ -62,7 +62,8 @@ public class InputDialogBox extends DialogBox {
 			});
 		}
 		else {
-			ListBox listBox = new ListBox(false);
+			ListBox listBox = new ListBox();
+			listBox.setMultipleSelect(false);
 			for(String s : dropDownValues) {
 				listBox.addItem(s);
 			}

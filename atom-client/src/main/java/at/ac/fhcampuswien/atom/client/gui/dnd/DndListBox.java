@@ -30,7 +30,7 @@ public class DndListBox extends ListBox implements AtomDNDWidget {
 	// private MouseListenerCollection mouseListeners;
 
 	public DndListBox() {
-		super(true);
+		setMultipleSelect(true);
 		this.setVisibleItemCount(5);
 		AtomTools.log(Level.FINER, "DndListBox created", this);
 		this.sinkEvents(Event.ONDBLCLICK);
