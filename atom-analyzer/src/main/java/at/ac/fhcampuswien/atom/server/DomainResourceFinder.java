@@ -1,4 +1,4 @@
-package at.ac.fhcampuswien.atom;
+package at.ac.fhcampuswien.atom.server;
 
 import java.io.File;
 import java.io.IOException;

@@ -18,11 +18,11 @@
 
 	<dependencies>
 
-		<!-- shared code, domain depends on core, so core will be imported through 
-			domain -->
+		<!-- shared code analyzer depends on domain depends on core, so all will be imported through 
+			analyzer -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-domain</artifactId>
+			<artifactId>atom-analyzer</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
@@ -405,7 +405,8 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<execute></execute>
+										<!-- this causes eclipse errors if set to execute! -->
+										<ignore></ignore>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>

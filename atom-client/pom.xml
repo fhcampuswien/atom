@@ -41,9 +41,6 @@
 			<version>${gwt.version}</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>net.wetheinter</groupId> <artifactId>xapi-gwt-reflect</artifactId> 
-			<version>0.5-SNAPSHOT</version> <scope>provided</scope> </dependency> -->
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-core</artifactId>
@@ -62,7 +59,17 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-domain</artifactId>
+			<artifactId>atom-reflector</artifactId>
+			<version>${project.version}</version>
+			<classifier>sources</classifier>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- get compiled versions of core, domain & reflector -->
+		<!-- through dependency chain -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-reflector</artifactId>
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>

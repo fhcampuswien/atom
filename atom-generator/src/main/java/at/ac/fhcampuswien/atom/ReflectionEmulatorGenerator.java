@@ -59,7 +59,7 @@ import net.lightoze.gwt.i18n.server.LocaleProxy;
  *         write-generated-ast-to-java-file
  * 
  */
-public class AstTest {
+public class ReflectionEmulatorGenerator {
 	
 	public static void main(String args[]) {
 		LocaleProxy.initialize();
@@ -99,18 +99,31 @@ public class AstTest {
 		// "atom-core/src/main/java/at/ac/fhcampuswien/atom/shared/AtomTools.java");
 		
 		final String relStubPath = "atom-domain/src/main/java-stubs/DomainReflectionEmulator.java";
-		final String relOutPath = "atom-generator/target-survives-clean/DomainReflectionEmulator.java";
-		final String relOutPath2 = "atom-domain/target/generated-sources/ast/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java";
+		final String relOutPath = "atom-generator/target/DomainReflectionEmulator.java";
+		final String relOutPath2 = "atom-reflector/target/generated-sources/ast/at/ac/fhcampuswien/atom/shared/DomainReflectionEmulator.java";
 
 		try {
-			// String workdir = System.getProperty("user.dir");
+			String workdir = System.getProperty("user.dir");
+			AtomTools.log(Level.FINER, "workdir: " + workdir, null);
 			
-			// "/" = root of classes, outside of packages.
-			URI classRootUri = new URI(AstTest.class.getResource("/").getPath());
-			URI parentProject = classRootUri.resolve("../../..");
+			// "/" = root of classes, outside of packages.			
+			java.net.URL rootResource = ReflectionEmulatorGenerator.class.getResource("/");
+
+			URI parentProject;
+			if(rootResource != null) {
+				URI classRootUri = new URI(rootResource.getPath());
+				AtomTools.log(Level.FINER, "classRootUri: " + classRootUri, null);
+				parentProject = classRootUri.resolve("../../..");
+			}
+			else {
+				AtomTools.log(Level.WARNING, "could not get rootResource from classloader, will assume workingdir is parent project.", null);
+				parentProject = new URI(workdir + "/");
+			}
+				
+			
+			
 			File srcFile = new File(parentProject + relStubPath);
 
-			AtomTools.log(Level.FINER, "classRootUri: " + classRootUri, null);
 			AtomTools.log(Level.FINER, "parentProject: " + parentProject, null);
 			AtomTools.log(Level.FINER, "DomainReflectionEmulator stub: " + srcFile, null);
 			
@@ -140,7 +153,7 @@ public class AstTest {
 				ListRewrite listRewrite = rewriter.getListRewrite(block, Block.STATEMENTS_PROPERTY);
 				
 				if("getAttributeValue".equals(methodDecl.getName().toString())) {
-					addCodeForClassTree(domainTree, ast, listRewrite, true);
+					addGetterSetters(domainTree, ast, listRewrite, true);
 					
 					//// results in: throw AtomException().new MISSING();
 //					SimpleName atomExceptionName = ast.newSimpleName(AtomException.class.getSimpleName());
@@ -155,11 +168,11 @@ public class AstTest {
 //					listRewrite.insertLast(returnStatement, null);
 				}
 				else if("setAttributeValue".equals(methodDecl.getName().toString())) {
-					addCodeForClassTree(domainTree, ast, listRewrite, false);
+					addGetterSetters(domainTree, ast, listRewrite, false);
 					listRewrite.insertLast(getNotFoundExceptionThrow(ast, GenerationPhase.set), null);
 				}
 				else if("makeInstance".equals(methodDecl.getName().toString())) {
-					addInvocationsForClassTree(domainTree, ast, listRewrite);
+					addConstructorInvocations(domainTree, ast, listRewrite);
 					listRewrite.insertLast(getNotFoundExceptionThrow(ast, GenerationPhase.make), null);
 				}
 			}
@@ -236,7 +249,20 @@ public class AstTest {
 		}
 	}
 	
-	private static void addInvocationsForClassTree(DomainClass currentClass, AST ast, ListRewrite listRewrite) {
+	/**
+	 * adds calls to the appropriate DomainObject subclass constructors
+	 * depending on the existing local string variable @className
+	 * 
+	 * has @SuppressWarnings("unchecked") annotation, because we need to add elements to
+	 * the untyped list returned org.eclipse.jdt.core.dom.MethodInvocation.arguments()
+	 * which is part of the imported jdt ast library, which would be unreasonable to adapt.
+	 * 
+	 * @param currentClass
+	 * @param ast
+	 * @param listRewrite
+	 */
+	@SuppressWarnings("unchecked")
+	private static void addConstructorInvocations(DomainClass currentClass, AST ast, ListRewrite listRewrite) {
 		if(!currentClass.getIsAbstract() && currentClass.getHasPublicEmptyConstructor()) {
 			IfStatement ifClass = ast.newIfStatement();
 			SimpleName simpleName = ast.newSimpleName("className");
@@ -262,11 +288,25 @@ public class AstTest {
 		}
 		
 		for(DomainClass subClass : currentClass.getSubClasses()) {
-			addInvocationsForClassTree(subClass, ast, listRewrite);
+			addConstructorInvocations(subClass, ast, listRewrite);
 		}
 	}
-	
-	private static void addCodeForClassTree(DomainClass currentClass, AST ast, ListRewrite listRewrite, boolean get) {
+
+	/**
+	 * adds calls to the appropriate getter / setter methods
+	 * depending on the existing local string variables @className & @attributeName
+	 * 
+	 * has @SuppressWarnings("unchecked") annotation, because we need to add elements to
+	 * the untyped list returned org.eclipse.jdt.core.dom.MethodInvocation.arguments()
+	 * an also org.eclipse.jdt.core.dom.Block.statements()
+	 * which are part of the imported jdt ast library, which would be unreasonable to adapt.
+	 * 
+	 * @param currentClass
+	 * @param ast
+	 * @param listRewrite
+	 */
+	@SuppressWarnings("unchecked")
+	private static void addGetterSetters(DomainClass currentClass, AST ast, ListRewrite listRewrite, boolean getters) {
 		IfStatement ifClass;
 		SimpleName simpleName;
 		MethodInvocation equals;
@@ -275,10 +315,10 @@ public class AstTest {
 		
 		HashMap<String, DomainClassAttribute> allAttributes = currentClass.getAllAttributes();
 		for (DomainClassAttribute attribute : allAttributes.values()) {
-			if(get && !attribute.isReadAble())
-				continue;
-			if(!get && !attribute.isWriteAble())
-				continue;
+			if(getters && !attribute.isReadAble())
+				continue; //don't add calls to non existent getters!
+			if(!getters && !attribute.isWriteAble())
+				continue; //don't add calls to non existent setters!
 			
 			IfStatement ifAttribute = ast.newIfStatement();
 			simpleName = ast.newSimpleName("attributeName");
@@ -302,7 +342,7 @@ public class AstTest {
 			ParenthesizedExpression parenthesizedExpression = ast.newParenthesizedExpression();
 			parenthesizedExpression.setExpression(castExpression);
 			
-			if(get) {
+			if(getters) {
 				ReturnStatement returnStatement = ast.newReturnStatement();
 				MethodInvocation methodInvocation = ast.newMethodInvocation();
 				simpleName = ast.newSimpleName("get" + AtomTools.upperFirstChar(attribute.getName()));
@@ -360,7 +400,7 @@ public class AstTest {
 		}
 		
 		for(DomainClass subClass : currentClass.getSubClasses()) {
-			addCodeForClassTree(subClass, ast, listRewrite, get);
+			addGetterSetters(subClass, ast, listRewrite, getters);
 		}
 	}
 	

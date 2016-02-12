@@ -6,17 +6,32 @@
 		<artifactId>atom</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>atom-generator</artifactId>
+	<packaging>jar</packaging>
+
 	<dependencies>
 
-		<!-- shared code, server depends on domain which depends on core
-		      -> so we only need to import server to get those 3 -->
+		<!-- we get atom-core as dependency from atom-analyzer -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-server</artifactId>
+			<artifactId>atom-analyzer</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
+
+
+		<!-- make com.google.gwt.i18n.shared.GwtLocaleFactory available to net.lightoze.gwt-i18n-server -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>${gwt.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<!-- this is neccesary since we're neither in the client (where gwt-user 
+			is available) nor on the server (where gwt-servlet is available) but we still 
+			use AtomTools where i18n is required -->
+
 
 
 		<!-- jdt AST for playing with java sources - investigation from 2016-02-02 -->
@@ -55,4 +70,5 @@
 
 	<!-- <repositories> <repository> <id>central</id> <url>http://central.maven.org/maven2</url> 
 		<releases> <enabled>true</enabled> </releases> </repository> </repositories> -->
+
 </project>
