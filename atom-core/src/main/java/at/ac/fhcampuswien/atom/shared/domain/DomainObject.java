@@ -109,8 +109,6 @@ public class DomainObject implements Serializable {
 	/**
 	 * this should not be used, it only exists for GWT serialization purposes!
 	 */
-	@SuppressWarnings("unused")
-	@Deprecated()
 	protected DomainObject() {
 	}
 	
