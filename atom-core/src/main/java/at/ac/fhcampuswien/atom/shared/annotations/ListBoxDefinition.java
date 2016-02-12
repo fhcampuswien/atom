@@ -22,7 +22,7 @@ public @interface ListBoxDefinition {
 	 */
 	String multiSelectSeperator() default "";
 	
-	public enum ViewType implements com.google.gwt.user.client.rpc.IsSerializable {
+	public enum ViewType implements java.io.Serializable {
 		DropDown, RadioButtons, RadioTable
 	}
 	

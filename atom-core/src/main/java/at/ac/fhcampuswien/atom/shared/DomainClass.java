@@ -21,7 +21,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-public class DomainClass implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class DomainClass implements java.io.Serializable {
 
 	private static final long serialVersionUID = -5815890350506114250L;
 

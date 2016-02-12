@@ -4,20 +4,17 @@
  */
 package at.ac.fhcampuswien.atom.shared;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import at.ac.fhcampuswien.atom.shared.annotations.AttributePlacement;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
 
-public class DomainClassAttribute implements Serializable, IsSerializable {
+public class DomainClassAttribute implements java.io.Serializable {
 
 	private static final long serialVersionUID = 3965088824795861114L;
 

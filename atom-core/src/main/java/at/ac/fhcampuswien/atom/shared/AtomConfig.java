@@ -39,7 +39,7 @@ public class AtomConfig {
 	
 	public static DataFilter showResultAsListBooleanTransport = new DataFilter("showResultAsList", "BooleanTransport", null, null);
 	
-	public static enum FrameType implements com.google.gwt.user.client.rpc.IsSerializable {
+	public static enum FrameType implements java.io.Serializable {
 		LIST_ALL,
 		LIST_RELATED,
 		DETAIL_VIEW,

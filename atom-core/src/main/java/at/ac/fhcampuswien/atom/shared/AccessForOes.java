@@ -5,7 +5,7 @@
 package at.ac.fhcampuswien.atom.shared;
 
 
-public class AccessForOes implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class AccessForOes implements java.io.Serializable {
 
 	private static final long serialVersionUID = 7031767728429458183L;
 	public Access access;

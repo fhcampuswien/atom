@@ -24,7 +24,7 @@ package at.ac.fhcampuswien.atom.shared;
  * National Academy for Software Development - http://academy.devbg.org 
  * This software is freeware. Use it at your own risk.
  */
-public class DataFilter implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class DataFilter implements java.io.Serializable {
 
 	/**
 	 * 

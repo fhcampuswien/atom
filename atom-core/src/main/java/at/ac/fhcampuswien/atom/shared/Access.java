@@ -4,7 +4,7 @@
  */
 package at.ac.fhcampuswien.atom.shared;
 
-public class Access implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class Access implements java.io.Serializable {
 
 	private static final long serialVersionUID = 8629279266876299942L;
 

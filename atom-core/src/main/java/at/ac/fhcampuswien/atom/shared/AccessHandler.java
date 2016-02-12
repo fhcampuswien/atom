@@ -19,7 +19,7 @@ import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.GwtTransient;
 
-public class AccessHandler implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class AccessHandler implements java.io.Serializable {
 
 	private static final long serialVersionUID = -666503038590515178L;
 	

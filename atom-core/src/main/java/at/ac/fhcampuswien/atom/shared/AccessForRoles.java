@@ -5,7 +5,7 @@
 package at.ac.fhcampuswien.atom.shared;
 
 
-public class AccessForRoles implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class AccessForRoles implements java.io.Serializable {
 
 	private static final long serialVersionUID = 499417338058916874L;
 	

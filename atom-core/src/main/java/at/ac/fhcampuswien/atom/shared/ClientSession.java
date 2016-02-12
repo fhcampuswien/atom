@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 import at.ac.fhcampuswien.atom.shared.domain.StoreableUser;
 
-public class ClientSession implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class ClientSession implements java.io.Serializable {
 
 	private static final long serialVersionUID = -3144447134145060164L;
 	private long sessionId;

@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
-public class DomainObjectList implements java.io.Serializable, com.google.gwt.user.client.rpc.IsSerializable {
+public class DomainObjectList implements java.io.Serializable {
 
 	/**
      * 
