@@ -11,7 +11,7 @@ https://github.com/fhcampuswien/atom/blob/master/atom-server/src/main/resources/
 
 The GWT web-frontend is written in a generic way that can work with arbitrary data-structures. It accesses those through a ReflectionEmulator generated at compile time using JDT AST.
 
-![atom modules dependency structure](https://raw.githubusercontent.com/fhcampuswien/atom/master/atom-server/src/main/docs/project-structure-dependencies_2016-02-12_propose2_reformat.svg)
+![atom modules dependency structure](https://cdn.rawgit.com/fhcampuswien/atom/master/atom-server/src/main/docs/project-structure-dependencies_2016-02-12_propose2_reformat.svg)
 
 ====
 
