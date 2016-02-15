@@ -360,8 +360,13 @@ public class DomainAnalyzer {
 		}
 		
 		for(Constructor<?> constructor : theClass.getConstructors()) {
-			if (Modifier.isPublic(constructor.getModifiers()) && constructor.getParameters().length <= 0) {
-				domainClass.setHasPublicEmptyConstructor();
+			try{
+				if (Modifier.isPublic(constructor.getModifiers()) && constructor.getParameterCount() <= 0) {
+					domainClass.setHasPublicEmptyConstructor();
+				}
+			}
+			catch(Throwable t) {
+				AtomTools.log(Level.WARNING, "throwable cought while searching for public empty constructor in class " + domainClass.getName(), null, t);
 			}
 		}
 	}
