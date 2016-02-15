@@ -9,7 +9,9 @@ https://github.com/fhcampuswien/atom/blob/master/atom-domain/src/main/java/at/ac
 These data-structures are persisted by hibernate into a relational database. The connection information needs to be entered here:
 https://github.com/fhcampuswien/atom/blob/master/atom-server/src/main/resources/META-INF/persistence.xml
 
-The GWT web-frontend can work with arbitrary data-structures through the help of reflection (enabled by the project gwt-ent https://code.google.com/p/gwt-ent/)
+The GWT web-frontend is written in a generic way that can work with arbitrary data-structures. It accesses those through a ReflectionEmulator generated at compile time using JDT AST.
+
+![atom modules dependency structure](https://raw.githubusercontent.com/fhcampuswien/atom/master/atom-server/src/main/docs/project-structure-dependencies_2016-02-12_propose2_reformat.svg)
 
 ====
 
