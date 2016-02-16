@@ -23,7 +23,16 @@ public class DomainReflectionEmulator {
 
 		//throw new AtomException("Attribute " + className + "." + attributeName " not found. Could not get value!");
 	}
-	
+
+	/**
+	 * we need the @SuppressWarnings("unchecked") annotation because we need to call setters that require specific types with a value that we get as generic @Object
+	 * 
+	 * @param domainClass
+	 * @param domainClassAttribute
+	 * @param domainObject
+	 * @param value
+	 */
+	@SuppressWarnings("unchecked")
 	public static void setAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject, Object value) {
 		String className = domainClass.getName();
 		String attributeName = domainClassAttribute.getName();

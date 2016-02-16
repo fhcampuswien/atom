@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.ParameterizedType;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
 import org.eclipse.jdt.core.dom.ReturnStatement;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -364,14 +365,31 @@ public class ReflectionEmulatorGenerator {
 				castExpression.setExpression(simpleName);
 				
 				String attributeType = attribute.getType();
-				if(attributeType.contains("<")) {
-					attributeType = attributeType.substring(0,attributeType.indexOf('<'));
+				String attributeTypeSimple;
+				boolean isParmeterizedType = attributeType.contains("<");
+				if(isParmeterizedType) {
+					attributeTypeSimple = attributeType.substring(0,attributeType.indexOf('<'));
+				}
+				else {
+					attributeTypeSimple = attributeType;
+				}
+				name = ast.newName(attributeTypeSimple);
+				simpleType = ast.newSimpleType(name);
+				
+				if(!isParmeterizedType) {
+					castExpression.setType(simpleType);
+				}
+				else {
+					ParameterizedType parameterizedType = ast.newParameterizedType(simpleType);
+					
+					String argumentType = attributeType.substring(attributeType.indexOf('<')+1, attributeType.length()-1);
+					name = ast.newName(argumentType);
+					simpleType = ast.newSimpleType(name);
+					parameterizedType.typeArguments().add(simpleType);
+					castExpression.setType(parameterizedType);
 					//need to deal with parametized type
 					AtomTools.log(Level.WARNING, "found parameterized type: " + attribute.getType(), null);
 				}
-				name = ast.newName(attributeType);
-				simpleType = ast.newSimpleType(name);
-				castExpression.setType(simpleType);
 
 				methodInvocation.arguments().add(castExpression);
 				block.statements().add(ast.newExpressionStatement(methodInvocation));
