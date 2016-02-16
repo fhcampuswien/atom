@@ -26,6 +26,14 @@
 		<!-- <runTarget>http://localhost:8080/</runTarget> -->
 	</properties>
 
+	<repositories>
+		<repository>
+		<id>sonatype_snapshots</id>
+		<name>sonatype snapshots</name>
+		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 
 		<!-- all dependecies in atom-client have scope provided because: -->
@@ -37,6 +45,12 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
+			<scope>provided</scope>
+			<version>${gwt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
 			<scope>provided</scope>
 			<version>${gwt.version}</version>
 		</dependency>
@@ -78,7 +92,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
-			<version>18.0</version>
+			<version>20.0-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 
