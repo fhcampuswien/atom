@@ -350,13 +350,14 @@ public class UploadImportServlet extends HttpServlet {
 		if(clues == null || clues.length() <= 0)
 			return;
 		
+		if(clues.startsWith("[") && clues.endsWith("]"))
+			clues = clues.substring(1, clues.length()-1);
+		
 		for(String clue : clues.split(";")) {
 			if(clue.length() <= 0)
 				continue;
 			
 			DomainObject found = server.getDomainObject(session, clue, AtomTools.getListedType(attribute.getType()));
-			if(found == null)
-				found = server.getDomainObject(session, clue.replaceAll(" ?\\[.*\\] ?", ""), AtomTools.getListedType(attribute.getType()));
 			if(found != null)
 				collection.add(found);
 		}
