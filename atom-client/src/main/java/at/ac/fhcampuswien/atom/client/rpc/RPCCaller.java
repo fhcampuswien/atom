@@ -446,11 +446,13 @@ public class RPCCaller {
 	}
 
 	public void saveDomainObject(final DomainObject domainObject, final WaitingFor<DomainObject> reciever) {
+		AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject() start", this);
 		if(domainObject.getObjectID() == null) {
 			AtomTools.log(Level.FINE, "sending DomainObject without ID to the server --> creating new instance=row", this);
 		}
 		atomRPCAsync.saveDomainObject(clientSession.getCookieValue(), domainObject, new AsyncCallback<DomainObject>() {
 			public void onFailure(Throwable caught) {
+				AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject.onFailure() start", this);
 
 				// if (caught instanceof AuthenticationException)
 				// AtomGUI.getSinglton().logout();
@@ -471,9 +473,11 @@ public class RPCCaller {
 					AtomTools.logStackTrace(Level.SEVERE, caught, this);
 					AtomTools.log(Level.SEVERE, "saveDomainObject failed on Server; " + caught.getMessage(), this);
 				}
+				AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject.onFailure() end", this);
 			}
 
 			public void onSuccess(DomainObject result) {
+				AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject.onSuccess() start", this);
 				getClassChanges().put(domainObject.getConcreteClass(), new Date());
 				
 				if(result != null) {
@@ -489,8 +493,10 @@ public class RPCCaller {
 				// HashSet<DomainObject>(), changedObjects);
 				// RPCCaller.this.secondaryUpdate = false;
 				// distributeChangedObjects(changedObjects, null);
+				AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject.onSuccess() end", this);
 			}
 		});
+		AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject() end", this);
 	}
 
 	// public void getDomainClassNamed(Notifiable notifiable) {

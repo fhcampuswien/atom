@@ -43,6 +43,10 @@ public class ClientTools {
 	}
 
 	public static void setAttributeValue(DomainClass domainClass, DomainClassAttribute domainClassAttribute, DomainObject domainObject, Object value) {
+		if("java.lang.Integer".equals(domainClassAttribute.getType()) && value instanceof String) {
+			//workaround: RadioButtons return String representations of the true value
+			value = Integer.valueOf((String) value);
+		}
 		DomainReflectionEmulator.setAttributeValue(domainClass, domainClassAttribute, domainObject, value);
 	}
 

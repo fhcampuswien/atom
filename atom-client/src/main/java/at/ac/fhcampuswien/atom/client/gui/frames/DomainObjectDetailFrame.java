@@ -568,6 +568,7 @@ public class DomainObjectDetailFrame extends Frame {
 
 	@Override
 	public void actionSave() {
+		AtomTools.log(Level.FINER, "DomainObjectDetailFrame.actionSave() start", this);
 		App.setLoadingState(true, this);
 		if (representedObject == null) {
 			// create
@@ -613,6 +614,8 @@ public class DomainObjectDetailFrame extends Frame {
 
 		RPCCaller.getSinglton().saveDomainObject(representedObject, receiver);
 		setEditableAndRevertValues(false, true);
+		
+		AtomTools.log(Level.FINER, "DomainObjectDetailFrame.actionSave() end", this);
 	}
 
 	@Override
