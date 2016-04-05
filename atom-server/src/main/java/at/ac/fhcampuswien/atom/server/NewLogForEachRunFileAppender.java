@@ -55,7 +55,7 @@ public class NewLogForEachRunFileAppender extends FileAppender {
 			String newFileName = "";
 
 			Date currentDate = new Date();
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmm_ss"); //#SSS
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmm-ss"); //#SSS
 			String dateString = dateFormat.format(currentDate);
 
 			final int dotIndex = fileName.indexOf(DOT);
@@ -68,7 +68,7 @@ public class NewLogForEachRunFileAppender extends FileAppender {
 				// at the end.
 				newFileName = fileName + HIPHEN + dateString;
 			}
-			return logFile.getParent() + File.separator + newFileName;
+			return logFile.getParent() + File.separatorChar + newFileName;
 		}
 		return null;
 	}

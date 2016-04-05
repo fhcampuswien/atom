@@ -488,6 +488,7 @@ public class ServerSingleton {
 			throw ae;
 		} catch (Throwable t) {
 			AtomTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
+			throw new AtomException("error in saveDomainObject", t);
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
 		}

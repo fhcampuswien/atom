@@ -40,73 +40,68 @@
 		<servlet-name>atomServlet</servlet-name>
 		<servlet-class>at.ac.fhcampuswien.atom.server.AtomServiceImpl</servlet-class>
 	</servlet>
-
-	<servlet>
-		<servlet-name>importServlet</servlet-name>
-		<servlet-class>at.ac.fhcampuswien.atom.server.UploadImportServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>exportServlet</servlet-name>
-		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadExportServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>downloadFileServlet</servlet-name>
-		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadFileAttributeServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>downloadFilePreviewServlet</servlet-name>
-		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadFileAttributePreviewServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
-		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
-		<!-- symbolMaps param provides for stack trace deobfuscation -->
-		<init-param>
-			<param-name>symbolMaps</param-name>
-			<!-- This value assumes a GWT compile with '-deploy war/WEB-INF/deploy/' -->
-			<param-value>WEB-INF/deploy/ATOM/symbolMaps/</param-value>
-		</init-param>
-	</servlet>
-
 	<servlet-mapping>
 		<servlet-name>atomServlet</servlet-name>
 		<url-pattern>/app/rpc</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>importServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.UploadImportServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>importServlet</servlet-name>
 		<url-pattern>/import</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>exportServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadExportServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>exportServlet</servlet-name>
 		<url-pattern>/export</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>downloadFileServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadFileAttributeServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>downloadFileServlet</servlet-name>
 		<url-pattern>/getfile</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>downloadFilePreviewServlet</servlet-name>
+		<servlet-class>at.ac.fhcampuswien.atom.server.DownloadFileAttributePreviewServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>downloadFilePreviewServlet</servlet-name>
 		<url-pattern>/getfilepreview</url-pattern>
 	</servlet-mapping>
 
+	<!-- remote logger servlet gwt-log allen_sauer -->
+	<!-- <servlet>
+		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
+		<servlet-class>com.allen_sauer.gwt.log.server.RemoteLoggerServiceImpl</servlet-class>
+		symbolMaps param provides for stack trace deobfuscation
+		<init-param>
+			<param-name>symbolMaps</param-name>
+			This value assumes a GWT compile with '-deploy war/WEB-INF/deploy/'
+			<param-value>WEB-INF/deploy/ATOM/symbolMaps/</param-value>
+		</init-param>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>gwt-log-remote-logger-servlet</servlet-name>
 		<url-pattern>/gwt-log</url-pattern>
-	</servlet-mapping>
+	</servlet-mapping> -->
 
 
 	<!-- remote logging -->
 	<servlet>
 		<servlet-name>remoteLogging</servlet-name>
-		<servlet-class>com.google.gwt.logging.server.RemoteLoggingServiceImpl</servlet-class>
+		<servlet-class>at.ac.fhcampuswien.atom.server.AtomRemoteLogger</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>remoteLogging</servlet-name>
@@ -117,6 +112,7 @@
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
+	
 	<!-- Auto Redirect from http to https -->
 	<security-constraint>
 		<web-resource-collection>
