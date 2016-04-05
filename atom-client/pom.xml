@@ -175,7 +175,7 @@
 						-XX:+PrintCompilation -server</extraJvmArgs> -->
 
 					<sourceLevel>1.7</sourceLevel>
-					<deploy>${project.build.directory}/gwtc/extra</deploy>
+					<deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/</deploy>
 					<extra>${project.build.directory}/gwtc/extra</extra>
 					<gen>${project.build.directory}/gwtc/gen</gen>
 					<workDir>${project.build.directory}/gwtc/work</workDir>
@@ -201,7 +201,9 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
-					<packagingExcludes>WEB-INF/**</packagingExcludes>
+					<packagingExcludes>WEB-INF/classses/**</packagingExcludes> 
+					<packagingExcludes>WEB-INF/app/rpcPolicyManifest/**</packagingExcludes> 
+					<!-- <packagingExcludes>WEB-INF/**</packagingExcludes> -->
 				</configuration>
 			</plugin>
 		</plugins>
