@@ -187,13 +187,6 @@ public class AtomTools {
 		return html.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 	}
 
-	public static void logStackTrace(Level logLevel, Throwable t, Object caller) {
-		StackTraceElement[] stackTraceElementArray = t.getStackTrace();
-		for (StackTraceElement element : stackTraceElementArray) {
-			log(logLevel, element.toString(), caller);			
-		}
-	}
-
 	private static String validatorAnnotationPrefix = "@" + AttributeValidators.class.getName() + "(value=";
 	
 	/**

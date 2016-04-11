@@ -422,8 +422,7 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Level.SEVERE, "ServerTools.updateStringRepresentationsOnce exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Level.SEVERE, t, this);
+				AtomTools.log(Level.SEVERE, "ServerTools.updateStringRepresentationsOnce exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
 			}
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
@@ -612,8 +611,7 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Level.SEVERE, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this);
-				AtomTools.logStackTrace(Level.SEVERE, t, this);
+				AtomTools.log(Level.SEVERE, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
 			}
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
