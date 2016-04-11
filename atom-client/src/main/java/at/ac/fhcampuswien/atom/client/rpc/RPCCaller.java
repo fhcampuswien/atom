@@ -470,8 +470,7 @@ public class RPCCaller {
 					//TODO: implement a presentation for validation errors
 					//AtomGUI.getSinglton().deliverError((ValidationError) caught);
 				} else {
-					AtomTools.logStackTrace(Level.SEVERE, caught, this);
-					AtomTools.log(Level.SEVERE, "saveDomainObject failed on Server; " + caught.getMessage(), this);
+					AtomTools.log(Level.SEVERE, "saveDomainObject failed on Server; " + caught.getMessage(), this, caught);
 				}
 				AtomTools.log(Level.FINER, "RPCCaller.saveDomainObject.onFailure() end", this);
 			}

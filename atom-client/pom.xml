@@ -10,49 +10,20 @@
 	</parent>
 
 	<artifactId>atom-client</artifactId>
+	<packaging>gwt-app</packaging>
 
-	<!-- atom-server needs a war file of atom-client, since a jar would simply 
-		be copied to the lib folder.. -->
-	<packaging>war</packaging>
-
-	<properties>
-		<gwt.module>at.ac.fhcampuswien.atom.App</gwt.module>
-		<gwt.draftCompile>false</gwt.draftCompile>
-		<gwt.style>OBFUSCATED</gwt.style>
-		<gwt.genParam>false</gwt.genParam>
-		<!-- keep in sync with atom-server -->
-		<runTarget>https://127.0.0.1:8843/</runTarget>
-		<!-- <runTarget>https://localhost:8443/</runTarget> -->
-		<!-- <runTarget>http://localhost:8080/</runTarget> -->
-	</properties>
-
-	<repositories>
-		<repository>
-		<id>sonatype_snapshots</id>
-		<name>sonatype snapshots</name>
-		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-		</repository>
-	</repositories>
+	<prerequisites>
+		<maven>${mavenVersion}</maven>
+	</prerequisites>
 
 	<dependencies>
-
-		<!-- all dependecies in atom-client have scope provided because: -->
-		<!--) atom-client is translated to javascript during compile time -->
-		<!--) at compile time 'provided' dependencies are available anyway -->
-		<!--) those dependencies do not need to be transversed into atom-server -->
-
-		<!-- GWT client side APIs -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-			<version>${gwt.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
-			<scope>provided</scope>
-			<version>${gwt.version}</version>
 		</dependency>
 
 		<dependency>
@@ -60,7 +31,6 @@
 			<artifactId>atom-core</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -68,7 +38,6 @@
 			<artifactId>atom-domain</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -76,7 +45,6 @@
 			<artifactId>atom-reflector</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- get compiled versions of core, domain & reflector -->
@@ -85,7 +53,6 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-reflector</artifactId>
 			<version>${project.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- at.ac.fhcampuswien.atom.client.gui.HistoryPanel uses BiMap from guava -->
@@ -93,7 +60,6 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
 			<version>20.0-SNAPSHOT</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- Drag'n'Drop Library; usage in Package at.ac.fhcampuswien.atom.client.gu.dnd -->
@@ -101,7 +67,6 @@
 			<groupId>com.allen-sauer.gwt.dnd</groupId>
 			<artifactId>gwt-dnd</artifactId>
 			<version>3.3.0</version>
-			<scope>provided</scope>
 
 			<!-- use for GWT 2.6.0 => <version>3.3.0</version> -->
 			<!-- <version>3.2.3</version> -->
@@ -115,24 +80,22 @@
 			<groupId>com.sencha.gxt</groupId>
 			<artifactId>gxt</artifactId>
 			<type>jar</type>
-			<scope>provided</scope>
 			<version>3.1.1</version>
 			<!-- <version>[3.0.0b,)</version> -->
 			<!-- <version>3.0.1</version> -->
 			<!-- <version>3.1.0-beta</version> -->
 			<!-- <version>3.1.0</version> -->
 		</dependency>
-
 	</dependencies>
 
 	<build>
 		<plugins>
+			
 			<!-- controling gwt-compile & css interface generation -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-
-
+				
 				<!-- manually specify the GWT dependencies, so that we can choose gwt 
 					and gwt-maven-plugin versions independently of each other -->
 				<version>${gwt.mavenplugin.version}</version>
@@ -153,9 +116,31 @@
 						<version>${gwt.version}</version>
 					</dependency>
 				</dependencies>
+				
+				<configuration>
+					<cssFiles>
+						<cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
+					</cssFiles>
+				</configuration>
+				
+				<executions>
+					<execution>
+						<id>generate-css</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>css</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>net.ltgt.gwt.maven</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
 
 				<configuration>
-					<module>${gwt.module}</module>
+					<moduleName>at.ac.fhcampuswien.atom.App</moduleName>
+					<moduleShortName>app</moduleShortName>
 					<strict>true</strict>
 					<draftCompile>${gwt.draftCompile}</draftCompile>
 					<style>${gwt.style}</style>
@@ -176,29 +161,15 @@
 
 					<sourceLevel>1.7</sourceLevel>
 					<deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/</deploy>
-					<extra>${project.build.directory}/gwtc/extra</extra>
+					<!-- <extra>${project.build.directory}/gwtc/extra</extra>
 					<gen>${project.build.directory}/gwtc/gen</gen>
-					<workDir>${project.build.directory}/gwtc/work</workDir>
+					<workDir>${project.build.directory}/gwtc/work</workDir> -->
 				</configuration>
-				<executions>
-					<execution>
-						<id>generate-css</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>css</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>gwt-compile</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
+			
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/classses/**</packagingExcludes> 
@@ -208,57 +179,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>draft</id>
-			<activation>
-				<property>
-					<name>draft</name>
-				</property>
-			</activation>
-			<properties>
-				<gwt.module>at.ac.fhcampuswien.atom.App_dev</gwt.module>
-				<gwt.draftCompile>true</gwt.draftCompile>
-				<gwt.style>PRETTY</gwt.style>
-			</properties>
-		</profile>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<property>
-					<name>dev</name>
-				</property>
-			</activation>
-			<build>
-				<!-- FIXME: workaround for MGWT-332 -->
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>1.9.1</version>
-						<executions>
-							<execution>
-								<id>add-shared-sources-to-classpath</id>
-								<!-- After 'process-resources' so they're not copied to ${project.build.outputDirectory} -->
-								<!-- But before 'compile' to make them available to 'gwt:run' -->
-								<phase>compile</phase>
-								<goals>
-									<goal>add-resource</goal>
-								</goals>
-								<configuration>
-									<resources>
-										<!-- Only sources, resources are already in the classpath, by definition -->
-										<resource>
-											<directory>${basedir}/../atom-shared/src/main/java</directory>
-										</resource>
-									</resources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

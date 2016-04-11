@@ -6,8 +6,7 @@
 
 	<inherits name="com.google.gwt.user.theme.clean.Clean" />
 
-	<source path="client" />
-	<source path="shared" />
+	<source path="" />
 
 	<entry-point class="at.ac.fhcampuswien.atom.client.App" />
 
@@ -36,7 +35,7 @@
 	<!-- Include GWTUpload library -->
 	<inherits name="gwtupload.GWTUpload" />
 	
-	<!-- Load dinamically predefined styles in the library when the application 
+	<!-- Load dynamically predefined styles in the library when the application 
 		starts
 	<stylesheet src="Upload.css" /> -->
 

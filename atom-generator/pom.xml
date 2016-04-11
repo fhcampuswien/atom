@@ -25,7 +25,6 @@
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-servlet</artifactId>
-			<version>${gwt.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<!-- this is neccesary since we're neither in the client (where gwt-user 
