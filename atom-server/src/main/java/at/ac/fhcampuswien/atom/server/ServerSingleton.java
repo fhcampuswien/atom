@@ -317,7 +317,12 @@ public class ServerSingleton {
 				}
 
 				query.setMaxResults(pageSize);
-				query.setFirstResult(Math.max(0, Math.min(fromRow, totalSize.intValue() - pageSize)));
+				
+				// WARNING: the Microsoft JDBC implementation seems to deter from the javax.persistence interface definition:
+				// parameter startPosition seems to start with 1 (and 0 is considered equal to it) and only 2 or higher will change the results startPosition
+				// therefore we added 1+ here
+				query.setFirstResult(Math.max(0, fromRow+1));
+				//query.setFirstResult(Math.max(0, Math.min(fromRow, totalSize.intValue() - pageSize +1)));
 
 				List<?> queryResult = query.getResultList();
 				AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got resultList, processing & preparing for client", this);

@@ -529,6 +529,8 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 				// config.setSortDir(SortDir.valueOf((String)state.get("sortDir")));
 				// }
 				loader.load(config);
+				toolBar.setPageSize(pageSize);
+				//loader.load(0, pageSize);
 				lastLoadAction = new Date();
 			}
 			
