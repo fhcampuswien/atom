@@ -181,12 +181,14 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 		loader = new PagingLoader<FilterPagingLoadConfig, PagingLoadResult<DomainObject>>(proxy) {
 			@Override
 			protected FilterPagingLoadConfig newLoadConfig() {
-				return new FilterPagingLoadConfigBean();
+				FilterPagingLoadConfig fplc = new FilterPagingLoadConfigBean();
+				this.setLimit(pageSize);
+				fplc.setLimit(pageSize);
+				return fplc;
 			}
 		};
-		loader.setRemoteSort(true);
-		loader.addLoadHandler(new LoadResultListStoreBinding<FilterPagingLoadConfig, DomainObject, PagingLoadResult<DomainObject>>(
-				store));
+		loader.addLoadHandler(new LoadResultListStoreBinding<FilterPagingLoadConfig, DomainObject, PagingLoadResult<DomainObject>>(store));
+		//loader.setReuseLoadConfig(true);
 
 		cbSelectionModel = new CheckBoxSelectionModel<DomainObject>(new IdentityValueProvider<DomainObject>());
 		if (ActionMode.SINGLE_SELECT.equals(selectedMode)) {
@@ -555,6 +557,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 
 				pageSize = newPageSize;
 				toolBar.setPageSize(pageSize);
+				loader.setLimit(pageSize);
 				loader.load(currentOffset, pageSize);
 				lastLoadAction = new Date();
 			}
