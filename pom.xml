@@ -213,6 +213,25 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.edugility</groupId>
+										<artifactId>
+											jpa-maven-plugin
+										</artifactId>
+										<versionRange>
+											[3-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>
+												list-entity-classnames
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute></execute>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
