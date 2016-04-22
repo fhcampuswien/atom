@@ -28,6 +28,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
@@ -666,7 +667,7 @@ public class App implements EntryPoint {
 //			url += "app/";
 			
 		url += "export?class=" + singleton.lastShownFrame.getRepresentedClass().getName();
-		url += "&filter=" + AtomTools.getFilterString(singleton.lastShownFrame.getDataFilters());
+		url += "&filter=" + URL.encodePathSegment(AtomTools.getFilterString(singleton.lastShownFrame.getDataFilters()));
 		AtomTools.log(Level.FINER, "finishedUrl = " + url , singleton);
 		
 		Window.open(url, "_blank", "");
