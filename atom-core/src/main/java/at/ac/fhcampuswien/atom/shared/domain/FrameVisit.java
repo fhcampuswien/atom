@@ -132,7 +132,8 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 
 	@Column(length=1000)
 	private String frameShortTitle;
-	
+
+	@Column(columnDefinition = "varbinary(3000)")
 	private DataFilter[] filters;
 
 	private String representedSearchString;
