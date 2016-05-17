@@ -4,11 +4,10 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.logging.Level;
 
+import at.ac.fhcampuswien.atom.client.ClientTools;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 
@@ -26,14 +25,7 @@ public class ListOfPersistentStringsView extends CollectionView<Collection<Persi
 	
 	protected void addNewItem(Object newItem) {
 		if (value == null) {
-			if("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
-				value = new HashSet<PersistentString>();
-			else if("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
-				value = new ArrayList<PersistentString>();
-			else {
-				AtomTools.log(Level.WARNING, "when writing ListOfPersistentCode I did not enticipate any type but Set or List, this might fail! - type = " + type, this);
-				value = new ArrayList<PersistentString>();
-			}
+			value = ClientTools.getPersistentStringsCollection(type);
 		}
 		super.addNewItem(newItem);
 	}

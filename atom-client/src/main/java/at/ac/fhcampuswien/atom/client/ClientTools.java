@@ -4,6 +4,7 @@
  */
 package at.ac.fhcampuswien.atom.client;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.DomainReflectionEmulator;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
+import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 
 public class ClientTools {
 	private ClientTools() {
@@ -48,6 +50,17 @@ public class ClientTools {
 			value = Integer.valueOf((String) value);
 		}
 		DomainReflectionEmulator.setAttributeValue(domainClass, domainClassAttribute, domainObject, value);
+	}
+	
+	public static Collection<PersistentString> getPersistentStringsCollection(String collectionType) {
+		if("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(collectionType))
+			return new HashSet<PersistentString>();
+		else if("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(collectionType))
+			return new ArrayList<PersistentString>();
+		else {
+			AtomTools.log(Level.WARNING, "when writing ListOfPersistentCode I did not enticipate any type but Set or List, this might fail! - type = " + collectionType, null);
+			return new ArrayList<PersistentString>();
+		}
 	}
 
 	public static HashSet<DomainObject> getDirectlyRelatedObjects(DomainClass domainClass, DomainObject domainObject) {

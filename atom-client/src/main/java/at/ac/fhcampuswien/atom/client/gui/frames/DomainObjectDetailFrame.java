@@ -5,6 +5,7 @@
 package at.ac.fhcampuswien.atom.client.gui.frames;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -26,6 +27,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.Notifiable;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
+import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
@@ -722,7 +724,23 @@ public class DomainObjectDetailFrame extends Frame {
 		for(DomainClassAttribute attr : allAttrs.values()) {
 			if(attr.isWriteAble() && (!onlyWhereCurrentlyNull || ClientTools.getAttributeValue(representedClass, attr, representedObject) == null)) {
 				Object value = ClientTools.getAttributeValue(representedClass, attr, sourceInstance);
-				ClientTools.setAttributeValue(representedClass, attr, representedObject, value);	
+				
+				if(value instanceof Collection<?> && attr.getType().contains("PersistentString")) {
+					@SuppressWarnings("unchecked")
+					Collection<PersistentString> target = (Collection<PersistentString>) ClientTools.getAttributeValue(representedClass, attr, representedObject);
+					if (target == null) {
+						target = ClientTools.getPersistentStringsCollection(attr.getType());
+					}
+					@SuppressWarnings("unchecked")
+					Collection<PersistentString> sourceCol = (Collection<PersistentString>) value;
+					for(PersistentString s : sourceCol) {
+						target.add(new PersistentString(s.getValue()));
+					}
+					ClientTools.setAttributeValue(representedClass, attr, representedObject, target);
+				}
+				else {
+					ClientTools.setAttributeValue(representedClass, attr, representedObject, value);
+				}	
 			}
 		}
 		loadValues();
