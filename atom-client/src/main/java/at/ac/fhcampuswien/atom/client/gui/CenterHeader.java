@@ -206,9 +206,6 @@ public class CenterHeader extends Composite {
 		},
 		OBJECT_LIST_READONLY {
 			protected void buildState(CenterHeader panel) {
-				// panel.addButton(panel.filterButton);
-				panel.addButton(panel.importButton);
-				panel.addSpace();
 				panel.addButton(panel.exportButton);
 			}
 		},
