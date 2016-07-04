@@ -483,7 +483,7 @@ public class ServerSingleton {
 			tx = em.getTransaction();
 			tx.begin();
 
-			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false);
+			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session);
 			domainObject = em.merge(domainObject);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 

@@ -122,3 +122,14 @@ UPDATE p
   WHERE p.type = 2
 
  */
+
+
+/*
+ * Manually fix stringRepresentations
+ * 
+update do
+SET do.stringRepresentation = ps.value
+FROM DomainObject as do
+inner join PersistentString ps on ps.objectID = do.objectID
+
+ * */

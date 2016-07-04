@@ -327,6 +327,8 @@ public class DomainObject implements Serializable {
 	}
 
 	public void prepareSave(ClientSession session) {
+		//refresh StringRepresentation so that the correct value is written into the database (is done by most objects every time getStringRepresentation() is called)
+		getStringRepresentation();
 	}
 
 	public void prepareForClient() {

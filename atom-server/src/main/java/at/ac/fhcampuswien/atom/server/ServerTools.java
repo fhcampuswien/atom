@@ -824,7 +824,7 @@ public class ServerTools {
 	 * @param clear
 	 *            true = clear relations, false = replace with uptodate copys from the database.
 	 */
-	public static void handleRelatedObjects(EntityManager em, DomainObject domainObject, DomainClass domainClass, boolean clear) {
+	public static void handleRelatedObjects(EntityManager em, DomainObject domainObject, DomainClass domainClass, boolean clear, ClientSession session) {
 		Class<?> reflClass = domainObject.getClass();
 
 		for (DomainClassAttribute domainClassAttribute : domainClass.getAttributesOfTypeDomainObject()) {
@@ -882,10 +882,11 @@ public class ServerTools {
 								DomainObject obj = (DomainObject) relObj;
 								if(relObj instanceof PersistentString) {
 									//handle PersistentStrings special, since we don't want those "DomainObjects" to be handled manually by the user but simply persisted with whatever other DomainObject they are linked to.
-									//those are also the only DomainObjects that can be linked to others without being saved first (UI limitation by design)
+									//those are also the only DomainObjects that can be linked to others without being saved first (intentional UI limitation by design)
 									PersistentString ps = (PersistentString) relObj;
 									ps.setOwner(domainObject);
 									ps.setOwnersAttribute(domainClassAttribute.getName());
+									ps.prepareSave(session);
 									if(ps.getObjectID() != null) {
 										//has been saved before, check if owner is the same, to prevent pirating
 										PersistentString psDB = em.find(ps.getClass(), ps.getObjectID());
