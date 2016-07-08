@@ -17,6 +17,9 @@ import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
 public class DomainClassAttribute implements java.io.Serializable {
 
 	private static final long serialVersionUID = 3965088824795861114L;
+	
+	public static final String[] ordinalTypes = new String[] {"Integer", "int", "Double", "double", "Date", "long"};
+	public static final String dateType = "java.util.Date";
 
 	private DomainClass domainClass;
 	

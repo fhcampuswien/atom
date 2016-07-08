@@ -9,6 +9,24 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
+
+import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.datepicker.client.DateBox;
+import com.google.gwt.user.datepicker.client.DateBox.DefaultFormat;
+import com.google.gwt.user.datepicker.client.DatePicker;
 
 import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
@@ -16,28 +34,27 @@ import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DataFilter;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 
-import java.util.logging.Level;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
 public class FilterSpecificationDialogBox extends DialogBox {
 	
 	private class FilterSpecLine extends HorizontalPanel {
 		
 		DomainClassAttribute attribute;
 		ListBox fieldSelection, filterTypeBox;
-		TextBox textBox;
+		TextBox textBox = null;
+		DateBox dateBox = null;
 		Button removeLineButton;
+		
+		private TextBox getTextBox() {
+			if(textBox == null)
+				textBox = new TextBox();
+			return textBox;
+		}
+		
+		private DateBox getDateBox() {
+			if(dateBox == null)
+				dateBox = new DateBox(new DatePicker(), null, new DefaultFormat(DateTimeFormat.getFormat("dd.MM.yyyy")));
+			return dateBox;
+		}
 		
 		public FilterSpecLine() {
 			super();
@@ -48,7 +65,7 @@ public class FilterSpecificationDialogBox extends DialogBox {
 				@Override
 				public void onChange(ChangeEvent event) {
 					attribute = attributesMap.get(fieldSelection.getValue(fieldSelection.getSelectedIndex()));
-					updateFilterTypeBox();
+					updateFilterSpecLineForSelectedAttribute();
 					hideSelectedAttributesFromOtherFilterSelections();
 				}
 			});
@@ -71,35 +88,45 @@ public class FilterSpecificationDialogBox extends DialogBox {
 			ftStyle.setHeight(27, Unit.PX);
 			ftStyle.setWidth(36, Unit.PX);
 			ftStyle.setMargin(2, Unit.PX);
-			
-			updateFilterTypeBox();
-			
-			this.add(filterTypeBox);
-			textBox = new TextBox();
-			this.add(textBox);
-			textBox.setFocus(true);
+
+			this.add(filterTypeBox);			
 			
 			removeLineButton = new Button("-", new ClickHandler() {
 				public void onClick(ClickEvent event) {
 					filterSpecificationPanel.remove(FilterSpecLine.this);
 					lines.remove(FilterSpecLine.this);
-					checkRemoveabilityOfLines();
+					updateRemoveabilityOfLines();
 					hideSelectedAttributesFromOtherFilterSelections();
 				}
 			});
 			Style rlStyle = removeLineButton.getElement().getStyle();
 			rlStyle.setMargin(2, Unit.PX);
-			
-			this.add(removeLineButton);
+
+			updateFilterSpecLineForSelectedAttribute();
 			
 			lines.add(FilterSpecLine.this);
-			checkRemoveabilityOfLines();
+			updateRemoveabilityOfLines();
 			hideSelectedAttributesFromOtherFilterSelections();
 		}
 		
 		String[] lastAttributeTypes;
-		private void updateFilterTypeBox() {
+		private void updateFilterSpecLineForSelectedAttribute() {
 			String[] types = AtomTools.getComperator4Type(attribute.getType());
+			if(DomainClassAttribute.dateType.equals(attribute.getType())) {
+				if(textBox != null)
+					this.remove(textBox);
+				this.remove(removeLineButton);
+				this.add(getDateBox());
+				this.add(removeLineButton);
+				dateBox.setFocus(true);
+			} else {
+				if(dateBox != null)
+					this.remove(dateBox);
+				this.remove(removeLineButton);
+				this.add(getTextBox());
+				this.add(removeLineButton);
+				textBox.setFocus(true);
+			}
 			if(!Arrays.equals(types, lastAttributeTypes)) {
 				filterTypeBox.clear();
 				for(String s : types) {
@@ -135,7 +162,7 @@ public class FilterSpecificationDialogBox extends DialogBox {
 	}
 	
 	
-	private void checkRemoveabilityOfLines() {
+	private void updateRemoveabilityOfLines() {
 		int size = lines.size();
 		for(FilterSpecLine l : lines) {
 			l.removeLineButton.setEnabled(size > 1);
@@ -236,10 +263,10 @@ public class FilterSpecificationDialogBox extends DialogBox {
 			
 			for(FilterSpecLine line : lines) {
 				ListBox l = line.fieldSelection;
-				TextBox t = line.textBox;
+				TextBox valueBox = (DomainClassAttribute.dateType.equals(line.attribute.getType())) ? line.dateBox.getTextBox() : line.textBox;
 				String filterType = line.filterTypeBox.getValue(line.filterTypeBox.getSelectedIndex());
 				String attrName = l.getValue(l.getSelectedIndex());
-				String filterValue = t.getText();
+				String filterValue = valueBox.getText();
 				String attrType = attributesMap.get(attrName).getType();
 				p.add(new DataFilter(attrName, filterValue, filterType, attrType));
 			}

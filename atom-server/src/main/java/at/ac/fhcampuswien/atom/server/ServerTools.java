@@ -640,10 +640,11 @@ public class ServerTools {
 					}
 					
 
-					if ("date".equals(columnType)) {
-						Date date = new Date(Long.valueOf(filterValue));
-						SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-						filterValue = formatter.format(date);
+					if (DomainClassAttribute.dateType.equals(columnType)) {
+						//Date date = new Date(Long.valueOf(filterValue));
+						//SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+						//filterValue = "'" + formatter.format(date) + "'";
+						filterValue = "'" + filterValue + "'";
 					}
 					else {
 						String[] lbd = attribute.getListBoxDisplay();
