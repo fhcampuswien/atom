@@ -143,7 +143,7 @@ public class ClientTools {
 		return "";
 	}
 	
-	public static void getFilterConfigFromUser(final String className, final boolean showShowListButton, final WaitingFor<Collection<DataFilter>> reciever) {
+	public static void getFilterConfigFromUser(final String className, final boolean showListButton, final WaitingFor<Collection<DataFilter>> reciever) {
 		RPCCaller.getSinglton().getDomainTree(new WaitingFor<DomainClass>() {
 			
 			@Override
@@ -164,7 +164,7 @@ public class ClientTools {
 //						attributes.put(a.getName(), a.getDisplayName());
 //				}
 				
-				new FilterSpecificationDialogBox("Bitte Suchbegriff(e) eingeben:", dc.getSortedAttributesForFilterDefinition(), showShowListButton, reciever);
+				new FilterSpecificationDialogBox("Bitte Suchbegriff(e) eingeben:", dc.getSortedAttributesForFilterDefinition(), showListButton, reciever);
 			}
 		});
 	}
