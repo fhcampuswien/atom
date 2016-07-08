@@ -451,7 +451,7 @@ public class AtomTools {
 		if(AtomConfig.specialFilterDeepSearch.equals(className))
 			return new String[] {"∋"};
 		
-		if(stringContainsOneOfList(className, DomainClassAttribute.numberTypes))
+		if(stringContainsOneOfList(className, DomainClassAttribute.ordinalTypes))
 			return AtomConfig.comparators4Numbers;
 
 		return AtomConfig.comparators4Sets;
