@@ -15,6 +15,7 @@ public class AtomConfig {
 	public static final boolean updateAllStringRepresentationsOnApplicationStartup = false;
 
 	public static final String accessCreateNew = "accessCreateNew";
+	public static final String accessDuplicate = "accessDuplicate"; //TODO: implement duplicate access control!
 	public static final String accessMenue = "accessMenue";
 	public static final String accessReadWrite = "accessReadWrite";
 	public static final String accessReadOnly = "accessReadOnly";
