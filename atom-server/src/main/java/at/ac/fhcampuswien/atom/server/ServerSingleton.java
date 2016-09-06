@@ -641,6 +641,8 @@ public class ServerSingleton {
 
 		if (domainObject.getObjectID() != null) {
 			
+			AtomTools.checkPermissionMatch(AtomConfig.accessDelete, requestedClass.getAccessHandler().getAccessTypes(session, domainObject));
+			
 			EntityManager em = null;
 			EntityTransaction tx = null;
 			try {
