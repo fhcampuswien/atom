@@ -74,9 +74,15 @@ public class DomainObjectDetailFrame extends Frame {
 			
 			if (AtomTools.isAccessAllowed(AtomConfig.accessReadWrite, at) || ((object == null || object.getObjectID() == null) && at.contains(AtomConfig.accessCreateNew))) {
 				if (editable) {
-					return CenterHeader.State.OBJECT_EDIT_NORMAL;
+					if(AtomTools.isAccessAllowed(AtomConfig.accessDelete, at))
+						return CenterHeader.State.OBJECT_EDIT_NORMAL;
+					else
+						return CenterHeader.State.OBJECT_EDIT_NO_DELETE;
 				} else {
-					return CenterHeader.State.OBJECT_DETAIL_VIEW_NORMAL;
+					if(AtomTools.isAccessAllowed(AtomConfig.accessDelete, at))
+						return CenterHeader.State.OBJECT_DETAIL_VIEW_NORMAL;
+					else
+						return CenterHeader.State.OBJECT_DETAIL_VIEW_NO_DELETE;
 				}
 			} else if (AtomTools.isAccessAllowed(AtomConfig.accessCreateNew, at)) {
 				return CenterHeader.State.OBJECT_DETAIL_VIEW_ONLY_DUPLICATE;

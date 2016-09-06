@@ -15,6 +15,7 @@ public class AtomConfig {
 	public static final boolean updateAllStringRepresentationsOnApplicationStartup = false;
 
 	public static final String accessCreateNew = "accessCreateNew";
+	public static final String accessDelete = "accessDelete";
 	public static final String accessDuplicate = "accessDuplicate"; //TODO: implement duplicate access control!
 	public static final String accessMenue = "accessMenue";
 	public static final String accessReadWrite = "accessReadWrite";
@@ -27,7 +28,7 @@ public class AtomConfig {
 	public static final String accessLinkage = "accessLinkage";
 	public static final String accessDenied = "accessDenied";
 	
-	public static final String[] accessTypes = {accessCreateNew, accessMenue, accessReadWrite, accessReadOnly, accessLinkage, accessDenied};
+	public static final String[] accessTypes = {accessCreateNew, accessDuplicate, accessMenue, accessReadWrite, accessReadOnly, accessLinkage, accessDenied};
 	
 	public static final boolean loadEverythingRelated = false;
 	

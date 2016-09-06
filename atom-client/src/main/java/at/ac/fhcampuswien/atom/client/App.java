@@ -1264,5 +1264,4 @@ public class App implements EntryPoint {
 			timer.schedule(200);
 		}
 	}
-
 }
