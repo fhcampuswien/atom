@@ -6,7 +6,9 @@ package at.ac.fhcampuswien.atom.shared.exceptions;
 
 import java.io.Serializable;
 
-public class AtomException extends RuntimeException implements Serializable {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class AtomException extends RuntimeException implements Serializable, IsSerializable {
 
 	private static final long serialVersionUID = 3656303650157138390L;
 

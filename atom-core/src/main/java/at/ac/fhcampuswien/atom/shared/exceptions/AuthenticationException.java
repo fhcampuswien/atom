@@ -6,7 +6,9 @@ package at.ac.fhcampuswien.atom.shared.exceptions;
 
 import java.io.Serializable;
 
-public class AuthenticationException extends AtomException implements Serializable {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class AuthenticationException extends AtomException implements Serializable, IsSerializable {
 
     /**
      * 
