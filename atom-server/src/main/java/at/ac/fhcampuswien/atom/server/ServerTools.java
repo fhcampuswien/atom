@@ -240,8 +240,15 @@ public class ServerTools {
 					Iterable<Object> collectionHibernate = (Iterable<Object>) getAttribute.invoke(domainObject, new Object[] {});
 					Collection<Object> collectionCloned = null;
 					if (WalkTask.CLEARLAZYANDDENIED.equals(task)) {
-						collectionCloned = cloneCollection(collectionHibernate, objectsISaw, false, partOfList, session);
-						setAttribute.invoke(domainObject, new Object[] { collectionCloned });
+						try {
+							collectionCloned = cloneCollection(collectionHibernate, objectsISaw, false, partOfList, session);
+							setAttribute.invoke(domainObject, new Object[] { collectionCloned });
+						}
+						catch(org.hibernate.LazyInitializationException e) {
+							AtomTools.log(Level.SEVERE, "huge problem here huston!", e);
+						}
+						
+						
 					} else if (collectionHibernate != null) {
 						for (Object object : collectionHibernate) {
 							if (object != null && object instanceof DomainObject && !objectsISaw.contains(object)) {
@@ -361,7 +368,7 @@ public class ServerTools {
 	}
 
 	private static Collection<Object> cloneCollection(Iterable<Object> source, HashSet<DomainObject> objectsDone, boolean primary, boolean partOfList,
-			ClientSession session) {
+			ClientSession session) throws org.hibernate.LazyInitializationException {
 		Collection<Object> destination = null;
 
 		if (source != null) {
