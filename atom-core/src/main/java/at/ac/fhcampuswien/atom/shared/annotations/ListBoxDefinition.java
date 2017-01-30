@@ -13,7 +13,8 @@ public @interface ListBoxDefinition {
 	String[] display() default {};
 	
 	/**
-	 * empty string (default) means that there is no sql query for this ListBox
+	 * empty string (default) means that there is no sql query for this ListBox, instead it is a static definition
+	 * the sql query can have 2 columns (key & value) or 1 column which is then used for both key and display value.
 	 */
 	String sql() default "";
 	
