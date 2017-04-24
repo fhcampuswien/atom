@@ -228,7 +228,7 @@ public class DomainObjectDetailFrame extends Frame {
 				if(representedObject != null)
 					nr = representedObject.getNullReasons().get(attribute.getName());
 				if ((hide == null || hide == false) && nr != AtomConfig.nullReasonNotRelationEssential) {
-					AttributeView<?, ?, ?> attributeView = AttributeView.getAttributeViewForType(attribute, this);
+					AttributeView<?, ?, ?> attributeView = AttributeView.getAttributeView(attribute, this);
 					// attributeView.setSize("100%", "100%");
 
 					if (representedObject != null) {

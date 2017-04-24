@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class AttributeView<D extends Object, E extends Widget, F extends Object> extends Composite {
 
 	@SuppressWarnings("rawtypes")
-	public static AttributeView<?, ?, ?> getAttributeViewForType(DomainClassAttribute attribute, DomainObjectDetailFrame forFrame) {
+	public static AttributeView<?, ?, ?> getAttributeView(DomainClassAttribute attribute, DomainObjectDetailFrame forFrame) {
 		String type = attribute.getType();
 		String attributeName = attribute.getName();
 		
