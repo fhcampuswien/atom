@@ -5,6 +5,15 @@
 package at.ac.fhcampuswien.atom.client.gui.attributes;
 
 import java.util.HashSet;
+import java.util.logging.Level;
+
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 import at.ac.fhcampuswien.atom.client.gui.AtomClientBundle;
 import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectDetailFrame;
@@ -15,15 +24,14 @@ import at.ac.fhcampuswien.atom.shared.Notifiable;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
-import java.util.logging.Level;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
-
+/**
+ * 
+ * @author kaefert
+ *
+ * @param <D> value object (with original type as within the DomainObject definition)  
+ * @param <E> view widget
+ * @param <F> value as typed within view
+ */
 public abstract class AttributeView<D extends Object, E extends Widget, F extends Object> extends Composite {
 
 	@SuppressWarnings("rawtypes")
@@ -84,6 +92,8 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 			else if (attribute.getAnnotation("javax.persistence.Lob") != null || 
 					 attribute.getAnnotation("StringMultiLine") != null)
 				returnValue = new StringLobView();
+			else if (attribute.getAnnotation("LinkAttribute") != null)
+				returnValue = new LinkView(attribute.getLinkPrefix(), attribute.getLinkSuffix());
 			else
 				returnValue = new StringView();
 		} else if ("java.util.Date".equals(type)) {

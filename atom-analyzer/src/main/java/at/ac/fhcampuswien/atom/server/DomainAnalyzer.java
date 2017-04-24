@@ -41,6 +41,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.DefaultAttributeGroupName;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromDetailGui;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromGui;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromListGui;
+import at.ac.fhcampuswien.atom.shared.annotations.LinkAttribute;
 import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
 import at.ac.fhcampuswien.atom.shared.annotations.OrderedAttributeGroups;
@@ -432,6 +433,11 @@ public class DomainAnalyzer {
 			for (AccessListOrgEinheiten list : accessLists.orgEinheitenLists()) {
 				attribute.getAccessHandler().addAccessOE(list.accessTypes(), list.requiredRelations(), list.onlyHauptrolle(), list.onlyLeiter(), list.value());
 			}
+		} else if (anAnnotation instanceof LinkAttribute) {
+			LinkAttribute linkAttribute = (LinkAttribute) anAnnotation;
+			attribute.setLinkPrefix(linkAttribute.prefix());
+			attribute.setLinkSuffix(linkAttribute.suffix());
+			attribute.addAnnotation(anAnnotation.toString());
 		} else {
 			attribute.addAnnotation(anAnnotation.toString());
 		}

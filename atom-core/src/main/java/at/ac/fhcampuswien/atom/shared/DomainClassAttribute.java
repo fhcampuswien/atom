@@ -49,6 +49,9 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private String listBoxSql = null;
 	private ListBoxDefinition.ViewType listBoxViewType = null;
 	private String listBoxMSSeperator = null;
+
+	private String linkPrefix = null;
+	private String linkSuffix = null;
 	
 	//slider-attribute-view config
 	private boolean useSlider = false;
@@ -432,6 +435,22 @@ public class DomainClassAttribute implements java.io.Serializable {
 		if(accessHandler == null)
 			accessHandler = new AccessHandler();
 		return accessHandler;
+	}
+
+	public void setLinkPrefix(String prefix) {
+		this.linkPrefix = prefix;
+	}
+	
+	public String getLinkPrefix() {
+		return linkPrefix;
+	}
+
+	public void setLinkSuffix(String suffix) {
+		this.linkSuffix = suffix;
+	}
+
+	public String getLinkSuffix() {
+		return linkSuffix;
 	}
 
 //	/**
