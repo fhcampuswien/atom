@@ -193,9 +193,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 			boolean found = showSingleValue(value, true);
 			
 			if(!found) {
-				if(!"".equals(listBox.getValue(listBox.getItemCount()-1))) {
-					listBox.addItem("", "");
-				}
+				listBox.addItem(value, value);
 				listBox.setSelectedIndex(listBox.getItemCount()-1);
 			}
 		}
