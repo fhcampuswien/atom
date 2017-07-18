@@ -107,10 +107,13 @@ final class DomainObjectValueProvider<T> implements ValueProvider<DomainObject, 
 								sval = sval + sep + disp;
 						}
 					}
-					val = sval;
 				}
 				else
-					val = (T) listBoxMap.get(val.toString());
+					sval = listBoxMap.get(val.toString());
+				
+				//if value not contained in list, display value as is
+				if(sval != null && sval.length() > 0)
+					val = sval;
 			}
 			
 			if(val instanceof String) {
