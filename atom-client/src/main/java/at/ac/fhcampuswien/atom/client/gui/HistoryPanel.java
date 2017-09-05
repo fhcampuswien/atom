@@ -241,7 +241,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 	}
 	
 	public void removeElement(FrameVisit identifier, boolean keepVisible) {
-		removeElement(identifier, false, null);
+		removeElement(identifier, keepVisible, null);
 	}
 
 	public void removeElement(FrameVisit identifier, final boolean keepVisible, final ArrayList<SidePanelLabel<FrameVisit>> needToDelete) {
