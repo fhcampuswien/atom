@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>at.ac.fhcampuswien.atom</groupId>
 		<artifactId>atom</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>atom-client</artifactId>
@@ -17,6 +17,8 @@
 	</prerequisites>
 
 	<dependencies>
+
+		<!-- GWT client dependencies -->
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
@@ -95,7 +97,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
-				
+
 				<!-- manually specify the GWT dependencies, so that we can choose gwt 
 					and gwt-maven-plugin versions independently of each other -->
 				<version>${gwt.mavenplugin.version}</version>
@@ -116,13 +118,13 @@
 						<version>${gwt.version}</version>
 					</dependency>
 				</dependencies>
-				
+
 				<configuration>
 					<cssFiles>
 						<cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
 					</cssFiles>
 				</configuration>
-				
+
 				<executions>
 					<execution>
 						<id>generate-css</id>
@@ -133,7 +135,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>net.ltgt.gwt.maven</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -141,7 +143,7 @@
 				<configuration>
 					<moduleName>at.ac.fhcampuswien.atom.App</moduleName>
 					<moduleShortName>app</moduleShortName>
-					<strict>true</strict>
+					<!--<strict>true</strict>-->
 					<draftCompile>${gwt.draftCompile}</draftCompile>
 					<style>${gwt.style}</style>
 					<genParam>${gwt.genParam}</genParam>
@@ -159,24 +161,24 @@
 						-XX:+CMSClassUnloadingEnabled -DgeneratePom=true -XX:ReservedCodeCacheSize=128m 
 						-XX:+PrintCompilation -server</extraJvmArgs> -->
 
-					<sourceLevel>1.7</sourceLevel>
+					<sourceLevel>auto</sourceLevel>
 					<deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/</deploy>
-					<!-- <extra>${project.build.directory}/gwtc/extra</extra>
-					<gen>${project.build.directory}/gwtc/gen</gen>
-					<workDir>${project.build.directory}/gwtc/work</workDir> -->
+
+					<!-- <extra>${project.build.directory}/gwtc/extra</extra> <gen>${project.build.directory}/gwtc/gen</gen> 
+						<workDir>${project.build.directory}/gwtc/work</workDir> -->
 				</configuration>
 			</plugin>
 			
-			<plugin>
+			<!--<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<packagingExcludes>WEB-INF/classses/**</packagingExcludes> 
 					<packagingExcludes>WEB-INF/app/rpcPolicyManifest/**</packagingExcludes> 
-					<!-- <packagingExcludes>WEB-INF/**</packagingExcludes> -->
+					<!- - <packagingExcludes>WEB-INF/**</packagingExcludes> - ->
 				</configuration>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 </project>

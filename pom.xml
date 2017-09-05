@@ -5,7 +5,7 @@
 
 	<groupId>at.ac.fhcampuswien.atom</groupId>
 	<artifactId>atom</artifactId>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<prerequisites>
@@ -17,54 +17,39 @@
 
 		<mavenVersion>3.0</mavenVersion>
 		<java.version>1.8</java.version>
-		<gwt.version>2.8.0-beta1</gwt.version>
-		<gwt.mavenplugin.version>2.8.0-beta1</gwt.mavenplugin.version>
+		<gwt.version>2.8.1</gwt.version>
+		<gwt.mavenplugin.version>2.8.1</gwt.mavenplugin.version>
 
-		
-		<!-- with dia version 2015-07-02:
-				SEVERE: Allocate exception for servlet atomServlet
-				java.lang.Error: Unresolved compilation problem:
-				at at.ac.fhcampuswien.atom.server.ServerSingleton.getInstance(ServerSingleton.java:62)
-			compile error @ HibernateEntityManager hem = em.unwrap(HibernateEntityManager.class);
-		 -->
+
+		<!-- with dia version 2015-07-02: SEVERE: Allocate exception for servlet 
+			atomServlet java.lang.Error: Unresolved compilation problem: at at.ac.fhcampuswien.atom.server.ServerSingleton.getInstance(ServerSingleton.java:62) 
+			compile error @ HibernateEntityManager hem = em.unwrap(HibernateEntityManager.class); -->
 		<!-- <hibernate.version>4.2.19.Final</hibernate.version> -->
-	
+
 		<!-- worked fine with dia version from 2015-02 -->
 		<!-- <hibernate.version>4.3.1.Final</hibernate.version> -->
-		
-		<!-- with dia version 2015-07-02: creates exception on every save (commit):
-				javax.persistence.RollbackException: Error while committing the transaction
-				javax.persistence.PersistenceException: org.hibernate.HibernateException:
-				Found shared references to a collection: at.ac.fhcampuswien.atom.shared.domain.PortalPerson.createdInstances -->
-		<!-- works again after bugfix: removing duplicate attributes from inherence tree (so that they are unique in the tree) -->
+
+		<!-- with dia version 2015-07-02: creates exception on every save (commit): 
+			javax.persistence.RollbackException: Error while committing the transaction 
+			javax.persistence.PersistenceException: org.hibernate.HibernateException: 
+			Found shared references to a collection: at.ac.fhcampuswien.atom.shared.domain.PortalPerson.createdInstances -->
+		<!-- works again after bugfix: removing duplicate attributes from inherence 
+			tree (so that they are unique in the tree) -->
 		<hibernate.version>4.3.10.Final</hibernate.version>
-		
-		<!-- with dia version 2015-07-02:
-				emFactory = Persistence.createEntityManagerFactory("atom");
-				throws exception:
-				javax.persistence.PersistenceException: [PersistenceUnit: atom] Unable to build Hibernate SessionFactory
-				cause: java.lang.ClassCastException: java.util.Collections$EmptyIterator cannot be cast to java.lang.Iterable -->
+
+		<!-- with dia version 2015-07-02: emFactory = Persistence.createEntityManagerFactory("atom"); 
+			throws exception: javax.persistence.PersistenceException: [PersistenceUnit: 
+			atom] Unable to build Hibernate SessionFactory cause: java.lang.ClassCastException: 
+			java.util.Collections$EmptyIterator cannot be cast to java.lang.Iterable -->
 		<!-- <hibernate.version>5.0.0.Beta2</hibernate.version> -->
-	
-		<!-- with dia version 2015-07-02:
-				emFactory = Persistence.createEntityManagerFactory("atom");
-				throws exception:
-				java.lang.AbstractMethodError: Method com/mchange/v2/c3p0/impl/NewProxyDatabaseMetaData.getSchemas(Ljava/lang/String;Ljava/lang/String;)Ljava/sql/ResultSet; is abstract
-		 -->
+
+		<!-- with dia version 2015-07-02: emFactory = Persistence.createEntityManagerFactory("atom"); 
+			throws exception: java.lang.AbstractMethodError: Method com/mchange/v2/c3p0/impl/NewProxyDatabaseMetaData.getSchemas(Ljava/lang/String;Ljava/lang/String;)Ljava/sql/ResultSet; 
+			is abstract -->
 		<!-- <hibernate.version>5.0.0.CR1</hibernate.version> -->
 
 
 	</properties>
-
-	<modules>
-		<module>atom-core</module>
-		<module>atom-domain</module>
-		<module>atom-analyzer</module>
-		<module>atom-generator</module>
-		<module>atom-reflector</module>
-		<module>atom-client</module>
-		<module>atom-server</module>
-	</modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -99,6 +84,7 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<!-- Do not upgrade past 3.1 to avoid triggering https://issues.apache.org/jira/browse/MSOURCES-95 -->
 					<version>3.1</version>
 					<configuration>
 						<source>${java.version}</source>
@@ -108,12 +94,15 @@
 				<plugin>
 					<groupId>org.eclipse.jetty</groupId>
 					<artifactId>jetty-maven-plugin</artifactId>
-					<version>9.2.15.v20160210</version>
+					<version>9.4.6.v20170531</version>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>net.ltgt.gwt.maven</groupId>
 					<artifactId>gwt-maven-plugin</artifactId>
-					<version>1.0-rc-6</version>
+					<version>1.0-rc-8</version>
 					<extensions>true</extensions>
 					<configuration>
 						<sourceLevel>${java.version}</sourceLevel>
@@ -122,7 +111,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.0.1</version>
 					<executions>
 						<execution>
 							<id>attach-sources</id>
@@ -143,7 +132,7 @@
 					<artifactId>tomcat7-maven-plugin</artifactId>
 					<version>2.2</version>
 				</plugin>
-				
+
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -191,8 +180,9 @@
 										<execute></execute>
 									</action>
 								</pluginExecution>
-								
-								<!-- this throws error when making it run automatically with eclipse build -->
+
+								<!-- this throws error when making it run automatically with eclipse 
+									build -->
 								<!-- this plugin is used to generate the reflection-emulation code -->
 								<pluginExecution>
 									<pluginExecutionFilter>
@@ -239,4 +229,14 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<modules>
+		<module>atom-core</module>
+		<module>atom-domain</module>
+		<module>atom-analyzer</module>
+		<module>atom-generator</module>
+		<module>atom-reflector</module>
+		<module>atom-client</module>
+		<module>atom-server</module>
+	</modules>
 </project>

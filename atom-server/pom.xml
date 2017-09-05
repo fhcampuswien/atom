@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>at.ac.fhcampuswien.atom</groupId>
-    <artifactId>atom</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>at.ac.fhcampuswien.atom</groupId>
+		<artifactId>atom</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>atom-server</artifactId>
-  <packaging>war</packaging>
+	<artifactId>atom-server</artifactId>
+	<packaging>war</packaging>
 
-  <prerequisites>
-    <maven>${mavenVersion}</maven>
-  </prerequisites>
+	<prerequisites>
+		<maven>${mavenVersion}</maven>
+	</prerequisites>
 
-  <dependencies>
-    
+	<dependencies>
 		<!-- shared code analyzer depends on domain depends on core, so all will be imported through 
 			analyzer -->
 		<dependency>
@@ -112,8 +112,8 @@
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
-		
-		
+
+
 		<dependency>
 			<groupId>org.testng</groupId>
 			<artifactId>testng</artifactId>
@@ -142,7 +142,7 @@
 		</dependency>
 		<!-- <dependency> <groupId>junit</groupId> <artifactId>junit</artifactId> 
 			<version>4.7</version> <scope>test</scope> </dependency> -->
-		
+
 	</dependencies>
 
 	<!-- scm -> git connection - so that buildnumber plugin will work -->
@@ -206,7 +206,7 @@
 							</resources>
 						</configuration>
 					</execution>
-					
+
 					<!-- the default "copy resources" mechanism seems to run earlier than 
 						the "process-classes" phase but we can't do our persistence.xml filtering 
 						any earlier than that because the generation of entityClassnames.properties 
@@ -273,7 +273,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- get build time as property into ${buildNumber} for use in war-file-name -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -366,88 +366,114 @@
 
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-maven-plugin</artifactId>
+					<configuration>
+						<skip>false</skip>
+						<scanIntervalSeconds>1</scanIntervalSeconds>
+						<webApp>
+							<extraClasspath>${basedir}/../atom-core/target/classes/</extraClasspath>
+						</webApp>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<configuration>
+						<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
+						<path>/</path>
+						<uriEncoding>UTF-8</uriEncoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
-  <profiles>
-    <profile>
-      <!-- XXX: We want to exclude atom-client from 'env-dev' profile, Maven forces us to make a 'env-prod' profile -->
-      <id>env-prod</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
-          <artifactId>atom-client</artifactId>
-          <version>${project.version}</version>
-          <type>war</type>
-          <scope>runtime</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>env-dev</id>
-      <activation>
-        <property>
-          <name>env</name>
-          <value>dev</value>
-        </property>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.eclipse.jetty</groupId>
-              <artifactId>jetty-maven-plugin</artifactId>
-              <configuration>
-                <scanIntervalSeconds>1</scanIntervalSeconds>
-                <webApp>
-                  <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
-                    <resourcesAsCSV>src/main/webapp,${basedir}/../target/gwt/launcherDir/</resourcesAsCSV>
-                  </baseResource>
-                  <extraClasspath>${basedir}/../atom-shared/target/classes/</extraClasspath>
-                </webApp>
-                <systemProperties>
-                  <systemProperty>
-                    <name>gwt.codeserver.port</name>
-                    <value>9876</value>
-                  </systemProperty>
-                </systemProperties>
-              </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.tomcat.maven</groupId>
-              <artifactId>tomcat6-maven-plugin</artifactId>
-              <configuration>
-                <addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
-                <contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
-                <path>/</path>
-				<port>8880</port>
-				<httpsPort>8843</httpsPort>
-                <uriEncoding>UTF-8</uriEncoding>
-                <systemProperties>
-                  <gwt.codeserver.port>9876</gwt.codeserver.port>
-                </systemProperties>
-              </configuration>
-            </plugin>
-            <plugin>
-              <groupId>org.apache.tomcat.maven</groupId>
-              <artifactId>tomcat7-maven-plugin</artifactId>
-              <configuration>
-                <addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
-                <contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
-                <path>/</path>
-				<port>8880</port>
-				<httpsPort>8843</httpsPort>
-                <uriEncoding>UTF-8</uriEncoding>
-                <systemProperties>
-                  <gwt.codeserver.port>9876</gwt.codeserver.port>
-                </systemProperties>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
-  </profiles>
+	<profiles>
+		<profile>
+			<!-- XXX: We want to exclude atom-client from 'env-dev' profile, Maven 
+				forces us to make a 'env-prod' profile -->
+			<id>env-prod</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>atom-client</artifactId>
+					<version>${project.version}</version>
+					<type>war</type>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>env-dev</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.eclipse.jetty</groupId>
+							<artifactId>jetty-maven-plugin</artifactId>
+							<configuration>
+								<scanIntervalSeconds>1</scanIntervalSeconds>
+								<webApp>
+									<baseResource
+										implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+										<resourcesAsCSV>src/main/webapp,${basedir}/../target/gwt/launcherDir/</resourcesAsCSV>
+									</baseResource>
+									<extraClasspath>${basedir}/../atom-shared/target/classes/</extraClasspath>
+								</webApp>
+								<systemProperties>
+									<systemProperty>
+										<name>gwt.codeserver.port</name>
+										<value>9876</value>
+									</systemProperty>
+								</systemProperties>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.tomcat.maven</groupId>
+							<artifactId>tomcat6-maven-plugin</artifactId>
+							<configuration>
+								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
+								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
+								<path>/</path>
+								<port>8880</port>
+								<httpsPort>8843</httpsPort>
+								<uriEncoding>UTF-8</uriEncoding>
+								<systemProperties>
+									<gwt.codeserver.port>9876</gwt.codeserver.port>
+								</systemProperties>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.tomcat.maven</groupId>
+							<artifactId>tomcat7-maven-plugin</artifactId>
+							<configuration>
+								<addWarDependenciesInClassloader>false</addWarDependenciesInClassloader>
+								<contextFile>${basedir}/src/main/tomcatconf/context.xml</contextFile>
+								<path>/</path>
+								<port>8880</port>
+								<httpsPort>8843</httpsPort>
+								<uriEncoding>UTF-8</uriEncoding>
+								<systemProperties>
+									<gwt.codeserver.port>9876</gwt.codeserver.port>
+								</systemProperties>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
 </project>

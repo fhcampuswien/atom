@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.gwtplugins.gwt.eclipse.core.sdmCodeServer">
+<stringAttribute key="com.gwtplugins.gwt.eclipse.core.CODE_SERVER_LAUNCHER_DIR" value="/home/kaefert/Development/workspace_gwt_playground_2017-09/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/atom-server"/>
+<booleanAttribute key="com.gwtplugins.gwt.eclipse.core.SUPERDEVMODE_ENABLED" value="true"/>
+<stringAttribute key="com.gwtplugins.gwt.eclipse.core.launch.id" value="b3f083f1-09aa-47fb-861f-f08157f92ca4"/>
+<stringAttribute key="com.gwtplugins.gwt.eclipse.coreMainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME" value="com.google.gwt.dev.codeserver.CodeServer"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/atom-client"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.gwtplugins.gdt.eclipse.maven.mavenClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.codeserver.CodeServer"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-logLevel INFO -port 9876 -launcherDir &quot;${workspace_loc}/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/atom-server&quot; at.ac.fhcampuswien.atom.App"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="atom-client"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Xmx1g"/>
+</launchConfiguration>

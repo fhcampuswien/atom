@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>at.ac.fhcampuswien.atom</groupId>
 		<artifactId>atom</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>atom-core</artifactId>
@@ -16,6 +16,17 @@
 	</prerequisites>
 
 	<dependencies>
+
+		<!-- necessary for the gwt rpc interface -->
+
+		<!-- the dateformat code taken from George Georgovassilis located in package 
+			at.ac.fhcampuswien.atom.shared.dateformat depends on code from the gwt-user 
+			package. It is used in AtomTools DateFormat constants -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Our entities (domain classes) are persited by using hibernate annotations -->
 		<!-- see package (at.ac.fhcampuswien.atom.shared.domain) -->
@@ -49,15 +60,6 @@
 			<version>0.22</version>
 		</dependency>
 
-		<!-- the dateformat code taken from George Georgovassilis located in package 
-			at.ac.fhcampuswien.atom.shared.dateformat depends on code from the gwt-user 
-			package. It is used in AtomTools DateFormat constants -->
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- for FileAttribute, needed on client & server, contains Servlet and 
 			client API -->
 		<dependency>
@@ -65,6 +67,7 @@
 			<artifactId>gwtupload</artifactId>
 			<version>1.0.3</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>
