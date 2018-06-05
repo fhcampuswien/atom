@@ -49,6 +49,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private String listBoxSql = null;
 	private ListBoxDefinition.ViewType listBoxViewType = null;
 	private String listBoxMSSeperator = null;
+	private boolean listBoxAllowOtherValues = false;
 
 	private String linkPrefix = null;
 	private String linkSuffix = null;
@@ -314,12 +315,13 @@ public class DomainClassAttribute implements java.io.Serializable {
 		this.relationEssential = relationEssential;
 	}
 
-	public void setListBox(String[] keys, String[] display, String sql, ViewType viewType, String multiSelectSeperator) {
+	public void setListBox(String[] keys, String[] display, String sql, ViewType viewType, String multiSelectSeperator, boolean allowOtherValues) {
 		listBoxKeys = keys;
 		listBoxDisplay = display;
 		listBoxSql = sql;
 		listBoxViewType = viewType;
 		listBoxMSSeperator = multiSelectSeperator;
+		listBoxAllowOtherValues = allowOtherValues;
 	}
 
 	public String[] getListBoxKeys() {
@@ -365,6 +367,10 @@ public class DomainClassAttribute implements java.io.Serializable {
 	
 	public String getListBoxMSSeperator() {
 		return listBoxMSSeperator;
+	}
+	
+	public boolean getListBoxAllowOtherValues() {
+		return listBoxAllowOtherValues;
 	}
 
 	public Boolean getHideFromListGui() {

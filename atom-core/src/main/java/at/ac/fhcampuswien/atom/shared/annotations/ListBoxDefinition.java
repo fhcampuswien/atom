@@ -23,8 +23,15 @@ public @interface ListBoxDefinition {
 	 */
 	String multiSelectSeperator() default "";
 	
+	/**
+	 * when set to true, values outside the defined list can be entered.
+	 * This only works with ViewType = FilterAbleDropDown
+	 * (but ViewType = FilterAbleDropDown also works with this set to false!)
+	 */
+	boolean allowOtherValues() default false; 
+	
 	public enum ViewType implements java.io.Serializable {
-		DropDown, RadioButtons, RadioTable
+		DropDown, RadioButtons, RadioTable, FilterAbleDropDown
 	}
 	
 	ViewType viewType() default ViewType.DropDown;
