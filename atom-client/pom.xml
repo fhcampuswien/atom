@@ -63,7 +63,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
-			<version>20.0-SNAPSHOT</version>
+			<version>25.1-jre</version>
 		</dependency>
 
 		<!-- Drag'n'Drop Library; usage in Package at.ac.fhcampuswien.atom.client.gu.dnd -->
