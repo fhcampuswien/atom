@@ -131,6 +131,14 @@ public class AccessHandler implements java.io.Serializable {
 					Collections.addAll(noRelationRequired, access.getAccessTypes());
 					break;
 				}
+				else for(String permission : access.getAccessTypes()) {
+					if(AtomConfig.accessLinkage.equals(permission))
+						noRelationRequired.add(AtomConfig.accessSomeLinkage);
+					if(AtomConfig.accessReadOnly.equals(permission))
+						noRelationRequired.add(AtomConfig.accessSomeReadOnly);
+					if(AtomConfig.accessReadWrite.equals(permission))
+						noRelationRequired.add(AtomConfig.accessSomeReadWrite);
+				}
 			}
 		}
 		return noRelationRequired;

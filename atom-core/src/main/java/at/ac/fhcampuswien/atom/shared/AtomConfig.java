@@ -24,6 +24,7 @@ public class AtomConfig {
 	//"Some" - access is meant for activating attribute-based permissions, which are not (fully) implemented yet.
 	public static final String accessSomeReadWrite = "accessSomeReadWrite";
 	public static final String accessSomeReadOnly = "accessSomeReadOnly";
+	public static final String accessSomeLinkage = "accessSomeLinkage";
 	
 	public static final String accessLinkage = "accessLinkage";
 	public static final String accessDenied = "accessDenied";
