@@ -35,7 +35,7 @@
 			Found shared references to a collection: at.ac.fhcampuswien.atom.shared.domain.PortalPerson.createdInstances -->
 		<!-- works again after bugfix: removing duplicate attributes from inherence 
 			tree (so that they are unique in the tree) -->
-		<hibernate.version>4.3.10.Final</hibernate.version>
+		<!-- <hibernate.version>4.3.10.Final</hibernate.version> -->
 
 		<!-- with dia version 2015-07-02: emFactory = Persistence.createEntityManagerFactory("atom"); 
 			throws exception: javax.persistence.PersistenceException: [PersistenceUnit: 
@@ -47,6 +47,9 @@
 			throws exception: java.lang.AbstractMethodError: Method com/mchange/v2/c3p0/impl/NewProxyDatabaseMetaData.getSchemas(Ljava/lang/String;Ljava/lang/String;)Ljava/sql/ResultSet; 
 			is abstract -->
 		<!-- <hibernate.version>5.0.0.CR1</hibernate.version> -->
+		
+		<!-- 2018-06-18 Version 4.3.10.Final cascade deletion and detachment doesn't work and prevents any and every deletion -->
+		<hibernate.version>5.3.1.Final</hibernate.version>
 
 
 	</properties>

@@ -29,7 +29,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.LobCreator;
 import org.hibernate.jdbc.Work;
-import org.hibernate.jpa.HibernateEntityManager;
 
 import at.ac.fhcampuswien.atom.server.auth.Authenticator;
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
@@ -601,8 +600,7 @@ public class ServerSingleton {
 				forInstance = (DomainObject) em.find(ServerTools.getClassForName(forClassName), forInstanceID);
 			}
 
-			HibernateEntityManager hem = em.unwrap(HibernateEntityManager.class);
-			Session hibernateSession = hem.getSession();
+			Session hibernateSession = em.unwrap(Session.class);
 			LobCreator lobCreator = Hibernate.getLobCreator(hibernateSession);
 			Blob blob = lobCreator.createBlob(fileItem.getInputStream(), fileItem.getSize());
 			
@@ -716,8 +714,7 @@ public class ServerSingleton {
 				tx.begin();
 
 				final LinkedHashMap<String, String> returnValue = new LinkedHashMap<String, String>();
-
-				((org.hibernate.jpa.internal.EntityManagerImpl) em).getSession().doWork(new Work() {
+				((Session) em.unwrap(Session.class)).doWork(new Work() {
 					@Override
 					public void execute(Connection connection) throws SQLException {
 
