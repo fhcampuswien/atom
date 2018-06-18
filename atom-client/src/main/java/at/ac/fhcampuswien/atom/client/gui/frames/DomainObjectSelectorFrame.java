@@ -215,7 +215,7 @@ public class DomainObjectSelectorFrame extends Frame {
 				&& AtomTools.isAccessAllowed(AtomConfig.accessCreateNew, at)) {
 			// if(!domainClass.getIsAbstract() && domainClass.isAccessAllowed(RPCCaller.getSinglton().getClientSession(), AtomConfig.accessReadWrite)) {
 			return CenterHeader.State.OBJECT_SELECTOR_WITH_NEW;
-		} else if (AtomTools.isAccessAllowed(AtomConfig.accessLinkage, at)) {
+		} else if (AtomTools.isAccessAllowed(AtomConfig.accessSomeLinkage, at)) {
 			// else if(domainClass.isAccessAllowed(RPCCaller.getSinglton().getClientSession(), AtomConfig.accessLinkage)) {
 			return CenterHeader.State.OBJECT_SELECTOR_NO_NEW;
 		} else {

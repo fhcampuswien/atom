@@ -322,7 +322,10 @@ public class AtomTools {
 				&& (accessTypes.contains(AtomConfig.accessReadOnly))
 						|| accessTypes.contains(AtomConfig.accessReadWrite))
 			return;
-		else if ((AtomConfig.accessLinkage.equals(requiredPermission) || AtomConfig.accessMenue.equals(requiredPermission))
+		else if (AtomConfig.accessSomeLinkage.equals(requiredPermission)
+				&& (accessTypes.contains(AtomConfig.accessLinkage)))
+			return;
+		else if (AtomConfig.accessSomeLinkage.equals(requiredPermission) || (AtomConfig.accessLinkage.equals(requiredPermission) || AtomConfig.accessMenue.equals(requiredPermission))
 				&& (accessTypes.contains(AtomConfig.accessReadOnly))
 						|| accessTypes.contains(AtomConfig.accessReadWrite))
 			return;
