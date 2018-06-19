@@ -20,7 +20,15 @@
 		<gwt.version>2.8.2</gwt.version>
 		<gwt.mavenplugin.version>2.8.2</gwt.mavenplugin.version>
 
-
+		<!-- ############################### -->
+		<!-- hibernate Versions & their bugs -->
+		<!-- ############################### -->
+		
+		<!-- BUG: cascade deletion, present in: 4.2.0.CR2, 4.1.10.Final, 3.6.10.Final -->
+		<!-- 4.1.7.Final has bug: IllegalStateException( "An entity copy was already 
+			assigned to a different entity." ) -->
+		<!-- <hibernate.version>4.1.7.Final</hibernate.version>  -->
+				
 		<!-- with dia version 2015-07-02: SEVERE: Allocate exception for servlet 
 			atomServlet java.lang.Error: Unresolved compilation problem: at at.ac.fhcampuswien.atom.server.ServerSingleton.getInstance(ServerSingleton.java:62) 
 			compile error @ HibernateEntityManager hem = em.unwrap(HibernateEntityManager.class); -->
@@ -35,7 +43,7 @@
 			Found shared references to a collection: at.ac.fhcampuswien.atom.shared.domain.PortalPerson.createdInstances -->
 		<!-- works again after bugfix: removing duplicate attributes from inherence 
 			tree (so that they are unique in the tree) -->
-		<!-- <hibernate.version>4.3.10.Final</hibernate.version> -->
+		<hibernate.version>4.3.10.Final</hibernate.version>
 
 		<!-- with dia version 2015-07-02: emFactory = Persistence.createEntityManagerFactory("atom"); 
 			throws exception: javax.persistence.PersistenceException: [PersistenceUnit: 
@@ -49,8 +57,9 @@
 		<!-- <hibernate.version>5.0.0.CR1</hibernate.version> -->
 		
 		<!-- 2018-06-18 Version 4.3.10.Final cascade deletion and detachment doesn't work and prevents any and every deletion -->
-		<hibernate.version>5.3.1.Final</hibernate.version>
+		<!-- <hibernate.version>5.3.1.Final</hibernate.version> -->
 
+		<hibernate.c3p0.version>${hibernate.version}</hibernate.c3p0.version>
 
 	</properties>
 

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -107,7 +108,7 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	private static final long serialVersionUID = -11009381736405542L;
 
 	//cascade = { CascadeType.ALL }, 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
 	@AttributeLoadingPolicy(requiredForStringRepresentation=true, whenNotPrimary=true, withLists=true)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	private StoreableUser visitor;
@@ -117,10 +118,10 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 	private FrameType frameType;
 
 	//cascade = { CascadeType.ALL }, 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH, optional = true)
 //	@OnDelete(action = OnDeleteAction.CASCADE)
 	@OnDelete(action = OnDeleteAction.NO_ACTION)
-	@Cascade(value = {})
+	@Cascade(value = {org.hibernate.annotations.CascadeType.DETACH})
 	private DomainObject representedInstance;
 
 	private transient DomainClass representedClass;

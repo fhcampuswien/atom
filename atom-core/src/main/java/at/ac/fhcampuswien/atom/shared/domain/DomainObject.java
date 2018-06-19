@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,6 +23,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -141,7 +143,7 @@ public class DomainObject implements Serializable {
 	@javax.persistence.Transient
 	@RelationEssential
 	private Boolean completelyLoaded;
-
+	
 	@AnalyzerIgnore
 	public void setCompletelyLoaded(Boolean completelyLoaded) {
 		this.completelyLoaded = completelyLoaded;
@@ -285,15 +287,23 @@ public class DomainObject implements Serializable {
 	}
 	
 	@AnalyzerIgnore
-	@OneToMany(mappedBy = "representedInstance", fetch = FetchType.LAZY) //, orphanRemoval = true)  CascadeType.ALL 
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-	@OnDelete(action = OnDeleteAction.NO_ACTION)
+	@OneToMany(mappedBy = "representedInstance", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL) 
+	@OnDelete(action = OnDeleteAction.CASCADE)
+//	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	@GwtTransient
+	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<FrameVisit> frameVisits;
 
 	@AnalyzerIgnore
 	public Set<FrameVisit> getFrameVisits() {
+		if(frameVisits == null)
+			frameVisits = new HashSet<FrameVisit>();
 		return frameVisits;
+	}
+
+	@AnalyzerIgnore
+	public void setFrameVisits(Set<FrameVisit> frameVisits) {
+		this.frameVisits = frameVisits;
 	}
 	
 	@AnalyzerIgnore
