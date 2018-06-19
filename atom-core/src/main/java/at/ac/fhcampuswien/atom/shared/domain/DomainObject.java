@@ -287,11 +287,11 @@ public class DomainObject implements Serializable {
 	}
 	
 	@AnalyzerIgnore
-	@OneToMany(mappedBy = "representedInstance", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL) 
+	@OneToMany(mappedBy = "representedInstance", fetch = FetchType.LAZY) // , orphanRemoval = true, cascade = CascadeType.ALL) 
 	@OnDelete(action = OnDeleteAction.CASCADE)
 //	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	@GwtTransient
-	@Cascade({org.hibernate.annotations.CascadeType.ALL})
+//	@Cascade({org.hibernate.annotations.CascadeType.ALL})
 	private Set<FrameVisit> frameVisits;
 
 	@AnalyzerIgnore
@@ -303,7 +303,22 @@ public class DomainObject implements Serializable {
 
 	@AnalyzerIgnore
 	public void setFrameVisits(Set<FrameVisit> frameVisits) {
-		this.frameVisits = frameVisits;
+		if(this.frameVisits != null) {
+			for(FrameVisit frameVisit : this.frameVisits)
+				frameVisit.setRepresentedInstance(null);
+		    if (frameVisits != null)
+				frameVisits.retainAll(frameVisits);
+		    else
+				this.frameVisits.clear();
+		}
+		else {
+			this.frameVisits = new HashSet<FrameVisit>();
+			if (frameVisits != null)
+				this.frameVisits.addAll(frameVisits);
+		}
+		
+		if (frameVisits != null) for(FrameVisit frameVisit : this.frameVisits)
+			frameVisit.setRepresentedInstance(this);
 	}
 	
 	@AnalyzerIgnore

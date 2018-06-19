@@ -119,8 +119,8 @@ public class FrameVisit extends FeaturedObject implements Serializable {
 
 	//cascade = { CascadeType.ALL }, 
 	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH, optional = true)
-//	@OnDelete(action = OnDeleteAction.CASCADE)
-	@OnDelete(action = OnDeleteAction.NO_ACTION)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+//	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	@Cascade(value = {org.hibernate.annotations.CascadeType.DETACH})
 	private DomainObject representedInstance;
 
