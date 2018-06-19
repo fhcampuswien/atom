@@ -450,7 +450,7 @@ public class ServerSingleton {
 		} else {
 			DomainObject dbVersion = getDomainObject(session, domainObject.getObjectID(), domainObject.getClass());
 			if (dbVersion == null) {
-				if (dbVersion instanceof FrameVisit || dbVersion instanceof ClipBoardEntry) {
+				if (domainObject instanceof FrameVisit || domainObject instanceof ClipBoardEntry) {
 					throw new AtomException(AtomTools.getMessages().save_deleted(String.valueOf(domainObject.getObjectID())));
 				}
 			} else {
@@ -469,6 +469,13 @@ public class ServerSingleton {
 						throw new AtomException(AtomTools.getMessages().illegalChange());
 					}
 				}
+				if(domainObject instanceof FrameVisit) {
+					FrameVisit frameVisit = (FrameVisit) domainObject;
+					FrameVisit frameVisitDB = (FrameVisit) dbVersion;
+					if(frameVisit.getRepresentedInstance() != null)
+						frameVisit.getRepresentedInstance().setFrameVisits(frameVisitDB.getFrameVisits());
+				}
+				domainObject.setFrameVisits(dbVersion.getFrameVisits());
 			}
 		}
 
