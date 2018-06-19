@@ -443,51 +443,52 @@ public class ServerSingleton {
 	public DomainObject saveDomainObject(ClientSession session, DomainObject domainObject) {
 
 		DomainObject origBak = domainObject;
-		DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
-
-		if (domainObject.getObjectID() == null) {
-			AtomTools.checkPermissionMatch(AtomConfig.accessCreateNew, requestedClass.getAccessHandler().getAccessTypes(session, domainObject));
-		} else {
-			DomainObject dbVersion = getDomainObject(session, domainObject.getObjectID(), domainObject.getClass());
-			if (dbVersion == null) {
-				if (domainObject instanceof FrameVisit || domainObject instanceof ClipBoardEntry) {
-					throw new AtomException(AtomTools.getMessages().save_deleted(String.valueOf(domainObject.getObjectID())));
-				}
-			} else {
-				AtomTools.checkPermissionMatch(AtomConfig.accessReadWrite, requestedClass.getAccessHandler().getAccessTypes(session, dbVersion));
-
-				if (dbVersion instanceof FeaturedObject) {
-					FeaturedObject fromDB = (FeaturedObject) dbVersion;
-					FeaturedObject toSave = (FeaturedObject) domainObject;
-					if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
-						if (fromDB instanceof FrameVisit)
-							return fromDB;
-						else
-							throw new AtomException(AtomTools.getMessages().outdated());
-					}
-					if (fromDB.getCreationUser() != null && toSave.getCreationUser() != null && !fromDB.getCreationUser().equals(toSave.getCreationUser())) {
-						throw new AtomException(AtomTools.getMessages().illegalChange());
-					}
-				}
-				if(domainObject instanceof FrameVisit) {
-					FrameVisit frameVisit = (FrameVisit) domainObject;
-					FrameVisit frameVisitDB = (FrameVisit) dbVersion;
-					if(frameVisit.getRepresentedInstance() != null)
-						frameVisit.getRepresentedInstance().setFrameVisits(frameVisitDB.getFrameVisits());
-				}
-				domainObject.setFrameVisits(dbVersion.getFrameVisits());
-			}
-		}
-
 		EntityManager em = null;
 		EntityTransaction tx = null;
-		try {
-			domainObject.prepareSave(session);
-			ServerTools.validateDomainObject(domainObject);
 
+		try {
 			em = AtomEMFactory.getEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
+			
+			DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
+	
+			if (domainObject.getObjectID() == null) {
+				AtomTools.checkPermissionMatch(AtomConfig.accessCreateNew, requestedClass.getAccessHandler().getAccessTypes(session, domainObject));
+			} else {
+				DomainObject dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
+				if (dbVersion == null) {
+					if (domainObject instanceof FrameVisit || domainObject instanceof ClipBoardEntry) {
+						throw new AtomException(AtomTools.getMessages().save_deleted(String.valueOf(domainObject.getObjectID())));
+					}
+				} else {
+					AtomTools.checkPermissionMatch(AtomConfig.accessReadWrite, requestedClass.getAccessHandler().getAccessTypes(session, dbVersion));
+	
+					if (dbVersion instanceof FeaturedObject) {
+						FeaturedObject fromDB = (FeaturedObject) dbVersion;
+						FeaturedObject toSave = (FeaturedObject) domainObject;
+						if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
+							if (fromDB instanceof FrameVisit)
+								return fromDB;
+							else
+								throw new AtomException(AtomTools.getMessages().outdated());
+						}
+						if (fromDB.getCreationUser() != null && toSave.getCreationUser() != null && !fromDB.getCreationUser().equals(toSave.getCreationUser())) {
+							throw new AtomException(AtomTools.getMessages().illegalChange());
+						}
+					}
+					if(domainObject instanceof FrameVisit) {
+						FrameVisit frameVisit = (FrameVisit) domainObject;
+						FrameVisit frameVisitDB = (FrameVisit) dbVersion;
+						if(frameVisit.getRepresentedInstance() != null)
+							frameVisit.getRepresentedInstance().setFrameVisits(frameVisitDB.getFrameVisits());
+					}
+					domainObject.setFrameVisits(dbVersion.getFrameVisits());
+				}
+			}
+		
+			domainObject.prepareSave(session);
+			ServerTools.validateDomainObject(domainObject);
 
 			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session);
 			domainObject = em.merge(domainObject);
