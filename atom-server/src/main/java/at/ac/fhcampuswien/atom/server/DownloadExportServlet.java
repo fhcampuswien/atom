@@ -166,11 +166,11 @@ public class DownloadExportServlet extends HttpServlet {
 				}
 				catch (java.lang.IllegalArgumentException e) {
 					e.printStackTrace();
-					AtomTools.log(Level.SEVERE, "this is bad (data?)! data = " + data[rowNum][cellNum], this);
+					ServerTools.log(Level.SEVERE, "this is bad (data?)! data = " + data[rowNum][cellNum], this, e);
 				}
 				catch(Throwable t) {
 					t.printStackTrace();
-					AtomTools.log(Level.SEVERE, "this is bad! - data = " + data[rowNum][cellNum], this);
+					ServerTools.log(Level.SEVERE, "this is bad! - data = " + data[rowNum][cellNum], this, t);
 				}
 
 			}

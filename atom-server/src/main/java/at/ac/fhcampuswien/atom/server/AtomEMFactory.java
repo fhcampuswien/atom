@@ -24,7 +24,7 @@ public class AtomEMFactory {
 				emFactory.close();
 			}
 		} catch (Throwable t) {
-			AtomTools.log(Level.WARNING, "EntityManagerFactory.close() failed. should not matter to much, creating a new one anyway. might leak memory or leave broken db connections tangling..", null, t);
+			ServerTools.log(Level.WARNING, "EntityManagerFactory.close() failed. should not matter to much, creating a new one anyway. might leak memory or leave broken db connections tangling..", null, t);
 		}
 		emFactory = Persistence.createEntityManagerFactory("atom");
 	}
@@ -36,7 +36,7 @@ public class AtomEMFactory {
 			}
 			return emFactory.createEntityManager();
 		} catch (Throwable t) {
-			AtomTools.log(Level.WARNING, "createEntityManager failed, trying to start with fresh factory!", null, t);
+			ServerTools.log(Level.WARNING, "createEntityManager failed, trying to start with fresh factory!", null, t);
 			createEntityManagerFactory();
 			return getEntityManager();
 		}

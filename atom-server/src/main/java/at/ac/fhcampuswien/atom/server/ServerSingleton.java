@@ -123,7 +123,7 @@ public class ServerSingleton {
 			try {
 				linkedID = Double.valueOf(clue);
 			} catch (NumberFormatException e) {
-				AtomTools.log(Level.INFO, "doesn't look like this was an objectID (couldn't parse as double; " + clue, this);
+				ServerTools.log(Level.INFO, "doesn't look like this was an objectID (couldn't parse as double; " + clue, this, e);
 			}
 			if (linkedID != null) {
 				// find instance by id
@@ -190,7 +190,7 @@ public class ServerSingleton {
 			em = AtomEMFactory.getEntityManager();
 			return getDomainObject(session, id, classOfObject, em);
 		} catch (Exception e) {
-			AtomTools.log(Level.SEVERE, "ServerSingelton.getDomainObject - Exception happened! ", this, e);
+			ServerTools.log(Level.SEVERE, "ServerSingelton.getDomainObject - Exception happened! ", this, e);
 		} finally {
 			ServerTools.closeDBConnection(null, em);
 			AtomTools.log(Level.FINER, "ServerSingelton.getDomainObject finally - closed entityManager", this);
@@ -355,10 +355,10 @@ public class ServerSingleton {
 					searchString, onlyRelated);
 
 		} catch (NoResultException noResultException) {
-			AtomTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this, noResultException);
+			ServerTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this, noResultException);
 			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
 		} catch (Exception e) {
-			AtomTools.log(Level.SEVERE, "getListOfDomainObject exception happened:" + e.getMessage(), this, e);
+			ServerTools.log(Level.SEVERE, "getListOfDomainObject exception happened:" + e.getMessage(), this, e);
 			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Exception happened, see cause", e);
 		} finally {
 			if (em != null) {
@@ -427,7 +427,7 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Level.SEVERE, "ServerTools.updateStringRepresentationsOnce exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
+				ServerTools.log(Level.SEVERE, "ServerTools.updateStringRepresentationsOnce exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
 			}
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
@@ -499,7 +499,7 @@ public class ServerSingleton {
 		} catch (AtomException ae) {
 			throw ae;
 		} catch (Throwable t) {
-			AtomTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
+			ServerTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
 			throw new AtomException("error in saveDomainObject", t);
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
@@ -623,7 +623,7 @@ public class ServerSingleton {
 			if (t instanceof AtomException) {
 				throw (AtomException) t;
 			} else {
-				AtomTools.log(Level.SEVERE, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
+				ServerTools.log(Level.SEVERE, "ServerTools.saveFileAttribute exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
 			}
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
@@ -684,7 +684,7 @@ public class ServerSingleton {
 				return true;
 				
 			} catch (Exception e) {
-				AtomTools.log(Level.WARNING, "deleteDomainObject failed", this, e);
+				ServerTools.log(Level.WARNING, "deleteDomainObject failed", this, e);
 			} finally {
 				ServerTools.closeDBConnection(tx, em);
 			}
@@ -777,7 +777,7 @@ public class ServerSingleton {
 				}
 			}
 			catch(AuthenticationException e) {
-				AtomTools.log(Level.INFO, "User has no permissions to search Class: " + domainClass.getName(), this, e);
+				ServerTools.log(Level.INFO, "User has no permissions to search Class: " + domainClass.getName(), this, e);
 			}
 		}
 		for (DomainClass subClass : domainClass.getSubClasses()) {

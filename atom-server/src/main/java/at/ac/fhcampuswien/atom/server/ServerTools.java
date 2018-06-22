@@ -26,6 +26,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.hibernate.exception.SQLGrammarException;
+
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
@@ -984,15 +988,35 @@ public class ServerTools {
 			}
 		}
 		catch(Throwable t) {
-			AtomTools.log(Level.WARNING, "Transaction rollback failed", null, t);
+			ServerTools.log(Level.WARNING, "Transaction rollback failed", null, t);
 		}
 		if (em != null) {
 			try {
 				em.close();
 			}
 			catch(Throwable t) {
-				AtomTools.log(Level.WARNING, "could not close EntityManager", null, t);
+				ServerTools.log(Level.WARNING, "could not close EntityManager", null, t);
 			}
 		}
+	}
+	
+	public static void log(Level logLevel, String message, Object caller, Throwable t) {
+		Throwable t2 = t;
+		while(t2 != null) {
+			if(t2 instanceof SQLGrammarException) {
+				SQLGrammarException e = (SQLGrammarException) t;
+				AtomTools.log(logLevel,e.getSQL(),caller);
+			}
+			else if(t2 instanceof SQLServerException) {
+				SQLServerException e = (SQLServerException) t;
+				String info = "errorCode="+e.getErrorCode()+";state="+e.getSQLState();
+				AtomTools.log(logLevel,info,caller);
+			}
+			if(t2.equals(t2.getCause()))
+				break;
+			t2 = t2.getCause();
+		}
+		
+		AtomTools.log(logLevel,message,caller,t);
 	}
 }

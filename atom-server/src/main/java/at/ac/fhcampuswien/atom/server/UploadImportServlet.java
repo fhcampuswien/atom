@@ -155,7 +155,7 @@ public class UploadImportServlet extends HttpServlet {
 				}
 
 			} catch (Throwable t) {
-				AtomTools.log(Level.SEVERE, "UploadImportServlet doPost error happened: " + t.getClass() + " - " + t.getMessage(), this, t);
+				ServerTools.log(Level.SEVERE, "UploadImportServlet doPost error happened: " + t.getClass() + " - " + t.getMessage(), this, t);
 				resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while creating the file : " + t.getMessage());
 				// org.apache.commons.io.output.DeferredFileOutputStream
 				if(t instanceof AtomException)
@@ -210,7 +210,7 @@ public class UploadImportServlet extends HttpServlet {
 			processData(sheetData, session, className);
 
 		} catch (Throwable t) {
-			AtomTools.log(Level.SEVERE, "UploadImportServlet doPost uploaded file could not be parsed as HSSFWorkbook!! " + t.getMessage(), this, t);
+			ServerTools.log(Level.SEVERE, "UploadImportServlet doPost uploaded file could not be parsed as HSSFWorkbook!! " + t.getMessage(), this, t);
 			throw new AtomException(t);
 		}
 	}

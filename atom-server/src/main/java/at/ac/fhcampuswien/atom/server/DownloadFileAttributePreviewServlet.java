@@ -119,7 +119,7 @@ public class DownloadFileAttributePreviewServlet extends HttpServlet {
 			return true;
 		}
 		catch(Throwable t) {
-			AtomTools.log(Level.FINE, "I guess this file was no image of a format that java ImageIO knows of, Exception: " + t.getMessage(), this);
+			ServerTools.log(Level.FINE, "I guess this file was no image of a format that java ImageIO knows of, Exception: " + t.getMessage(), this, t);
 		}
     	return false;
     }
@@ -140,7 +140,7 @@ public class DownloadFileAttributePreviewServlet extends HttpServlet {
 			return true;
 
 		} catch (Throwable t) {
-			AtomTools.log(Level.FINE, "ImageMagick failed creating thumbnail, Exception: " + t.getMessage(), this);
+			ServerTools.log(Level.FINE, "ImageMagick failed creating thumbnail, Exception: " + t.getMessage(), this,t);
 		}
 		
 		return false;
