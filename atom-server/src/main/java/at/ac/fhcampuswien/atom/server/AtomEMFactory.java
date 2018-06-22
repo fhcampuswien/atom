@@ -6,8 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import at.ac.fhcampuswien.atom.shared.AtomTools;
-
 
 /**
  * recommendation seems to be to use a new em per request, therefore doing just that

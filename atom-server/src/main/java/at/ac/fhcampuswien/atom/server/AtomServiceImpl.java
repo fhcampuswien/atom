@@ -10,7 +10,6 @@ import java.util.logging.Level;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
 import at.ac.fhcampuswien.atom.shared.DataFilter;
 import at.ac.fhcampuswien.atom.shared.DataSorter;
