@@ -11,6 +11,6 @@
 </listAttribute>
 <stringAttribute key="projectName" value="atom-client"/>
 <booleanAttribute key="showLaunchOutput" value="false"/>
-<stringAttribute key="url" value="http://localhost:8080/atom-server/"/>
+<stringAttribute key="url" value="https://localhost:8843/"/>
 <stringAttribute key="urlQueryParams" value=""/>
 </launchConfiguration>
