@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="com.github.sdbg.debug.core.chromeLaunchConfig">
-<stringAttribute key="applicationArguments" value="--allow-running-insecure-content"/>
+<stringAttribute key="applicationArguments" value="--allow-running-insecure-content --ignore-certificate-errors"/>
 <stringAttribute key="applicationName" value=""/>
 <booleanAttribute key="launchFile" value="false"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
@@ -10,7 +10,7 @@
 <listEntry value="4"/>
 </listAttribute>
 <stringAttribute key="projectName" value="atom-client"/>
-<booleanAttribute key="showLaunchOutput" value="false"/>
+<booleanAttribute key="showLaunchOutput" value="true"/>
 <stringAttribute key="url" value="https://localhost:8843/"/>
 <stringAttribute key="urlQueryParams" value=""/>
 </launchConfiguration>
