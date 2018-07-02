@@ -17,17 +17,16 @@
 	</prerequisites>
 
 	<dependencies>
+	
 
-		<!-- GWT client dependencies -->
+		<!-- core, domain & reflector through dependency chain -->
 		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>atom-reflector</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-dev</artifactId>
-		</dependency>
-
+		
+		<!-- sister Project sources needed for gwt compile -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>atom-core</artifactId>
@@ -49,13 +48,16 @@
 			<classifier>sources</classifier>
 		</dependency>
 
-		<!-- get compiled versions of core, domain & reflector -->
-		<!-- through dependency chain -->
+		<!-- GWT client dependencies -->
 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>atom-reflector</artifactId>
-			<version>${project.version}</version>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+		</dependency>
+
 
 		<!-- at.ac.fhcampuswien.atom.client.gui.HistoryPanel uses BiMap from guava -->
 		<dependency>
@@ -144,17 +146,17 @@
 					<moduleName>at.ac.fhcampuswien.atom.App</moduleName>
 					<moduleShortName>app</moduleShortName>
 					<!--<strict>true</strict>-->
-					<draftCompile>${gwt.draftCompile}</draftCompile>
+					<!-- <draftCompile>${gwt.draftCompile}</draftCompile>
 					<style>${gwt.style}</style>
 					<genParam>${gwt.genParam}</genParam>
 					<noserver>true</noserver>
-					<runTarget>${runTarget}</runTarget>
+					<runTarget>${runTarget}</runTarget> -->
 					<cssFiles>
 						<cssFile>at/ac/fhcampuswien/atom/client/gui/AtomClientBundleStyle.css</cssFile>
 					</cssFiles>
-					<launcherDir>${project.build.directory}/${project.build.finalName}</launcherDir>
+					<!-- <launcherDir>${project.build.directory}/${project.build.finalName}</launcherDir> -->
 
-					<extraJvmArgs>-Xmx4096M -Xms1024M</extraJvmArgs>
+					<!-- <extraJvmArgs>-Xmx4096M -Xms1024M</extraJvmArgs> -->
 					<!-- <extraJvmArgs>-Xmx4096M -Xms1024M -XX:PermSize=128m -XX:MaxPermSize=256m</extraJvmArgs> -->
 					<!-- <extraJvmArgs>-Xmx1024M -Xms1024m -Xss32m -XX:PermSize=64m -XX:MaxPermSize=128m 
 						-XX:+UseCompressedOops -XX:+UseConcMarkSweepGC -XX:+CMSPermGenSweepingEnabled 
@@ -162,7 +164,7 @@
 						-XX:+PrintCompilation -server</extraJvmArgs> -->
 
 					<sourceLevel>auto</sourceLevel>
-					<deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/</deploy>
+					<!-- <deploy>${project.build.directory}/${project.build.finalName}/WEB-INF/</deploy> -->
 
 					<!-- <extra>${project.build.directory}/gwtc/extra</extra> <gen>${project.build.directory}/gwtc/gen</gen> 
 						<workDir>${project.build.directory}/gwtc/work</workDir> -->

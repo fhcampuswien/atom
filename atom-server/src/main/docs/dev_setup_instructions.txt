@@ -65,3 +65,14 @@ https://groups.google.com/group/google-web-toolkit/msg/74f8cf4628f84eda?hl=kyJf8
 ====================================================================================================
 
 
+
+mvn archetype:generate \
+   -DarchetypeGroupId=net.ltgt.gwt.archetypes \
+   -DarchetypeVersion=LATEST \
+   -DarchetypeArtifactId=modular-webapp \
+   -DgroupId=at.ac.fhcampuswien.atom \
+   -DartifactId=atom \
+   -Dversion=0.0.1-SNAPSHOT \
+   -Dmodule-short-name=app \
+   -DinteractiveMode=false
+
