@@ -19,6 +19,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
@@ -438,6 +439,9 @@ public class DomainAnalyzer {
 			attribute.setLinkPrefix(linkAttribute.prefix());
 			attribute.setLinkSuffix(linkAttribute.suffix());
 			attribute.addAnnotation(anAnnotation.toString());
+		} else if (anAnnotation instanceof OneToMany) {
+			OneToMany oneToMany = (OneToMany) anAnnotation;
+			attribute.setMappedBy(oneToMany.mappedBy());
 		} else {
 			attribute.addAnnotation(anAnnotation.toString());
 		}

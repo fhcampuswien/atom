@@ -40,7 +40,8 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private Double positionInGroup = null;
 	private String attributeGroup = null;
 	private String[] validators = null;
-	
+	private String mappedBy = null;
+
 	private Boolean hideFromListGui = null;
 	private Boolean hideFromDetailGui = null;
 
@@ -457,6 +458,14 @@ public class DomainClassAttribute implements java.io.Serializable {
 
 	public String getLinkSuffix() {
 		return linkSuffix;
+	}
+
+	public void setMappedBy(String mappedBy) {
+		this.mappedBy = mappedBy;
+	}
+
+	public String getMappedBy() {
+		return mappedBy;
 	}
 
 //	/**
