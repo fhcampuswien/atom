@@ -3,6 +3,11 @@
 ======================================= Entwicklungsumgebung =======================================
 ====================================================================================================
 
+2018-07-01: use normal eclipse: https://www.eclipse.org/downloads/
+and install this plugin:
+https://github.com/gwt-plugins/gwt-eclipse-plugin
+eclipse update site: http://storage.googleapis.com/gwt-eclipse-plugin/v3/release
+
 Eclipse IDE for Java EE Developers --> http://www.eclipse.org/downloads/
 
 Google Eclipse Plugin, via Update Site in Eclipse installieren --> http://code.google.com/intl/de-DE/eclipse/docs/download.html
@@ -76,3 +81,16 @@ mvn archetype:generate \
    -Dmodule-short-name=app \
    -DinteractiveMode=false
 
+
+Debugging option 1:
+https://gwt-plugins.github.io/documentation/gwt-eclipse-plugin/debugging/GWTDevModeAndTomcatWebServer.html
+-- 2018-07-02 -> not working properly
+
+Debugging option 2:
+https://github.com/tbroyer/gwt-maven-archetypes
+mvn gwt:codeserver -pl atom-client -am
+mvn jetty:run -pl atom-server -am -Denv=dev
+-- 2018-07-02 -> works nicely!
+
+other guide not tried yet:
+https://dzone.com/articles/comfortable-gwt-debugging

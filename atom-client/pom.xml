@@ -60,6 +60,7 @@
 
 
 		<!-- at.ac.fhcampuswien.atom.client.gui.HistoryPanel uses BiMap from guava -->
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava-gwt -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
