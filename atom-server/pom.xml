@@ -169,9 +169,9 @@
 		<plugins>
 
 			<plugin>
-				<groupId>com.edugility</groupId>
+				<groupId>com.javatechnics.com.edugility</groupId>
 				<artifactId>jpa-maven-plugin</artifactId>
-				<version>3-SNAPSHOT</version>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<id>Generate entityClassnames.properties</id>

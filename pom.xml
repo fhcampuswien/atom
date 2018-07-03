@@ -216,12 +216,12 @@
 								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>com.edugility</groupId>
+										<groupId>com.javatechnics.com.edugility</groupId>
 										<artifactId>
 											jpa-maven-plugin
 										</artifactId>
 										<versionRange>
-											[3-SNAPSHOT,)
+											[3.0.0,)
 										</versionRange>
 										<goals>
 											<goal>
