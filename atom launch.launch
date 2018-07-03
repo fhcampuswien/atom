@@ -7,7 +7,7 @@
 <stringAttribute key="org.eclipse.debug.core.launchGroup.0.mode" value="run"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.0.name" value="gwt-codeserver"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.1.action" value="DELAY"/>
-<stringAttribute key="org.eclipse.debug.core.launchGroup.1.actionParam" value="1"/>
+<stringAttribute key="org.eclipse.debug.core.launchGroup.1.actionParam" value="8"/>
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.1.adoptIfRunning" value="true"/>
 <booleanAttribute key="org.eclipse.debug.core.launchGroup.1.enabled" value="true"/>
 <stringAttribute key="org.eclipse.debug.core.launchGroup.1.mode" value="debug"/>
