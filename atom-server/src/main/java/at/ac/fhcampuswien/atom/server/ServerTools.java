@@ -28,8 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.exception.SQLGrammarException;
 
-import com.microsoft.sqlserver.jdbc.SQLServerException;
-
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
@@ -1006,11 +1004,6 @@ public class ServerTools {
 			if(t2 instanceof SQLGrammarException) {
 				SQLGrammarException e = (SQLGrammarException) t;
 				AtomTools.log(logLevel,e.getSQL(),caller);
-			}
-			else if(t2 instanceof SQLServerException) {
-				SQLServerException e = (SQLServerException) t;
-				String info = "errorCode="+e.getErrorCode()+";state="+e.getSQLState();
-				AtomTools.log(logLevel,info,caller);
 			}
 			if(t2.equals(t2.getCause()))
 				break;
