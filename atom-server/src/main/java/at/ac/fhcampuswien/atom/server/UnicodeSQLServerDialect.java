@@ -4,12 +4,13 @@
  */
 package at.ac.fhcampuswien.atom.server;
 
-import org.hibernate.dialect.SQLServerDialect;
 import java.sql.Types;
+
+import org.hibernate.dialect.SQLServer2012Dialect;
 
 /** * Unicode support in SQL Server * * @author icocan */
 
-public class UnicodeSQLServerDialect extends SQLServerDialect {
+public class UnicodeSQLServerDialect extends SQLServer2012Dialect {
 	public UnicodeSQLServerDialect() {
 		super();
 		// Use Unicode Characters
