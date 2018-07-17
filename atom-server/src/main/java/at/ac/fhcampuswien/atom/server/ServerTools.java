@@ -1010,7 +1010,7 @@ public class ServerTools {
 		Throwable t2 = t;
 		while(t2 != null) {
 			if(t2 instanceof SQLGrammarException) {
-				SQLGrammarException e = (SQLGrammarException) t;
+				SQLGrammarException e = (SQLGrammarException) t2;
 				AtomTools.log(logLevel,e.getSQL(),caller);
 			}
 			if(t2.equals(t2.getCause()))
