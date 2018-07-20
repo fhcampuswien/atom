@@ -79,6 +79,9 @@ public class Message extends FeaturedObject {
 	@AttributeValidators(AttributeValidators.notEmpty)
 	private Set<PersistentString> persistentStrings;
 
+	@ListBoxDefinition(viewType=ViewType.FilterAbleDropDown, sql="SELECT suggestString FROM Message")
+	private String suggestString;
+	
 	public Message() {
 	}
 
@@ -202,6 +205,15 @@ public class Message extends FeaturedObject {
 	public void setPersistentStrings(Set<PersistentString> persistentStrings) {
 		this.persistentStrings = persistentStrings;
 	}
+	
+	public String getSuggestString() {
+		return suggestString;
+	}
+
+	public void setSuggestString(String suggestString) {
+		this.suggestString = suggestString;
+	}
+
 
 	@Override
 	@HideFromListGui

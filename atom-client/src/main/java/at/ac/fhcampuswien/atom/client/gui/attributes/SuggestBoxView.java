@@ -11,6 +11,7 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -37,8 +38,10 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 	
 //	protected SimplePanel simplePanel;
 
-	@UiField
+	@UiField(provided=true)
 	protected SuggestBox suggestBox;
+	
+	private MultiWordSuggestOracle oracle;
 	
 	private LinkedHashMap<String, String> keyDisplayMap = null;
 	private String multiSelectSeperator = null;
@@ -80,13 +83,32 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 	}
 	
 	private void prepareSuggestBox() {
+		
+		AtomTools.log(Level.INFO, "prepareSuggestBox() value = "+suggestBox.getValue(), this);
+		
+		oracle.clear();
+		for(String s : keyDisplayMap.values()) {
+			oracle.add(s);
+		}
+		oracle.add("something static");
+//		suggestBox.refreshSuggestionList();
+//		suggestBox.showSuggestionList();
+//		SuggestBox oldBox = suggestBox;
+//		suggestBox = new SuggestBox(oracle, oldBox.getValueBox());
+		
+		
+//		SuggestOracle oracle = suggestBox.getSuggestOracle();
+//		oracle.
+//		suggestBox.
 		// TODO FIXME implement!
 	}
 	
 	@Override
 	protected boolean createFieldWidget() {
-		field = this;		
-		
+		field = this;
+		oracle = new MultiWordSuggestOracle();
+		oracle.add("test");
+		suggestBox = new SuggestBox(oracle);
 		initWidget(uiBinder.createAndBindUi(this));
 		return false;
 	}
@@ -110,16 +132,4 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 	protected void readValue() {
 		this.value = suggestBox.getValue();
 	}
-
-	@Override
-	public void setValue(Object value) {
-		if(value != null) {
-			this.value = value.toString();
-		}
-		else {
-			value = null;
-		}
-		prepareSuggestBox();
-	}
-
 }
