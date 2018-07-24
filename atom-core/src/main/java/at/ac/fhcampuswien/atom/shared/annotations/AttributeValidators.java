@@ -14,5 +14,5 @@ public @interface AttributeValidators {
 	public final static String socialsecurity = "socialsecurity";
 	public final static String money = "money";
 	public final static String notEmpty = "notempty";
-	
+	public final static String url = "url";
 }

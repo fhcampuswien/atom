@@ -16,19 +16,22 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.lightoze.gwt.i18n.client.LocaleFactory;
+import org.apache.commons.validator.routines.UrlValidator;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.Window;
+
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidators;
 import at.ac.fhcampuswien.atom.shared.dateformat.SimpleDateFormatGwt;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
-
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.user.client.Window;
+import net.lightoze.gwt.i18n.client.LocaleFactory;
 
 public class AtomTools {
 
 	static Logger logger = Logger.getLogger("atom");
+	static UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES + UrlValidator.ALLOW_2_SLASHES);
 	
 	private AtomTools() {
 	}
@@ -257,6 +260,14 @@ public class AtomTools {
 						"Bitte Telefonnummern im Format +43 (1) 606 68 77 - 4319 eingeben! Durchwahl und Abstände sind optional.");
 			else
 				return true;
+		}
+		else if(AttributeValidators.url.equals(attributeValidator)) {
+			if (value == null || (value instanceof String && ((String) value).length() == 0))
+				return false;
+			if(urlValidator.isValid(value.toString()) || urlValidator.isValid("http://" + value.toString()))
+				return true;
+			else
+				throw new ValidationError("Bitte gültige URL angeben!");
 		}
 		else if (AttributeValidators.notEmpty.equals(attributeValidator)) {
 			if (value == null || 

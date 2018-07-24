@@ -21,6 +21,8 @@
 
 	<inherits name="com.google.gwt.logging.Logging"/>
 	
+	<inherits name="org.apache.commons.GWTCommonsValidator" />
+	
 	<!-- <set-property name="gwt.logging.popupLogHandler" value="DISABLED"/> -->
 	<!-- <set-property name='gwt.logging.popupHandler' value='DISABLED'/> -->
 	<set-property name="gwt.logging.simpleRemoteHandler" value="ENABLED" />

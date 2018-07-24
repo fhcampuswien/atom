@@ -59,6 +59,16 @@
 			<classifier>original</classifier>
 			<version>0.22</version>
 		</dependency>
+		
+		<!-- https://github.com/ManfredTremmel/gwt-commons-validator
+			included for using this for url validation (in AtomTools):
+			http://commons.apache.org/proper/commons-validator/apidocs/org/apache/commons/validator/routines/UrlValidator.html
+		 -->
+		<dependency>
+			<groupId>de.knightsoft-net</groupId>
+			<artifactId>gwt-commons-validator</artifactId>
+			<version>1.6-0</version>
+	    </dependency>
 
 		<!-- for FileAttribute, needed on client & server, contains Servlet and 
 			client API -->
