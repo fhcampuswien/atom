@@ -523,6 +523,8 @@ public class DomainObjectDetailFrame extends Frame {
 		@Override
 		public void requestFailed(String reason) {
 			AtomTools.log(Level.SEVERE, "DomainObject request failed -> " + reason, this);
+			DomainObjectDetailFrame.this.deliverError(new ValidationError(reason));
+			App.setLoadingState(false, DomainObjectDetailFrame.this);
 		}
 
 		@Override
