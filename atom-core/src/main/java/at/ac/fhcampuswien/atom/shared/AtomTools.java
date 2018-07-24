@@ -547,6 +547,15 @@ public class AtomTools {
 		return value;
 	}
 	
+	public static Throwable getInnerMostCause(Throwable t) {
+		if(t == null)
+			return null;
+		while(t.getCause() != null && t.getCause() != t) {
+			t.getCause();
+		}
+		return t;
+	}
+	
 	public static HashSet<String> getCartesianProduct(String[] values, String seperator) {
 		HashSet<String> out = new HashSet<String>();
 		
