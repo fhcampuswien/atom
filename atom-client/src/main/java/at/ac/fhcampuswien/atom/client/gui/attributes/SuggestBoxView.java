@@ -90,7 +90,8 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 		for(String s : keyDisplayMap.values()) {
 			oracle.add(s);
 		}
-		oracle.add("something static");
+//		oracle.add("something static");
+//		oracle.add("something also static");
 //		suggestBox.refreshSuggestionList();
 //		suggestBox.showSuggestionList();
 //		SuggestBox oldBox = suggestBox;

@@ -1011,7 +1011,17 @@ public class ServerTools {
 		while(t2 != null) {
 			if(t2 instanceof SQLGrammarException) {
 				SQLGrammarException e = (SQLGrammarException) t2;
-				AtomTools.log(logLevel,e.getSQL(),caller);
+				AtomTools.log(logLevel,"SQLGrammarException happened, sql: " + e.getSQL(),caller);
+			}
+//			else if(t2 instanceof RollbackException) {
+//				RollbackException e = (RollbackException) t2;
+//			}
+//			else if(t2 instanceof javax.persistence.PersistenceException) {
+//				javax.persistence.PersistenceException e = (javax.persistence.PersistenceException) t2;
+//			}
+			else if(t2 instanceof org.hibernate.exception.DataException) {
+				org.hibernate.exception.DataException e = (org.hibernate.exception.DataException) t2;
+				AtomTools.log(logLevel,"hibernate.DataException happened, sql: " + e.getSQL(),caller);
 			}
 			if(t2.equals(t2.getCause()))
 				break;
