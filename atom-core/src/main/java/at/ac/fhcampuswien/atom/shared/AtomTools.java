@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 
 import com.google.gwt.core.shared.GWT;
@@ -32,6 +33,7 @@ public class AtomTools {
 
 	static Logger logger = Logger.getLogger("atom");
 	static UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES + UrlValidator.ALLOW_2_SLASHES);
+	static EmailValidator emailValidator = EmailValidator.getInstance(true, true);
 	
 	private AtomTools() {
 	}
@@ -221,15 +223,18 @@ public class AtomTools {
 
 		if (AttributeValidators.email.equals(attributeValidator)) {
 			if (value == null || "".equals(value))
+				return false;
+			if(emailValidator.isValid(value.toString()))
 				return true;
-			String stringValue = value.toString();
-			String[] parts = stringValue.split("@");
-			if (parts.length != 2)
-				throw new ValidationError("an email-adress needs to contain exaclty one @ symbol!");
-			if (!parts[1].contains("."))
-				throw new ValidationError("there needs to be a dot in the second half of an email-adress!");
-			else
-				return true;
+			else {
+				String[] parts = value.toString().split("@");
+				if (parts.length != 2)
+					throw new ValidationError("an email-adress needs to contain exaclty one @ symbol!");
+				else if (!parts[1].contains("."))
+					throw new ValidationError("there needs to be a dot in the second half of an email-adress!");
+				else
+					throw new ValidationError("Bitte gültige E-Mail-Adresse angeben!");
+			}
 		}
 		else if (AttributeValidators.socialsecurity.equals(attributeValidator)) {
 
