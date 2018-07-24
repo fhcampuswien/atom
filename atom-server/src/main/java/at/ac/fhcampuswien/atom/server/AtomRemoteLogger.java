@@ -1,5 +1,8 @@
 package at.ac.fhcampuswien.atom.server;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
@@ -18,9 +21,12 @@ public class AtomRemoteLogger extends RemoteServiceServlet implements RemoteLogg
 	private StackTraceDeobfuscator deobfuscator;
 	private ServerSingleton server;
 
+	private File codeserverTarget = new File("target/gwt/codeserver/at.ac.fhcampuswien.atom.App/");
+	private File latestCompileDir = null;
+
 	public AtomRemoteLogger() {
 		logger = Logger.getLogger("atom");
-		deobfuscator = StackTraceDeobfuscator.fromFileSystem("WEB-INF/app/symbolMaps/");
+		refreshDeobfuscator();
 		server = ServerSingleton.getInstance();
 	}
 
@@ -31,7 +37,13 @@ public class AtomRemoteLogger extends RemoteServiceServlet implements RemoteLogg
 	 */
 	public final String logOnServer(LogRecord logRecord) {
 		if(logRecord.getThrown() != null) {
-			deobfuscator.deobfuscateStackTrace(logRecord.getThrown(), getPermutationStrongName());
+			refreshDeobfuscator();
+			try {
+				deobfuscator.deobfuscateStackTrace(logRecord.getThrown(), getPermutationStrongName());
+			}
+			catch (Throwable t) {
+				logger.log(Level.SEVERE, "error while deobfuscating StackTrace", t);
+			}
 		}
 		//logRecord = RemoteLoggingServiceUtil.deobfuscateLogRecord(deobfuscator, logRecord, getPermutationStrongName());
 		ClientSession session = null;
@@ -47,5 +59,27 @@ public class AtomRemoteLogger extends RemoteServiceServlet implements RemoteLogg
 		}
 		logger.log(logRecord);
 		return null;
+	}
+	
+	private void refreshDeobfuscator() {
+
+		boolean changed = false;
+		if(codeserverTarget.exists()) for(File file : codeserverTarget.listFiles()) {
+			if(latestCompileDir == null) {
+				changed = true;
+				latestCompileDir = file;
+			}	
+			else if (file.lastModified() > latestCompileDir.lastModified()) {
+				changed = true;
+				latestCompileDir = file;
+			}
+		}
+		if(changed) {
+			try {
+				deobfuscator = StackTraceDeobfuscator.fromFileSystem(latestCompileDir.getCanonicalPath() + "/extras/app/symbolMaps");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
