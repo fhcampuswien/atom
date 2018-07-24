@@ -452,6 +452,9 @@ public class DomainClass implements java.io.Serializable {
 		// HashMap<String, DomainClassAttribute> allAttributes =
 		// getAllAttributes();
 		
+		if(attributeName == null)
+			throw new AtomException("DomainClass.getAttributeNamed called with name = null, this is wrong!");
+		
 		DomainClassAttribute attribute = attributes.get(AtomTools.lowerFirstChar(attributeName));
 		if(attribute != null)
 			return attribute;

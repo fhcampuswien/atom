@@ -87,8 +87,10 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 		AtomTools.log(Level.INFO, "prepareSuggestBox() value = "+suggestBox.getValue(), this);
 		
 		oracle.clear();
+		if(keyDisplayMap != null && keyDisplayMap.size()>0)
 		for(String s : keyDisplayMap.values()) {
-			oracle.add(s);
+			if(s != null && s.length()>0)
+				oracle.add(s);
 		}
 //		oracle.add("something static");
 //		oracle.add("something also static");
