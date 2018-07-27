@@ -864,6 +864,8 @@ public class ServerTools {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 
@@ -911,7 +913,7 @@ public class ServerTools {
 								else {
 									DomainObject relatedElement = em.find(obj.getClass(), obj.getObjectID());
 									String mappedBy = domainClassAttribute.getMappedBy();
-									if(mappedBy != null & mappedBy.length() > 0) {
+									if(mappedBy != null && mappedBy.length() > 0) {
 										Class<?> collectedClass = relatedElement.getClass();
 										Method setMappedBy = collectedClass.getMethod("set" + AtomTools.upperFirstChar(mappedBy), new Class[] { domainObject.getClass() });
 										setMappedBy.invoke(relatedElement, new Object[] { domainObject });
@@ -936,6 +938,8 @@ public class ServerTools {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (Throwable t) {
+				t.printStackTrace();
 			}
 		}
 	}
