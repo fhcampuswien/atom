@@ -524,6 +524,7 @@ public class DomainObjectDetailFrame extends Frame {
 		public void requestFailed(String reason) {
 			AtomTools.log(Level.SEVERE, "DomainObject request failed -> " + reason, this);
 			DomainObjectDetailFrame.this.deliverError(new ValidationError(reason));
+			setEditableAndRevertValues(true, false);
 			App.setLoadingState(false, DomainObjectDetailFrame.this);
 		}
 
