@@ -567,7 +567,7 @@ public class AtomTools {
 		if(t == null)
 			return null;
 		while(t.getCause() != null && t.getCause() != t) {
-			t.getCause();
+			t = t.getCause();
 		}
 		return t;
 	}
