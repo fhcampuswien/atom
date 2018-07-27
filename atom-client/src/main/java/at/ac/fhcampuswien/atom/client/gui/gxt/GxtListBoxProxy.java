@@ -62,7 +62,7 @@ public class GxtListBoxProxy extends ObservableListBoxProxy<Collection<DomainObj
 			@Override
 			public String getKey(DomainObject item) {
 				if(item == null || item.getObjectID() == null) {
-					AtomTools.log(Level.WARNING, "damn, item is null or has no objectid?!", this);
+					AtomTools.log(Level.WARNING, "GxtListBoxProxy.getKey() - ListStore contains DomainObject without objectID! This should not happen! Only new unsaved DomainObjects have no objectID and those should not land in a DomainObjectListWidget without first having been saved (and therefore have been assigned an objectID by the database)", this);
 					return "null";
 				}
 				return item.getObjectID().toString();
