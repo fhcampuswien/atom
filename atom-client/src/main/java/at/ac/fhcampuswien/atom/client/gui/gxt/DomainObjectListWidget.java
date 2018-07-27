@@ -359,25 +359,32 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 					DomainObjectValueProvider<Long> valueProvider = new DomainObjectValueProvider<Long>(representedClass, oneAttribute);
 					ColumnConfig<DomainObject, Long> column = new ColumnConfig<DomainObject, Long>(valueProvider);
 					genericColumn = column;
-					NumericFilter<DomainObject, Long> filter = new NumericFilter<DomainObject, Long>(valueProvider,
-							new LongPropertyEditor());
-					gridFilters.addFilter(filter);
+					if(!oneAttribute.isTransient()) {
+						NumericFilter<DomainObject, Long> filter = new NumericFilter<DomainObject, Long>(valueProvider,
+								new LongPropertyEditor());
+						gridFilters.addFilter(filter);
+					}
 				} else if ("java.lang.Integer".equals(attributeType)) {
 					DomainObjectValueProvider<Integer> valueProvider = new DomainObjectValueProvider<Integer>(representedClass,
 							oneAttribute);
 					ColumnConfig<DomainObject, Integer> column = new ColumnConfig<DomainObject, Integer>(valueProvider);
 					genericColumn = column;
-					NumericFilter<DomainObject, Integer> filter = new NumericFilter<DomainObject, Integer>(valueProvider,
-							new IntegerPropertyEditor());
-					gridFilters.addFilter(filter);
+					if(!oneAttribute.isTransient()) {
+						NumericFilter<DomainObject, Integer> filter = new NumericFilter<DomainObject, Integer>(valueProvider,
+								new IntegerPropertyEditor());
+						gridFilters.addFilter(filter);
+					}
 				} else if ("java.util.Date".equals(attributeType)) {
 
 					DomainObjectValueProvider<Date> valueProvider = new DomainObjectValueProvider<Date>(representedClass, oneAttribute);
 					ColumnConfig<DomainObject, Date> column = new ColumnConfig<DomainObject, Date>(valueProvider);
 					column.setCell(new DateCell(DateTimeFormat.getFormat("dd.MM.yyyy")));
 					genericColumn = column;
-					DateFilter<DomainObject> filter = new DateFilter<DomainObject>(valueProvider);
-					gridFilters.addFilter(filter);
+
+					if(!oneAttribute.isTransient()) {
+						DateFilter<DomainObject> filter = new DateFilter<DomainObject>(valueProvider);
+						gridFilters.addFilter(filter);
+					}
 
 					// DomainObjectValueProvider<String> valueProviderString =
 					// new DomainObjectValueProvider<String>(representedClass,
@@ -405,8 +412,10 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 							oneAttribute);
 					ColumnConfig<DomainObject, Boolean> column = new ColumnConfig<DomainObject, Boolean>(valueProvider);
 					genericColumn = column;
-					BooleanFilter<DomainObject> filter = new BooleanFilter<DomainObject>(valueProvider);
-					gridFilters.addFilter(filter);
+					if(!oneAttribute.isTransient()) {
+						BooleanFilter<DomainObject> filter = new BooleanFilter<DomainObject>(valueProvider);
+						gridFilters.addFilter(filter);
+					}
 				} else {
 					if (!"java.lang.String".equals(attributeType))
 						AtomTools.log(Level.WARNING, "attributeType nicht erkannt: '" + attributeType
@@ -456,13 +465,17 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 						for(String s : listValues) {
 							store.add(s);
 						}
-						
-						ListFilter<DomainObject, String> filter = new ListFilter<DomainObject, String>(valueProvider, store);
-						gridFilters.addFilter(filter);
+
+						if(!oneAttribute.isTransient()) {
+							ListFilter<DomainObject, String> filter = new ListFilter<DomainObject, String>(valueProvider, store);
+							gridFilters.addFilter(filter);
+						}
 					}
 					else {
-						StringFilter<DomainObject> filter = new StringFilter<DomainObject>(valueProvider);
-						gridFilters.addFilter(filter);
+						if(!oneAttribute.isTransient()) {
+							StringFilter<DomainObject> filter = new StringFilter<DomainObject>(valueProvider);
+							gridFilters.addFilter(filter);
+						}
 					}
 					
 					// StringFilter stringFilter = new
