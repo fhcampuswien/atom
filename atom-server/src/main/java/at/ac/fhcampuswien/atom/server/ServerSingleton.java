@@ -249,6 +249,7 @@ public class ServerSingleton {
 		List<DomainObject> resultList = new ArrayList<DomainObject>();
 		Long totalSize = null;
 		EntityManager em = null;
+		Query query = null;
 
 		try {
 			Class<?> specificClass = ServerTools.getClassForName(domainClass.getName());
@@ -278,7 +279,6 @@ public class ServerSingleton {
 			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - getting EntityManager now", this);
 
 			em = AtomEMFactory.getEntityManager();
-			Query query = null;
 
 			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got my EntityManger, selecting count", this);
 			if (countQuery != null && countQuery.length() > 0)
@@ -357,9 +357,12 @@ public class ServerSingleton {
 		} catch (NoResultException noResultException) {
 			ServerTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this, noResultException);
 			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
-		} catch (Exception e) {
-			ServerTools.log(Level.SEVERE, "getListOfDomainObject exception happened:" + e.getMessage(), this, e);
-			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Exception happened, see cause", e);
+		} catch (Throwable t) {
+			String queryString = "n.a.";
+			if(query != null && query instanceof org.hibernate.query.internal.QueryImpl)
+				queryString = "\n" + ((org.hibernate.query.internal.QueryImpl<?>) query).getQueryString();
+			ServerTools.log(Level.SEVERE, "getListOfDomainObject error for query: " + queryString, this, t);
+			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Throwable happened, see cause", t);
 		} finally {
 			if (em != null) {
 				AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
@@ -499,8 +502,9 @@ public class ServerSingleton {
 		} catch (AtomException ae) {
 			throw ae;
 		} catch (Throwable t) {
-			ServerTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + t.getClass().getSimpleName() + " - " + t.getMessage(), this, t);
-			throw new AtomException(AtomTools.getInnerMostCause(t).getMessage(), t);
+			String innerMostMessage = AtomTools.getInnerMostCause(t).getMessage();
+			ServerTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + innerMostMessage, this, t);
+			throw new AtomException(innerMostMessage, t);
 		} finally {
 			ServerTools.closeDBConnection(tx, em);
 		}
