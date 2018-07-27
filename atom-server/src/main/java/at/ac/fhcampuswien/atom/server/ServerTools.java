@@ -618,7 +618,7 @@ public class ServerTools {
 			for (DataFilter aFilter : filters) {
 				String columnName = aFilter.getColumn();
 				DomainClassAttribute attribute = searchedClass.getAttributeNamed(columnName);
-				if (attribute.isField()) {
+				if (attribute.isField() && !attribute.isTransient()) {
 					if (!first) {
 						whereClause += " AND ";
 					} else {
