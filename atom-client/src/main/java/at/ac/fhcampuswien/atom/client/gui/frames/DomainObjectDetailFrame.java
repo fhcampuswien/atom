@@ -304,7 +304,8 @@ public class DomainObjectDetailFrame extends Frame {
 			// flexTable.getElement().getStyle().setPadding(10, Unit.PX);
 			// scrollPanel.getElement().getStyle().setMargin(10, Unit.PX);
 
-			tabPanel.add(scrollPanel, attributeGroupTabHeader);
+			if(groupPages.get(groupName).getRowCount() > 0)
+				tabPanel.add(scrollPanel, attributeGroupTabHeader);
 
 			int maxLabelWidth = 0;
 			// Label testLabel = new Label("init");
