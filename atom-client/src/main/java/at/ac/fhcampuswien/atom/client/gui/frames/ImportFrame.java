@@ -78,7 +78,7 @@ public class ImportFrame extends Frame {
     protected FormPanel formPanel;
 
     @UiHandler("uploadButton")
-    void onClick_loginButton(ClickEvent event) {
+    void onClick_uploadButton(ClickEvent event) {
 	formPanel.submit();
 	AtomTools.log(Level.INFO, "pressed upload import file button - " + fileUpload.getFilename(), this);
     }
