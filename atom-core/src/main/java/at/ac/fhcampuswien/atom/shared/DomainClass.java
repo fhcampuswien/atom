@@ -426,7 +426,7 @@ public class DomainClass implements java.io.Serializable {
 		
 		for (Iterator<DomainClassAttribute> iterator = attributes.iterator(); iterator.hasNext();) {
 			DomainClassAttribute domainClassAttribute = iterator.next();
-			if (domainClassAttribute.getAnnotation("FileAttribute") == null) {
+			if (domainClassAttribute == null || domainClassAttribute.getAnnotation("FileAttribute") == null) {
 				// Remove the current element from the iterator and the list.
 		        iterator.remove();
 		    }
