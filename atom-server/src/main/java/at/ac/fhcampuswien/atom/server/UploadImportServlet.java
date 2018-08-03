@@ -21,6 +21,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -221,39 +223,55 @@ public class UploadImportServlet extends HttpServlet {
 
 			processData(sheetData, session, className);
 
+		} catch (AtomException ae) {
+			throw ae;
 		} catch (Throwable t) {
-			ServerTools.log(Level.SEVERE,
-					"UploadImportServlet doPost uploaded file could not be parsed as HSSFWorkbook!! " + t.getMessage(),
-					this, t);
 			throw new AtomException(t);
 		}
 	}
 
 	private void processData(ArrayList<ArrayList<HSSFCell>> data, ClientSession session, String className) {
 
-		ArrayList<String> headers = null;
-		int i = 0;
-		for (ArrayList<HSSFCell> row : data) {
-			if (i == 0) {
-				headers = new ArrayList<String>();
-				int emptyHeader = 1;
-				for (HSSFCell cell : row) {
-					if (cell != null)
-						headers.add(cell.toString());
-					else
-						headers.add("emptyHeader#" + emptyHeader++);
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		try {
+			em = AtomEMFactory.getEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+			
+			ArrayList<String> headers = null;
+			int i = 0;
+			for (ArrayList<HSSFCell> row : data) {
+				if (i == 0) {
+					headers = new ArrayList<String>();
+					int emptyHeader = 1;
+					for (HSSFCell cell : row) {
+						if (cell != null)
+							headers.add(cell.toString());
+						else
+							headers.add("emptyHeader#" + emptyHeader++);
+					}
+				} else if (i == 1) {
+					// do nothing, second line are display names!
+				} else {
+					processRow(headers, row, session, className, em);
 				}
-			} else if (i == 1) {
-				// do nothing, second line are display names!
-			} else {
-				processRow(headers, row, session, className);
+				i++;
 			}
-			i++;
+			tx.commit();
+		} catch (AtomException ae) {
+			throw ae;
+		} catch (Throwable t) {
+			ServerTools.log(Level.WARNING, "Exception during Import!", this, t);
+			throw new AtomException(t);
+		} finally {
+			ServerTools.closeDBConnection(tx, em);
 		}
+		
 	}
 
 	private void processRow(ArrayList<String> headers, ArrayList<HSSFCell> data, ClientSession session,
-			String className) {
+			String className, EntityManager em) {
 		HashMap<String, HSSFCell> fields = new HashMap<String, HSSFCell>();
 		for (int i = 0; i < data.size(); i++) {
 			HSSFCell existing = fields.get(headers.get(i));
@@ -277,21 +295,23 @@ public class UploadImportServlet extends HttpServlet {
 						"Importer: cannot update DomainObject with ID " + objectID + ", since it does not exist. ",
 						this);
 			else {
-				Boolean delete = getBooleanValueOfCell(fields.get("DELETE"));
+				Boolean delete = null;
+				if ( fields.get("DELETE") != null )
+					delete = getBooleanValueOfCell(fields.get("DELETE"));
 				if (delete != null && delete.booleanValue() == true) {
 					AtomTools.log(Level.INFO, "Importer: Deleting DomainObject " + objectID, this);
-					server.deleteDomainObject(session, instance);
+					server.deleteDomainObject(session, instance, em);
 				} else {
 					AtomTools.log(Level.INFO, "Importer: Updating DomainObject " + objectID, this);
 					updateFields(instance, fields, className, session);
-					server.saveDomainObject(session, instance);
+					server.saveDomainObject(session, instance, em);
 				}
 			}
 		} else {
 			instance = createInstance(className);
 			AtomTools.log(Level.INFO, "Importer: Created new DomainObject with ID " + instance.getObjectID(), this);
 			updateFields(instance, fields, className, session);
-			server.saveDomainObject(session, instance);
+			server.saveDomainObject(session, instance, em);
 		}
 	}
 
