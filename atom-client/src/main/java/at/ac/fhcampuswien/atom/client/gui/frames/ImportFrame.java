@@ -50,8 +50,13 @@ public class ImportFrame extends Frame {
 	    
 	    @Override
 	    public void onSubmitComplete(SubmitCompleteEvent event) {
-		setError("import complete!");
-		uploadButton.setEnabled(true);
+	    	String result = event.getResults();
+		    if(result == null || result.length() < 1)
+		    	setError("import complete!");
+		    else
+		    	setError(result);
+	    	//
+			uploadButton.setEnabled(true);
 	    }
 	});
 	
