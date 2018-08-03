@@ -123,7 +123,7 @@ public class ServerSingleton {
 			try {
 				linkedID = Double.valueOf(clue);
 			} catch (NumberFormatException e) {
-				ServerTools.log(Level.INFO, "doesn't look like this was an objectID (couldn't parse as double; " + clue, this, e);
+				AtomTools.log(Level.INFO, "doesn't look like this was an objectID (couldn't parse as double; " + clue, this);
 			}
 			if (linkedID != null) {
 				// find instance by id
@@ -446,14 +446,32 @@ public class ServerSingleton {
 	public DomainObject saveDomainObject(ClientSession session, DomainObject domainObject) {
 
 		DomainObject origBak = domainObject;
-		EntityManager em = null;
-		EntityTransaction tx = null;
-
+		EntityManager em = AtomEMFactory.getEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		
 		try {
 			em = AtomEMFactory.getEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
-			
+			saveDomainObject(session, domainObject, em);
+			tx.commit();
+		}
+		finally {
+			ServerTools.closeDBConnection(tx, em);
+		}
+
+		if(domainObject != null && domainObject.getObjectID() != null)
+			return getDomainObject(session, domainObject.getObjectID(), domainObject.getClass());
+		else if(origBak.getObjectID() != null)
+			return getDomainObject(session, origBak.getObjectID(), origBak.getClass());
+		else
+			return null;
+	}
+
+	public void saveDomainObject(ClientSession session, DomainObject domainObject, EntityManager em) {
+	
+		try {			
 			DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
 	
 			if (domainObject.getObjectID() == null) {
@@ -472,7 +490,7 @@ public class ServerSingleton {
 						FeaturedObject toSave = (FeaturedObject) domainObject;
 						if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
 							if (fromDB instanceof FrameVisit)
-								return fromDB;
+								return; //simply don't save it.
 							else
 								throw new AtomException(AtomTools.getMessages().outdated());
 						}
@@ -497,7 +515,6 @@ public class ServerSingleton {
 			domainObject = em.merge(domainObject);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 
-			tx.commit();
 
 		} catch (AtomException ae) {
 			throw ae;
@@ -505,16 +522,7 @@ public class ServerSingleton {
 			String innerMostMessage = AtomTools.getInnerMostCause(t).getMessage();
 			ServerTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + innerMostMessage, this, t);
 			throw new AtomException(innerMostMessage, t);
-		} finally {
-			ServerTools.closeDBConnection(tx, em);
 		}
-
-		if(domainObject != null && domainObject.getObjectID() != null)
-			return getDomainObject(session, domainObject.getObjectID(), domainObject.getClass());
-		else if(origBak.getObjectID() != null)
-			return getDomainObject(session, origBak.getObjectID(), origBak.getClass());
-		else
-			return null;
 	}
 
 	
@@ -646,54 +654,60 @@ public class ServerSingleton {
 	}
 
 	protected boolean deleteDomainObject(ClientSession session, DomainObject domainObject) {
+		EntityManager em = AtomEMFactory.getEntityManager();
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		
+		try {
+			em = AtomEMFactory.getEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+			boolean val = deleteDomainObject(session, domainObject, em);
+			tx.commit();
+			return val;
+		}
+		catch(Throwable t) {
+			ServerTools.log(Level.SEVERE, "Exception during delete!", this, t);
+		}
+		finally {
+			ServerTools.closeDBConnection(tx, em);
+		}
+		return false;
+	}
+
+	protected boolean deleteDomainObject(ClientSession session, DomainObject domainObject, EntityManager em) {
 
 		DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
 
 		if (domainObject.getObjectID() != null) {
 			
 			AtomTools.checkPermissionMatch(AtomConfig.accessDelete, requestedClass.getAccessHandler().getAccessTypes(session, domainObject));
-			
-			EntityManager em = null;
-			EntityTransaction tx = null;
-			try {
-				em = AtomEMFactory.getEntityManager();
-				
-				DomainObject dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
-				//getDomainObject(session, domainObject.getObjectID(), domainObject.getClass(), em);
-				//DomainObject dbVersion = getDomainObject(session, domainObject.getObjectID(), domainObject.getClass());
-				if (dbVersion == null) {
-	
-					// this will happen quite often, through the "on delete cascade"
-					// options set on those two collections.
-					if (domainObject instanceof FrameVisit || domainObject instanceof ClipBoardEntry)
-						return true;
-					else
-						throw new AtomException(AtomTools.getMessages().save_deleted(String.valueOf(domainObject.getObjectID())));
-				} else {
-					AtomTools.checkPermissionMatch(AtomConfig.accessReadWrite, requestedClass.getAccessHandler().getAccessTypes(session, dbVersion));
-	
-					if (dbVersion instanceof FeaturedObject && !(dbVersion instanceof FrameVisit || dbVersion instanceof ClipBoardEntry)) {
-						FeaturedObject fromDB = (FeaturedObject) dbVersion;
-						FeaturedObject toSave = (FeaturedObject) domainObject;
-						if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
-							throw new AtomException(AtomTools.getMessages().outdated());
-						}
+							
+			DomainObject dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
+			//getDomainObject(session, domainObject.getObjectID(), domainObject.getClass(), em);
+			//DomainObject dbVersion = getDomainObject(session, domainObject.getObjectID(), domainObject.getClass());
+			if (dbVersion == null) {
+
+				// this will happen quite often, through the "on delete cascade"
+				// options set on those two collections.
+				if (domainObject instanceof FrameVisit || domainObject instanceof ClipBoardEntry)
+					return true;
+				else
+					throw new AtomException(AtomTools.getMessages().save_deleted(String.valueOf(domainObject.getObjectID())));
+			} else {
+				AtomTools.checkPermissionMatch(AtomConfig.accessReadWrite, requestedClass.getAccessHandler().getAccessTypes(session, dbVersion));
+
+				if (dbVersion instanceof FeaturedObject && !(dbVersion instanceof FrameVisit || dbVersion instanceof ClipBoardEntry)) {
+					FeaturedObject fromDB = (FeaturedObject) dbVersion;
+					FeaturedObject toSave = (FeaturedObject) domainObject;
+					if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
+						throw new AtomException(AtomTools.getMessages().outdated());
 					}
 				}
-				
-				tx = em.getTransaction();
-				tx.begin();
-				em.remove(dbVersion);
-				tx.commit();
-				return true;
-				
-			} catch (Exception e) {
-				ServerTools.log(Level.WARNING, "deleteDomainObject failed", this, e);
-			} finally {
-				ServerTools.closeDBConnection(tx, em);
 			}
+			em.remove(dbVersion);
+			return true;
 		}
-
 		return false;
 	}
 
