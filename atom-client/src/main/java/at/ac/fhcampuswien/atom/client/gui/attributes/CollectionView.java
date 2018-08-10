@@ -232,7 +232,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	public void editItemAtIndex(int index) {
 		AtomTools.log(Level.FINER, "edit index " + index, this);
 		if (!this.readOnly) {
-			new InputDialogBox(index == -1 ? null : listBox.getItem(index), null, new Callback() {
+			new InputDialogBox(index == -1 ? null : listBox.getItem(index), null, index == -1 ? "Bitte geben Sie das neue Element ein:" : "Element kann nun geändert werden:", null, null, new Callback() {
 				
 				@Override
 				public void processInput(Object oldValue, String newValue, Boolean checked) {
