@@ -34,7 +34,7 @@
 			which needs hibernate annoations is located here -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
+			<artifactId>hibernate-core</artifactId>
 			<version>${hibernate.version}</version>
 			<scope>compile</scope>
 			<!-- BUG: cascade deletion, present in: 4.2.0.CR2, 4.1.10.Final, 3.6.10.Final -->
