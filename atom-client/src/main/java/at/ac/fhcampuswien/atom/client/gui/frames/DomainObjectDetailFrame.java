@@ -591,24 +591,25 @@ public class DomainObjectDetailFrame extends Frame {
 		}
 		
 		ValidationError validationError = null;
-		
-		// write values from AttributeViews into DomainObject instance
-		for (DomainClassAttribute anAttribute : attributeFields.keySet()) {
-			AttributeView<?, ?, ?> aView = attributeFields.get(anAttribute);
-			if (anAttribute.isWriteAble()) {
-				ClientTools.setAttributeValue(representedClass, anAttribute, representedObject, aView.getValue());
-				
-				//remember the first validationError
-				if(validationError == null)
-					validationError = aView.validateAndMark(anAttribute.getDisplayName());
-				else
-					aView.validateAndMark(anAttribute.getDisplayName());
-			}
-			else
-				aView.setValue(ClientTools.getAttributeValue(representedClass, anAttribute, representedObject));
-		}
+
 
 		try {
+			// write values from AttributeViews into DomainObject instance
+			for (DomainClassAttribute anAttribute : attributeFields.keySet()) {
+				AttributeView<?, ?, ?> aView = attributeFields.get(anAttribute);
+				if (anAttribute.isWriteAble()) {
+					ClientTools.setAttributeValue(representedClass, anAttribute, representedObject, aView.getValue());
+					
+					//remember the first validationError
+					if(validationError == null)
+						validationError = aView.validateAndMark(anAttribute.getDisplayName());
+					else
+						aView.validateAndMark(anAttribute.getDisplayName());
+				}
+				else
+					aView.setValue(ClientTools.getAttributeValue(representedClass, anAttribute, representedObject));
+			}
+			
 			representedObject.prepareSave(RPCCaller.getSinglton().getClientSession());
 		}
 		catch(ValidationError ve) {
