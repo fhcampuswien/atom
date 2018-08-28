@@ -19,6 +19,7 @@ import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
 import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
 
 public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String> {
 
@@ -133,6 +134,9 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 
 	@Override
 	protected void readValue() {
-		this.value = suggestBox.getValue();
+		if(keyDisplayMap.values().contains(suggestBox.getValue()) || allowOtherValues)
+			this.value = suggestBox.getValue();
+		else
+			throw new ValidationError("SuggestBoxView Value entered that is not contained within list!");
 	}
 }
