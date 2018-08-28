@@ -54,7 +54,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
-				returnValue = new SuggestBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator, listBoxAllowOtherValues);
+				returnValue = new SuggestBoxView(forFrame.getRepresentedClass(), attributeName, listBoxAllowOtherValues);
 			else
 				returnValue = new RadioButtonsView(forFrame.getRepresentedClass(), attributeName, listBoxViewType, listBoxMSSeperator);
 		}
@@ -63,7 +63,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
-				returnValue = new SuggestBoxView(attribute.getListBoxMapped(), listBoxMSSeperator, listBoxAllowOtherValues);
+				returnValue = new SuggestBoxView(attribute.getListBoxMapped(), listBoxAllowOtherValues);
 			else
 				returnValue = new RadioButtonsView(forFrame.getRepresentedClass().getName() + "." + attributeName, attribute.getListBoxMapped(), listBoxViewType, listBoxMSSeperator);
 //		}

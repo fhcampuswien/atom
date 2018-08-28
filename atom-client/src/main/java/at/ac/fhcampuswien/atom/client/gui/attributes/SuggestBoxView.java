@@ -45,20 +45,17 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 	private MultiWordSuggestOracle oracle;
 	
 	private LinkedHashMap<String, String> keyDisplayMap = null;
-	private String multiSelectSeperator = null;
 	private boolean allowOtherValues = false;
 	
-	public SuggestBoxView(LinkedHashMap<String, String> keyDisplayMap, String multiSelectSeperator, boolean allowOtherValues) {
+	public SuggestBoxView(LinkedHashMap<String, String> keyDisplayMap, boolean allowOtherValues) {
 		super();
 		this.keyDisplayMap = keyDisplayMap;
-		this.multiSelectSeperator = multiSelectSeperator;
 		this.allowOtherValues = allowOtherValues;
 		
 		prepareSuggestBox();
 	}
 	
-	public SuggestBoxView(DomainClass representedClass, String attributeName, String multiSelectSeperator, boolean allowOtherValues) {
-		this.multiSelectSeperator = multiSelectSeperator;
+	public SuggestBoxView(DomainClass representedClass, String attributeName, boolean allowOtherValues) {
 		this.allowOtherValues = allowOtherValues;
 		
 		RPCCaller.getSinglton().loadListBoxChoices(representedClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
@@ -134,7 +131,9 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 
 	@Override
 	protected void readValue() {
-		if(keyDisplayMap.values().contains(suggestBox.getValue()) || allowOtherValues)
+		if("".equals(suggestBox.getValue()))
+			this.value = null;
+		else if(keyDisplayMap.values().contains(suggestBox.getValue()) || allowOtherValues)
 			this.value = suggestBox.getValue();
 		else
 			throw new ValidationError("SuggestBoxView Value entered that is not contained within list!");
