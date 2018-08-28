@@ -446,9 +446,8 @@ public class ServerSingleton {
 	public DomainObject saveDomainObject(ClientSession session, DomainObject domainObject) {
 
 		DomainObject origBak = domainObject;
-		EntityManager em = AtomEMFactory.getEntityManager();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
+		EntityManager em = null;
+		EntityTransaction tx = null;
 		
 		try {
 			em = AtomEMFactory.getEntityManager();
@@ -456,6 +455,10 @@ public class ServerSingleton {
 			tx.begin();
 			saveDomainObject(session, domainObject, em);
 			tx.commit();
+		}
+		catch(Throwable t) {
+			String innerMostMessage = AtomTools.getInnerMostCause(t).getMessage();
+			ServerTools.log(Level.SEVERE, "ServerSingleton.saveDomainObject Exception: " + innerMostMessage, this, t);
 		}
 		finally {
 			ServerTools.closeDBConnection(tx, em);
@@ -512,8 +515,8 @@ public class ServerSingleton {
 			ServerTools.validateDomainObject(domainObject);
 
 			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session);
-			domainObject = em.merge(domainObject);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
+			domainObject = em.merge(domainObject);
 
 
 		} catch (AtomException ae) {
@@ -547,9 +550,12 @@ public class ServerSingleton {
 						  )
 							throw new ValidationError("user is trying to link a file from a different attribute, denying - potential permission problem");
 						
-						pfa.setForInstanceSaved(true);
-						pfa.setForInstance(domainObject);
-						em.merge(pfa);
+						if(!pfa.isForInstanceSaved() || !domainObject.equals(pfa.getForInstance())) {
+							pfa.setForInstanceSaved(true);
+							pfa.setForInstance(domainObject);
+							// 2018-08-28 will be merged automatically as part of the owning DomainObject instance, seperate merge makes hibernate throw an exception and save nothing.
+//							em.merge(pfa);
+						}
 					}
 					
 				} catch(NoSuchMethodException e) {
