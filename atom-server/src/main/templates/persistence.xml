@@ -45,12 +45,14 @@
 			<!-- update database schema -->
 			<property name="hibernate.hbm2ddl.auto" value="update" />
 			
-			<!-- c3p0-connection-pool -->
+			<!-- c3p0-connection-pool 
 			<property name="hibernate.c3p0.min_size" value="0" />
 			<property name="hibernate.c3p0.max_size" value="5" />
 			<property name="hibernate.c3p0.timeout" value="300" />
 			<property name="hibernate.c3p0.max_statements" value="100" />
-			<property name="hibernate.c3p0.idle_test_period" value="3000" />
+			<property name="hibernate.c3p0.idle_test_period" value="3000" /> -->
+			
+			<property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
 			
 			<!-- http://stackoverflow.com/questions/24244621/set-timeout-on-entitymanager-query -->
 			<property name="javax.persistence.query.timeout" value="3000"/>

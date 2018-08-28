@@ -52,15 +52,30 @@
 
 		<!-- using Hibernate c3p0 connection pool, because default is not suited 
 			for production -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate.c3p0.version}</version>
-		</dependency>
-		<!-- <dependency>
+		</dependency> - ->
+		<!- - <dependency>
 			<groupId>com.mchange</groupId>
 			<artifactId>c3p0</artifactId>
 			<version>0.9.5.2</version>
+		</dependency> -->
+		
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-hikaricp -->
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-hikaricp</artifactId>
+		    <version>${hibernate.version}</version>
+		</dependency>
+				
+		
+		<!-- <dependency>
+		    <groupId>com.zaxxer</groupId>
+		    <artifactId>HikariCP</artifactId>
+		    <version>2.7.8</version>
+		    <scope>compile</scope>
 		</dependency> -->
 
 		<!-- https://github.com/bonigarcia/webdrivermanager/issues/76 -->
