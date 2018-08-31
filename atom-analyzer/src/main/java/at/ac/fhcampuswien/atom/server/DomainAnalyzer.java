@@ -416,7 +416,7 @@ public class DomainAnalyzer {
 			attribute.setRelationEssential(true);
 		} else if (anAnnotation instanceof ListBoxDefinition) {
 			ListBoxDefinition def = (ListBoxDefinition) anAnnotation;
-			attribute.setListBox(def.keys(), def.display(), def.sql(), def.viewType(), def.multiSelectSeperator(), def.allowOtherValues());
+			attribute.setListBox(def.keys(), def.display(), def.sql(), def.viewType(), def.multiSelectSeperator(), def.allowOtherValues(), def.anyExistingValue());
 		} else if (anAnnotation instanceof SliderAttribute) {
 			SliderAttribute ann = (SliderAttribute) anAnnotation;
 			attribute.setSlider(ann.minValue(), ann.maxValue(), ann.defaultValue(), ann.stepSize(), ann.roundTo());

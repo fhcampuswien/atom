@@ -28,7 +28,12 @@ public @interface ListBoxDefinition {
 	 * This only works with ViewType = FilterAbleDropDown
 	 * (but ViewType = FilterAbleDropDown also works with this set to false!)
 	 */
-	boolean allowOtherValues() default false; 
+	boolean allowOtherValues() default false;
+	
+	/**
+	 * any value that any instance of the containing object has in this attribute is used for the list
+	 */
+	boolean anyExistingValue() default false;
 	
 	public enum ViewType implements java.io.Serializable {
 		DropDown, RadioButtons, RadioTable, FilterAbleDropDown

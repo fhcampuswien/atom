@@ -47,18 +47,27 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		String listBoxSql = attribute.getListBoxSql();
 		String listBoxMSSeperator = attribute.getListBoxMSSeperator();
 		boolean listBoxAllowOtherValues = attribute.getListBoxAllowOtherValues();
+		boolean listBoxAnyExistingValue = attribute.getListBoxAnyExistingValue();
 		ListBoxDefinition.ViewType listBoxViewType = attribute.getListBoxViewType();
 		
-		if((listBoxSql != null && !listBoxSql.equals(""))) {
+		if(listBoxAnyExistingValue || (listBoxSql != null && !listBoxSql.equals(""))) {
+			if ("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)
+					|| "java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
+				returnValue = new ListOfPersistentStringsView(type, ListOfPersistentStringsView.Suggestions.SERVER);
 			// this is a listbox with options to load from sql
-			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
+			else if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
 				returnValue = new SuggestBoxView(forFrame.getRepresentedClass(), attributeName, listBoxAllowOtherValues);
-			else
+			else if(listBoxViewType == ListBoxDefinition.ViewType.RadioButtons || listBoxViewType == ListBoxDefinition.ViewType.RadioTable)
 				returnValue = new RadioButtonsView(forFrame.getRepresentedClass(), attributeName, listBoxViewType, listBoxMSSeperator);
+			else
+				AtomTools.log(Level.SEVERE, "ListBox Definition with unexpected ViewType encountered! this is a fatal error and requires code adaption (either Domain definition or AttributeView generation)", attribute);
 		}
 		else if(listBoxKeys != null) {
+			if ("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)
+					|| "java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
+				returnValue = new ListOfPersistentStringsView(type, attribute.getListBoxMapped());
 			// this is a listbox with static options
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator);

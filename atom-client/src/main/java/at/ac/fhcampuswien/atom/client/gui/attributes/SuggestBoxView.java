@@ -90,18 +90,6 @@ public class SuggestBoxView extends AttributeView<String, SuggestBoxView, String
 			if(s != null && s.length()>0)
 				oracle.add(s);
 		}
-//		oracle.add("something static");
-//		oracle.add("something also static");
-//		suggestBox.refreshSuggestionList();
-//		suggestBox.showSuggestionList();
-//		SuggestBox oldBox = suggestBox;
-//		suggestBox = new SuggestBox(oracle, oldBox.getValueBox());
-		
-		
-//		SuggestOracle oracle = suggestBox.getSuggestOracle();
-//		oracle.
-//		suggestBox.
-		// TODO FIXME implement!
 	}
 	
 	@Override

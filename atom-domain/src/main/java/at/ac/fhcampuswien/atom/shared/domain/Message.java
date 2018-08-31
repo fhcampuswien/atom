@@ -77,9 +77,10 @@ public class Message extends FeaturedObject {
     @Where(clause = "ownersAttribute='persistentStrings'")
 	@AttributeDisplayName("persistent Strings")
 	@AttributeValidators(AttributeValidators.notEmpty)
+	@ListBoxDefinition(anyExistingValue=true,allowOtherValues=true)
 	private Set<PersistentString> persistentStrings;
 
-	@ListBoxDefinition(viewType=ViewType.FilterAbleDropDown, sql="SELECT suggestString FROM Message")
+	@ListBoxDefinition(viewType=ViewType.FilterAbleDropDown, anyExistingValue=true, allowOtherValues=true)
 	private String suggestString;
 	
 	public Message() {

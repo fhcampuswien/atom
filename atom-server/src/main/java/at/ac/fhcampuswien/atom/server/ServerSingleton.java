@@ -729,7 +729,14 @@ public class ServerSingleton {
 		AtomTools.checkPermissionMatch(AtomConfig.accessLinkage, requestedClass.getAccessHandler().getAllAccessTypes(session));
 
 		DomainClassAttribute attr = requestedClass.getAttributeNamed(nameOfAttribute);
-		final String sql = attr.getListBoxSql();
+		String sql;
+		if (attr.getListBoxAnyExistingValue()) {
+			sql = "SELECT " + attr.getName() + " FROM " + requestedClass.getTableName();
+		}
+		else {
+			sql = attr.getListBoxSql();
+		}
+		
 		if (sql == null || sql.length() < 1) {
 
 			AtomTools.log(Level.WARNING,

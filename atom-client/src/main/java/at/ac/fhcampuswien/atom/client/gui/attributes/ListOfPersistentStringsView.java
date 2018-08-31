@@ -5,6 +5,7 @@
 package at.ac.fhcampuswien.atom.client.gui.attributes;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.client.ClientTools;
@@ -13,14 +14,32 @@ import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 
 public class ListOfPersistentStringsView extends CollectionView<Collection<PersistentString>, PersistentString> {
 
+	public enum Suggestions {
+		NONE, SERVER, LOCAL
+	}
+	
+	private String type = null;
+	private Suggestions suggestions = Suggestions.NONE;
+	private LinkedHashMap<String, String> choiceMap = null;
+	
 	@SuppressWarnings("unused")
 	private ListOfPersistentStringsView() {
 		//prevent creation without specifying type!
 	}
 	
-	private String type = null;
 	public ListOfPersistentStringsView(String type) {
 		this.type = type;		
+	}
+	
+	public ListOfPersistentStringsView(String type, Suggestions suggestions) {
+		this.type = type;	
+		this.suggestions = suggestions;
+	}
+	
+	public ListOfPersistentStringsView(String type, LinkedHashMap<String, String> choiceMap) {
+		this.type = type;	
+		this.suggestions = Suggestions.LOCAL;
+		this.choiceMap = choiceMap;
 	}
 	
 	protected void addNewItem(Object newItem) {
