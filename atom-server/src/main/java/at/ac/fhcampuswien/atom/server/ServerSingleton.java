@@ -362,6 +362,7 @@ public class ServerSingleton {
 			if(query != null && query instanceof org.hibernate.query.internal.QueryImpl)
 				queryString = "\n" + ((org.hibernate.query.internal.QueryImpl<?>) query).getQueryString();
 			ServerTools.log(Level.SEVERE, "getListOfDomainObject error for query: " + queryString, this, t);
+			AtomEMFactory.closeDBConnection();
 			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Throwable happened, see cause", t);
 		} finally {
 			if (em != null) {
@@ -453,12 +454,18 @@ public class ServerSingleton {
 			em = AtomEMFactory.getEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
-			saveDomainObject(session, domainObject, em);
+			domainObject = saveDomainObject(session, domainObject, em);
 			tx.commit();
 		}
 		catch(Throwable t) {
 			String innerMostMessage = AtomTools.getInnerMostCause(t).getMessage();
 			ServerTools.log(Level.SEVERE, "ServerSingleton.saveDomainObject Exception: " + innerMostMessage, this, t);
+			if(t instanceof org.hibernate.exception.LockAcquisitionException) {
+				// Don't care, seems to happen frequently even on first queries...
+			}
+			else {
+				AtomEMFactory.closeDBConnection();
+			}
 		}
 		finally {
 			ServerTools.closeDBConnection(tx, em);
@@ -472,7 +479,7 @@ public class ServerSingleton {
 			return null;
 	}
 
-	public void saveDomainObject(ClientSession session, DomainObject domainObject, EntityManager em) {
+	public DomainObject saveDomainObject(ClientSession session, DomainObject domainObject, EntityManager em) {
 	
 		try {			
 			DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
@@ -493,7 +500,7 @@ public class ServerSingleton {
 						FeaturedObject toSave = (FeaturedObject) domainObject;
 						if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
 							if (fromDB instanceof FrameVisit)
-								return; //simply don't save it.
+								return fromDB; //simply don't save it.
 							else
 								throw new AtomException(AtomTools.getMessages().outdated());
 						}
@@ -517,6 +524,7 @@ public class ServerSingleton {
 			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 			domainObject = em.merge(domainObject);
+			return domainObject;
 
 
 		} catch (AtomException ae) {
@@ -524,6 +532,7 @@ public class ServerSingleton {
 		} catch (Throwable t) {
 			String innerMostMessage = AtomTools.getInnerMostCause(t).getMessage();
 			ServerTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + innerMostMessage, this, t);
+			AtomEMFactory.closeDBConnection();
 			throw new AtomException(innerMostMessage, t);
 		}
 	}
