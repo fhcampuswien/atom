@@ -39,6 +39,17 @@ public class AtomEMFactory {
 			return getEntityManager();
 		}
 	}
+
+	public static void closeDBConnection() {
+		if (emFactory != null)
+			try {
+				emFactory.close();
+			} catch (Throwable t) {
+				// don't care.
+			} finally {
+				emFactory = null;
+			}
+	}
 	
 	protected static String getConnectionInfo() {
 		if(emFactory == null) {
