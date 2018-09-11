@@ -9,7 +9,10 @@ import java.util.LinkedHashMap;
 import java.util.logging.Level;
 
 import at.ac.fhcampuswien.atom.client.ClientTools;
+import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
+import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 
 public class ListOfPersistentStringsView extends CollectionView<Collection<PersistentString>, PersistentString> {
@@ -19,8 +22,6 @@ public class ListOfPersistentStringsView extends CollectionView<Collection<Persi
 	}
 	
 	private String type = null;
-	private Suggestions suggestions = Suggestions.NONE;
-	private LinkedHashMap<String, String> choiceMap = null;
 	
 	@SuppressWarnings("unused")
 	private ListOfPersistentStringsView() {
@@ -31,15 +32,28 @@ public class ListOfPersistentStringsView extends CollectionView<Collection<Persi
 		this.type = type;		
 	}
 	
-	public ListOfPersistentStringsView(String type, Suggestions suggestions) {
+	public ListOfPersistentStringsView(String type, DomainClass domainClass, String attributeName) {
 		this.type = type;	
-		this.suggestions = suggestions;
+		RPCCaller.getSinglton().loadListBoxChoices(domainClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
+			
+			@Override
+			public void requestFailed(String reason) {
+				AtomTools.log(Level.SEVERE, "failed to load ListBoxChoices from Server: " + reason, ListOfPersistentStringsView.this);
+			}
+			
+			@Override
+			public void recieve(LinkedHashMap<String, String> result) {
+				dropDownValues = result.values().toArray(new String[] {});
+				useSuggestBox = true;
+			}
+		});
+		
 	}
 	
 	public ListOfPersistentStringsView(String type, LinkedHashMap<String, String> choiceMap) {
-		this.type = type;	
-		this.suggestions = Suggestions.LOCAL;
-		this.choiceMap = choiceMap;
+		this.type = type;
+		dropDownValues = choiceMap.values().toArray(new String[] {});
+		useSuggestBox = true;
 	}
 	
 	protected void addNewItem(Object newItem) {

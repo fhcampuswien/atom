@@ -53,7 +53,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		if(listBoxAnyExistingValue || (listBoxSql != null && !listBoxSql.equals(""))) {
 			if ("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)
 					|| "java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
-				returnValue = new ListOfPersistentStringsView(type, ListOfPersistentStringsView.Suggestions.SERVER);
+				returnValue = new ListOfPersistentStringsView(type, forFrame.getRepresentedClass(), attributeName);
 			// this is a listbox with options to load from sql
 			else if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator);

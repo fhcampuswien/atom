@@ -7,8 +7,6 @@ package at.ac.fhcampuswien.atom.server;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +26,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.LobCreator;
-import org.hibernate.jdbc.Work;
 
 import at.ac.fhcampuswien.atom.server.auth.Authenticator;
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
@@ -46,6 +43,7 @@ import at.ac.fhcampuswien.atom.shared.domain.ClipBoardEntry;
 import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 import at.ac.fhcampuswien.atom.shared.domain.FeaturedObject;
 import at.ac.fhcampuswien.atom.shared.domain.FrameVisit;
+import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 import at.ac.fhcampuswien.atom.shared.exceptions.AuthenticationException;
 import at.ac.fhcampuswien.atom.shared.exceptions.ValidationError;
@@ -738,15 +736,18 @@ public class ServerSingleton {
 		AtomTools.checkPermissionMatch(AtomConfig.accessLinkage, requestedClass.getAccessHandler().getAllAccessTypes(session));
 
 		DomainClassAttribute attr = requestedClass.getAttributeNamed(nameOfAttribute);
-		String sql;
+		String hql;
 		if (attr.getListBoxAnyExistingValue()) {
-			sql = "SELECT " + attr.getName() + " FROM " + requestedClass.getTableName();
+			hql = "SELECT DISTINCT " + attr.getName() + " FROM " + requestedClass.getTableName();
+//			String where = attr.getWhere();
+//			if(where != null)
+//				sql += " WHERE " + where;
 		}
 		else {
-			sql = attr.getListBoxSql();
+			hql = attr.getListBoxSql();
 		}
 		
-		if (sql == null || sql.length() < 1) {
+		if (hql == null || hql.length() < 1) {
 
 			AtomTools.log(Level.WARNING,
 					"you should not ask server for static ListBoxValues that the client can read out of the DomainTree metadata himself..", this);
@@ -755,31 +756,48 @@ public class ServerSingleton {
 			
 			EntityManager em = null;
 			EntityTransaction tx = null;
+			final LinkedHashMap<String, String> returnValue = new LinkedHashMap<String, String>();
 
 			try {
 				em = AtomEMFactory.getEntityManager();
 				tx = em.getTransaction();
 				tx.begin();
-
-				final LinkedHashMap<String, String> returnValue = new LinkedHashMap<String, String>();
-				((Session) em.unwrap(Session.class)).doWork(new Work() {
-					@Override
-					public void execute(Connection connection) throws SQLException {
-
-						java.sql.Statement stmt = connection.createStatement();
-						stmt.execute(sql);
-						java.sql.ResultSet rs = stmt.getResultSet();
-
-						while (rs.next()) {
-							if (rs.getMetaData().getColumnCount() == 1)
-								returnValue.put(rs.getString(1), rs.getString(1));
-							else if (rs.getMetaData().getColumnCount() == 2)
-								returnValue.put(rs.getString(1), rs.getString(2));
-							else
-								throw new AtomException("ListBoxSql selects an invalid number of columns! --> " + sql);
-						}
+				Query query = em.createQuery(hql);
+				for (Object o : query.getResultList()) {
+					if(o instanceof String) {
+						String s = (String)o;
+						returnValue.put(s,s);
 					}
-				});
+					else if(o instanceof PersistentString) {
+						PersistentString s = (PersistentString)o;
+						returnValue.put(s.getValue(), s.getValue());
+					}
+					else if(o == null) {
+						// don't care.
+					}
+					else {
+						AtomTools.log(Level.SEVERE, "need to implement handling " + o.getClass().toString() + " -> " + o.toString(), this);
+					}
+				}
+
+//				((Session) em.unwrap(Session.class)).doWork(new Work() {
+//					@Override
+//					public void execute(Connection connection) throws SQLException {
+//
+//						java.sql.Statement stmt = connection.createStatement();
+//						stmt.execute(sql);
+//						java.sql.ResultSet rs = stmt.getResultSet();
+//
+//						while (rs.next()) {
+//							if (rs.getMetaData().getColumnCount() == 1)
+//								returnValue.put(rs.getString(1), rs.getString(1));
+//							else if (rs.getMetaData().getColumnCount() == 2)
+//								returnValue.put(rs.getString(1), rs.getString(2));
+//							else
+//								throw new AtomException("ListBoxSql selects an invalid number of columns! --> " + sql);
+//						}
+//					}
+//				});
 				return returnValue;
 
 			} catch (Exception e) {

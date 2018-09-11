@@ -4,6 +4,7 @@
  */
 package at.ac.fhcampuswien.atom.server;
 
+import java.beans.Transient;
 import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -20,7 +21,8 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+
+import org.hibernate.annotations.Where;
 
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
@@ -442,6 +444,9 @@ public class DomainAnalyzer {
 		} else if (anAnnotation instanceof OneToMany) {
 			OneToMany oneToMany = (OneToMany) anAnnotation;
 			attribute.setMappedBy(oneToMany.mappedBy());
+		} else if (anAnnotation instanceof Where) {
+			Where where = (Where) anAnnotation;
+			attribute.setWhere(where.clause());
 		} else {
 			attribute.addAnnotation(anAnnotation.toString());
 		}

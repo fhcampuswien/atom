@@ -41,6 +41,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private String attributeGroup = null;
 	private String[] validators = null;
 	private String mappedBy = null;
+	private String where = null;
 
 	private Boolean hideFromListGui = null;
 	private Boolean hideFromDetailGui = null;
@@ -472,6 +473,14 @@ public class DomainClassAttribute implements java.io.Serializable {
 
 	public String getMappedBy() {
 		return mappedBy;
+	}
+
+	public String getWhere() {
+		return where;
+	}
+
+	public void setWhere(String where) {
+		this.where = where;
 	}
 
 //	/**

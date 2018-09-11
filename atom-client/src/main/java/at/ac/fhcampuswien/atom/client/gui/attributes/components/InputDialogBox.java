@@ -4,11 +4,8 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes.components;
 
-import at.ac.fhcampuswien.atom.client.ClientTools;
-import at.ac.fhcampuswien.atom.shared.AtomTools;
-import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
-
 import java.util.logging.Level;
+
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -21,7 +18,14 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
+import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
+
+import at.ac.fhcampuswien.atom.client.ClientTools;
+import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
 public class InputDialogBox extends DialogBox {
 	
@@ -31,16 +35,17 @@ public class InputDialogBox extends DialogBox {
 		public void inputCanceled();
 	}
 	
-	public InputDialogBox(final Object oldValue, final String[] dropDownValues, final Callback callback) {
-		this(oldValue, dropDownValues, "Bitte geben Sie das neue Element ein.", null, null, callback);
+	public InputDialogBox(final Object oldValue, final String[] dropDownValues, boolean useSuggestBox, final Callback callback) {
+		this(oldValue, dropDownValues, "Bitte geben Sie das neue Element ein.", null, null, useSuggestBox, callback);
 	}
 	
+	private Widget inputBoxOrContainer;
 	private FocusWidget inputBox;
 	private CheckBox checkBox;
 	private Callback callback;
 	private Object oldValue;
 
-	public InputDialogBox(Object oldValue, String[] dropDownValues, String title, Boolean checkBoxDefault, String checkBoxLabel, Callback callback) {
+	public InputDialogBox(Object oldValue, String[] dropDownValues, String title, Boolean checkBoxDefault, String checkBoxLabel, boolean useSuggestBox, Callback callback) {
 		super(false, true);
 		this.callback = callback;
 		this.oldValue = oldValue;
@@ -49,7 +54,7 @@ public class InputDialogBox extends DialogBox {
 
 		AtomTools.log(Level.INFO, "show popup to enter a new entry", this);
 		
-		if(dropDownValues == null) {
+		if(dropDownValues == null || dropDownValues.length <= 0) {
 			inputBox = new TextBox();
 			inputBox.addKeyPressHandler(new KeyPressHandler() {
 				
@@ -62,12 +67,24 @@ public class InputDialogBox extends DialogBox {
 			});
 		}
 		else {
-			ListBox listBox = new ListBox();
-			listBox.setMultipleSelect(false);
-			for(String s : dropDownValues) {
-				listBox.addItem(s);
+			if(useSuggestBox) {
+				MultiWordSuggestOracle oracle = new MultiWordSuggestOracle();
+				for(String s : dropDownValues) {
+					if(s != null && s.length()>0)
+						oracle.add(s);
+				}
+				SuggestBox suggestBox = new SuggestBox(oracle);
+				inputBox = suggestBox.getValueBox();
+				inputBoxOrContainer = suggestBox;
 			}
-			inputBox = listBox;
+			else {
+				ListBox listBox = new ListBox();
+				listBox.setMultipleSelect(false);
+				for(String s : dropDownValues) {
+					listBox.addItem(s);
+				}
+				inputBox = listBox;
+			}
 		}
 
 		DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
@@ -107,7 +124,11 @@ public class InputDialogBox extends DialogBox {
 		if(checkBoxDefault != null)
 			dockLayoutPanel.addSouth(checkBox, 26);
 		
-		dockLayoutPanel.add(inputBox);
+		if(inputBoxOrContainer != null)
+			dockLayoutPanel.add(inputBoxOrContainer);
+		else
+			dockLayoutPanel.add(inputBox);
+		
 		dockLayoutPanel.setSize("100%", ((checkBoxDefault != null ? 26 : 0) + 65) + "px");
 		dockLayoutPanel.getElement().getStyle().setProperty("minWidth", "200px");
 
