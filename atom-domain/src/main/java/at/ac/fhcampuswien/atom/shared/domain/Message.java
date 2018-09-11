@@ -76,7 +76,7 @@ public class Message extends FeaturedObject {
 	@OneToMany(mappedBy = "owner", orphanRemoval = true, cascade = CascadeType.ALL)
     @Where(clause = "ownersAttribute='persistentStrings'")
 	@AttributeDisplayName("persistent Strings")
-	@AttributeValidators(AttributeValidators.notEmpty)
+//	@AttributeValidators(AttributeValidators.notEmpty)
 	@ListBoxDefinition(anyExistingValue=true,allowOtherValues=true)
 	private Set<PersistentString> persistentStrings;
 
