@@ -382,6 +382,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 		for(Frame f : matchedFrames) {
 			FrameVisit v = frameVisits.get(f);
 			this.removeElement(v, true);
+			frameVisits.remove(f);
 		}
 	}
 
