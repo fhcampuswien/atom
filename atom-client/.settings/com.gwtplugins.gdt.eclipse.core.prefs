@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
 gwtMavenModuleName=at.ac.fhcampuswien.atom.App
 gwtMavenModuleShortName=app
-lastWarOutDir=/home/kaefert/Development/workspace_ATOM/atom/atom-client/target/atom-client-0.0.1-SNAPSHOT
+lastWarOutDir=/home/kaefert/git/atom/atom-client/target/atom-client-0.0.1-SNAPSHOT
 warSrcDir=src/main/webapp
 warSrcDirIsOutput=false
