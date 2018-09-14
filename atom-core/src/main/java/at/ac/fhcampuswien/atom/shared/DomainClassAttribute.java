@@ -49,6 +49,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private String[] listBoxKeys = null;
 	private String[] listBoxDisplay = null;
 	private String listBoxSql = null;
+	private boolean listBoxUseHql = false;
 	private ListBoxDefinition.ViewType listBoxViewType = null;
 	private String listBoxMSSeperator = null;
 	private boolean listBoxAllowOtherValues = false;
@@ -318,10 +319,11 @@ public class DomainClassAttribute implements java.io.Serializable {
 		this.relationEssential = relationEssential;
 	}
 
-	public void setListBox(String[] keys, String[] display, String sql, ViewType viewType, String multiSelectSeperator, boolean allowOtherValues, boolean anyExistingValue) {
+	public void setListBox(String[] keys, String[] display, String sql, boolean useHql, ViewType viewType, String multiSelectSeperator, boolean allowOtherValues, boolean anyExistingValue) {
 		listBoxKeys = keys;
 		listBoxDisplay = display;
 		listBoxSql = sql;
+		listBoxUseHql = useHql;
 		listBoxViewType = viewType;
 		listBoxMSSeperator = multiSelectSeperator;
 		listBoxAllowOtherValues = allowOtherValues;
@@ -363,6 +365,10 @@ public class DomainClassAttribute implements java.io.Serializable {
 	
 	public String getListBoxSql() {
 		return listBoxSql;
+	}
+
+	public boolean getListBoxUseHql() {
+		return listBoxUseHql;
 	}
 
 	public ViewType getListBoxViewType() {

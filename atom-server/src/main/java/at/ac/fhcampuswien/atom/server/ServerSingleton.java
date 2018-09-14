@@ -7,6 +7,8 @@ package at.ac.fhcampuswien.atom.server;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.engine.jdbc.LobCreator;
+import org.hibernate.jdbc.Work;
 
 import at.ac.fhcampuswien.atom.server.auth.Authenticator;
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
@@ -737,8 +740,11 @@ public class ServerSingleton {
 
 		DomainClassAttribute attr = requestedClass.getAttributeNamed(nameOfAttribute);
 		String hql;
+		boolean useHql = attr.getListBoxUseHql();
+		
 		if (attr.getListBoxAnyExistingValue()) {
 			hql = "SELECT DISTINCT " + attr.getName() + " FROM " + requestedClass.getTableName();
+			useHql = true;
 //			String where = attr.getWhere();
 //			if(where != null)
 //				sql += " WHERE " + where;
@@ -762,42 +768,47 @@ public class ServerSingleton {
 				em = AtomEMFactory.getEntityManager();
 				tx = em.getTransaction();
 				tx.begin();
-				Query query = em.createQuery(hql);
-				for (Object o : query.getResultList()) {
-					if(o instanceof String) {
-						String s = (String)o;
-						returnValue.put(s,s);
-					}
-					else if(o instanceof PersistentString) {
-						PersistentString s = (PersistentString)o;
-						returnValue.put(s.getValue(), s.getValue());
-					}
-					else if(o == null) {
-						// don't care.
-					}
-					else {
-						AtomTools.log(Level.SEVERE, "need to implement handling " + o.getClass().toString() + " -> " + o.toString(), this);
+				
+				if(useHql) {
+					Query query = em.createQuery(hql);
+					for (Object o : query.getResultList()) {
+						if(o instanceof String) {
+							String s = (String)o;
+							returnValue.put(s,s);
+						}
+						else if(o instanceof PersistentString) {
+							PersistentString s = (PersistentString)o;
+							returnValue.put(s.getValue(), s.getValue());
+						}
+						else if(o == null) {
+							// don't care.
+						}
+						else {
+							AtomTools.log(Level.SEVERE, "need to implement handling " + o.getClass().toString() + " -> " + o.toString(), this);
+						}
 					}
 				}
-
-//				((Session) em.unwrap(Session.class)).doWork(new Work() {
-//					@Override
-//					public void execute(Connection connection) throws SQLException {
-//
-//						java.sql.Statement stmt = connection.createStatement();
-//						stmt.execute(sql);
-//						java.sql.ResultSet rs = stmt.getResultSet();
-//
-//						while (rs.next()) {
-//							if (rs.getMetaData().getColumnCount() == 1)
-//								returnValue.put(rs.getString(1), rs.getString(1));
-//							else if (rs.getMetaData().getColumnCount() == 2)
-//								returnValue.put(rs.getString(1), rs.getString(2));
-//							else
-//								throw new AtomException("ListBoxSql selects an invalid number of columns! --> " + sql);
-//						}
-//					}
-//				});
+				else {
+					((Session) em.unwrap(Session.class)).doWork(new Work() {
+						@Override
+						public void execute(Connection connection) throws SQLException {
+	
+							java.sql.Statement stmt = connection.createStatement();
+							stmt.execute(hql);
+							java.sql.ResultSet rs = stmt.getResultSet();
+	
+							while (rs.next()) {
+								if (rs.getMetaData().getColumnCount() == 1)
+									returnValue.put(rs.getString(1), rs.getString(1));
+								else if (rs.getMetaData().getColumnCount() == 2)
+									returnValue.put(rs.getString(1), rs.getString(2));
+								else
+									throw new AtomException("ListBoxSql selects an invalid number of columns! --> " + hql);
+							}
+						}
+					});
+				}
+				
 				return returnValue;
 
 			} catch (Exception e) {

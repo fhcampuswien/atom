@@ -17,6 +17,7 @@ public @interface ListBoxDefinition {
 	 * the sql query can have 2 columns (key & value) or 1 column which is then used for both key and display value.
 	 */
 	String sql() default "";
+	boolean useHql() default false;
 	
 	/**
 	 * empty string (default) means that this is not a multiselect attribute
