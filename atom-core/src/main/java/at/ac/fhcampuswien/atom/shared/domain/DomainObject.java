@@ -287,7 +287,7 @@ public class DomainObject implements Serializable {
 	}
 	
 	@AnalyzerIgnore
-	@OneToMany(mappedBy = "representedInstance", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL) 
+	@OneToMany(mappedBy = "representedInstance", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //, orphanRemoval = true 
 	@OnDelete(action = OnDeleteAction.CASCADE)
 //	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	@GwtTransient
@@ -322,7 +322,7 @@ public class DomainObject implements Serializable {
 	}
 	
 	@AnalyzerIgnore
-	@OneToMany(mappedBy = "instance", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "instance", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //, orphanRemoval = true
 	@OnDelete(action = OnDeleteAction.CASCADE)
 //	@OnDelete(action = OnDeleteAction.NO_ACTION)
 	@GwtTransient
