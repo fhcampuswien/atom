@@ -450,7 +450,7 @@ public class DomainObjectDetailFrame extends Frame {
 						reason.put(attrGroup, currentGroup);
 					}
 				}
-				reason.remove(autoGroup);
+				reason.remove(DomainObject.autoDetectAttributeGroup);
 			}
 			
 			for(Entry<String,LinkedHashSet<String>> entry : reason.entrySet()) {
