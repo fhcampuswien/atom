@@ -833,7 +833,7 @@ public class ServerTools {
 	 * @param clear
 	 *            true = clear relations, false = replace with uptodate copys from the database.
 	 */
-	public static void handleRelatedObjects(EntityManager em, DomainObject domainObject, DomainClass domainClass, boolean clear, ClientSession session) {
+	public static void handleRelatedObjects(EntityManager em, DomainObject domainObject, DomainClass domainClass, boolean clear, ClientSession session, DomainObject dbVersion) {
 		Class<?> reflClass = domainObject.getClass();
 
 		for (DomainClassAttribute domainClassAttribute : domainClass.getAttributesOfTypeDomainObject()) {
@@ -887,7 +887,8 @@ public class ServerTools {
 					if (clear) {
 						setAttribute.invoke(domainObject, new Object[] { null });
 					} else {
-						HashSet<DomainObject> fromDB = new HashSet<DomainObject>();
+						String mappedBy = domainClassAttribute.getMappedBy();
+						HashSet<DomainObject> targetSet = new HashSet<DomainObject>();
 						for (Object relObj : related) {
 							if (relObj instanceof DomainObject) {
 								DomainObject obj = (DomainObject) relObj;
@@ -908,23 +909,39 @@ public class ServerTools {
 									}
 //									PersistentString psDB = em.merge(ps);
 //									fromDB.add(psDB);
-									fromDB.add(ps);
+									targetSet.add(ps);
 								}
 								else {
 									DomainObject relatedElement = em.find(obj.getClass(), obj.getObjectID());
-									String mappedBy = domainClassAttribute.getMappedBy();
 									if(mappedBy != null && mappedBy.length() > 0) {
 										Class<?> collectedClass = relatedElement.getClass();
 										Method setMappedBy = collectedClass.getMethod("set" + AtomTools.upperFirstChar(mappedBy), new Class[] { domainObject.getClass() });
 										setMappedBy.invoke(relatedElement, new Object[] { domainObject });
 									}
-									fromDB.add(relatedElement);
+									targetSet.add(relatedElement);
 								}
 							} else {
 								AtomTools.log(Level.SEVERE, "this cannot happen, someone seriously messed with my code!", ServerTools.class);
 							}
 						}
-						setAttribute.invoke(domainObject, new Object[] { fromDB });
+						if(domainObject.getObjectID() != null && mappedBy != null && mappedBy.length() > 0) {
+							//if the object is pre-existing and the set is mappedBy reverse side, linked objects that might have been removed from the set need to be told of the disconnect.
+							if(dbVersion == null)
+								dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
+
+							@SuppressWarnings("unchecked")
+							Iterable<Object> linkedInDBIter = (Iterable<Object>) getAttribute.invoke(dbVersion, new Object[] {});
+							
+							if(linkedInDBIter != null)
+								for(Object linkedInDB : linkedInDBIter)
+									if(!targetSet.contains(linkedInDB)) {
+											Class<?> collectedClass = linkedInDB.getClass();
+											Method setMappedBy = collectedClass.getMethod("set" + AtomTools.upperFirstChar(mappedBy), new Class[] { domainObject.getClass() });
+											setMappedBy.invoke(linkedInDB, new Object[] { null });
+											em.merge(linkedInDB);
+										}
+						}
+						setAttribute.invoke(domainObject, new Object[] { targetSet });
 					}
 				}
 

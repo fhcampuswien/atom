@@ -484,11 +484,12 @@ public class ServerSingleton {
 	
 		try {			
 			DomainClass requestedClass = DomainAnalyzer.getDomainClass(domainObject.getConcreteClass());
+			DomainObject dbVersion = null;
 	
 			if (domainObject.getObjectID() == null) {
 				AtomTools.checkPermissionMatch(AtomConfig.accessCreateNew, requestedClass.getAccessHandler().getAccessTypes(session, domainObject));
 			} else {
-				DomainObject dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
+				dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
 				if (dbVersion == null) {
 					if (domainObject instanceof FrameVisit || domainObject instanceof ClipBoardEntry) {
 						throw new AtomException(AtomTools.getMessages().save_deleted(String.valueOf(domainObject.getObjectID())));
@@ -500,8 +501,9 @@ public class ServerSingleton {
 						FeaturedObject fromDB = (FeaturedObject) dbVersion;
 						FeaturedObject toSave = (FeaturedObject) domainObject;
 						if (fromDB.getLastModifiedDate() != null && fromDB.getLastModifiedDate().after(toSave.getLastModifiedDate())) {
+							// a newer change has been saved already!
 							if (fromDB instanceof FrameVisit)
-								return fromDB; //simply don't save it.
+								return fromDB; //simply don't save it but present the newer one as the result of the save operation
 							else
 								throw new AtomException(AtomTools.getMessages().outdated());
 						}
@@ -513,16 +515,17 @@ public class ServerSingleton {
 						FrameVisit frameVisit = (FrameVisit) domainObject;
 						FrameVisit frameVisitDB = (FrameVisit) dbVersion;
 						if(frameVisit.getRepresentedInstance() != null)
+							// don't save an object with it's visit, only when user command's to save not on visit!
 							frameVisit.getRepresentedInstance().setFrameVisits(frameVisitDB.getFrameVisits());
 					}
-					domainObject.setFrameVisits(dbVersion.getFrameVisits());
+					domainObject.setFrameVisits(dbVersion.getFrameVisits()); // FrameVisits are only saved on their own, not with their represented objects (which would only contain visits of the saving user)
 				}
 			}
 		
 			domainObject.prepareSave(session);
 			ServerTools.validateDomainObject(domainObject);
 
-			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session);
+			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session, dbVersion);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 			domainObject = em.merge(domainObject);
 			return domainObject;
