@@ -254,18 +254,21 @@ public class UploadImportServlet extends HttpServlet {
 					}
 				} else if (i == 1) {
 					// check if second row is displayNames or already data
-					int j = 0, matched = 0;
+					int j = 0, matched = 0, empty = 0;
 					for (HSSFCell cell : row) {
 						DomainClassAttribute attribute = domainClass.getAttributeNamed(headers.get(j));
-						if(cell.toString().equals(attribute.getDisplayName()))
+						if(cell == null || cell.toString() == null || cell.toString().length() < 1)
+							empty++;
+						else if(cell.toString().equals(attribute.getDisplayName()))
 							matched++;
 						j++;
 					}
-					if(matched < j/2)
+					if(j > 0 && (matched < j/2 || (matched < j/4 && matched+empty < j*3/4)))
 						processRow(headers, row, session, className, em);
 					// otherwise more than half of the columns have the display name in them -> this is probably the display name row we have in the export in the second row, don't process as data row!
 				} else {
-					processRow(headers, row, session, className, em);
+					if(row.size() > 0) // ignore empty rows
+						processRow(headers, row, session, className, em);
 				}
 				i++;
 			}
