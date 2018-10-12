@@ -235,6 +235,7 @@ public class UploadImportServlet extends HttpServlet {
 		EntityManager em = null;
 		EntityTransaction tx = null;
 		try {
+			DomainClass domainClass = DomainAnalyzer.getDomainClass(className);
 			em = AtomEMFactory.getEntityManager();
 			tx = em.getTransaction();
 			tx.begin();
@@ -252,7 +253,17 @@ public class UploadImportServlet extends HttpServlet {
 							headers.add("emptyHeader#" + emptyHeader++);
 					}
 				} else if (i == 1) {
-					// do nothing, second line are display names!
+					// check if second row is displayNames or already data
+					int j = 0, matched = 0;
+					for (HSSFCell cell : row) {
+						DomainClassAttribute attribute = domainClass.getAttributeNamed(headers.get(j));
+						if(cell.toString().equals(attribute.getDisplayName()))
+							matched++;
+						j++;
+					}
+					if(matched < j/2)
+						processRow(headers, row, session, className, em);
+					// otherwise more than half of the columns have the display name in them -> this is probably the display name row we have in the export in the second row, don't process as data row!
 				} else {
 					processRow(headers, row, session, className, em);
 				}
