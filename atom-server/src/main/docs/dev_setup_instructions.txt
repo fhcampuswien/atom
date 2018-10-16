@@ -41,11 +41,17 @@ mvn install:install-file -DgroupId=gwtent -DartifactId=gwtent -Dversion=2.0_RC1_
 
 ===============================================================
 
+https://docs.microsoft.com/en-us/sql/connect/jdbc/microsoft-jdbc-driver-for-sql-server?view=sql-server-2017
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc -Dversion=7.0.0.jre8 -DgeneratePom=true -Dpackaging=jar -Dfile="/home/kaefert/Development/mssql-jdbc-7.0.0.jre8.jar"
+
+https://www.microsoft.com/de-at/download/details.aspx?id=11774
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=6.0.8112.200_4.2 -DgeneratePom=true -Dpackaging=jar -Dfile="/home/kaefert/Development/sqljdbc42.jar"
+
 http://www.microsoft.com/downloads/en/details.aspx?FamilyID=a737000d-68d0-4531-b65d-da0f2a735707 --> 1033\sqljdbc_3.0.1301.101_enu.tar.gz
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=2.0        -DgeneratePom=true -Dfile="/home/thomas/Downloads/sqljdbc4.jar"  -Dpackaging=jar
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=2.0        -DgeneratePom=true -Dfile="/home/kaefert/Arbeitsfläche/Userdata/Development/libraries/sqljdbc4.jar"  -Dpackaging=jar
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.0.2206.100   -DgeneratePom=true -Dfile="/home/kaefert/Development/libs/sqljdbc_4.0/enu/sqljdbc4.jar"         -Dpackaging=jar
-mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.1 -DgeneratePom=true -Dfile="sqljdbc41.jar" -Dpackaging=jar
+mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.1 -DgeneratePom=true -Dfile="sqljdbc42.jar" -Dpackaging=jar
 
 mvn install:install-file -DgroupId=com.microsoft.sqlserver.jdbc -DartifactId=sqljdbc4 -Dversion=4.1 -DgeneratePom=true -Dpackaging=jar -Dfile="/media/kaefert/693c12e5-04cf-4b79-b85c-c2b25ba61010/2015-10-02_mint17-2_home/Development/Downloads/sqljdbc_4.1/enu/sqljdbc41.jar"
 

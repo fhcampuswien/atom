@@ -133,8 +133,9 @@
 		<!-- Datenbankzugriff Microsoft SQL -->
 		<dependency>
 			<groupId>com.microsoft.sqlserver.jdbc</groupId>
-			<artifactId>sqljdbc4</artifactId>
-			<version>6.4.0.jre8</version>
+			<artifactId>sqljdbc</artifactId>
+			<version>7.0.0.jre8</version>
+			<!-- <version>6.4.0.jre8</version> -->
 			<!-- <version>[2.0,)</version> -->
 			<!-- <version>3.0</version> -->
 			<type>jar</type>
