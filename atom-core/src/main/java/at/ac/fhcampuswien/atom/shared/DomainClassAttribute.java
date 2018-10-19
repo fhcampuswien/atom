@@ -25,6 +25,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	
 	private String name;
 	private String displayName = null;
+	private String tooltip = null;
 	private String type;
 	private ArrayList<String> annotations = new ArrayList<String>();
 	private boolean isField = false;
@@ -246,11 +247,19 @@ public class DomainClassAttribute implements java.io.Serializable {
 		this.displayName = displayName;
 	}
 
+	public void setTooltip(String tooltip) {
+		this.tooltip = tooltip;
+	}
+	
 	public String getDisplayName() {
 		if (displayName != null && !"".equals(displayName))
 			return displayName;
 		else
 			return name;
+	}
+	
+	public String getTooltip() {
+		return tooltip;
 	}
 
 	public void setBooleanMeaning(Boolean value, String meaning) {

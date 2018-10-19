@@ -275,6 +275,7 @@ public class DomainObjectDetailFrame extends Frame {
 					attributeFields.put(attribute, attributeView);
 
 					Label avLabel = new Label(attribute.getDisplayName());
+					avLabel.setTitle(attribute.getTooltip());
 					avLabel.setStylePrimaryName(panelStyle.avLabel());
 					avLabel.setWordWrap(false);
 					attributeLables.put(attribute, avLabel);

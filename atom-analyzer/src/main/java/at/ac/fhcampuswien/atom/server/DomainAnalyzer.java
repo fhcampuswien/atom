@@ -36,6 +36,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.AttributeDisplayName;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeGroup;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeLoadingPolicy;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributePlacement;
+import at.ac.fhcampuswien.atom.shared.annotations.AttributeTooltip;
 import at.ac.fhcampuswien.atom.shared.annotations.AttributeValidators;
 import at.ac.fhcampuswien.atom.shared.annotations.BooleanAttributeMeaning;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNamePlural;
@@ -395,6 +396,9 @@ public class DomainAnalyzer {
 			attribute.setTransient();
 		} else if (anAnnotation instanceof AttributeDisplayName) {
 			attribute.setDisplayName(((AttributeDisplayName) anAnnotation).value());
+		} else if (anAnnotation instanceof AttributeTooltip) {
+			attribute.setTooltip(((AttributeTooltip) anAnnotation).value());
+			
 		} else if (anAnnotation instanceof AttributeValidators) {
 			attribute.setValidators(((AttributeValidators) anAnnotation).value());
 		} else if (anAnnotation instanceof HideFromListGui) {
