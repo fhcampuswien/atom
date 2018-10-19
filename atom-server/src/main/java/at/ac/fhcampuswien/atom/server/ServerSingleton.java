@@ -464,6 +464,10 @@ public class ServerSingleton {
 			if(t instanceof org.hibernate.exception.LockAcquisitionException) {
 				// Don't care, seems to happen frequently even on first queries...
 			}
+			if(t instanceof AtomException) {
+				// seems intentional, don't reset db because of this, instead pass it to the client!
+				throw t;
+			}
 			else {
 				AtomEMFactory.closeDBConnection();
 			}
@@ -536,7 +540,7 @@ public class ServerSingleton {
 		} catch (Throwable t) {
 			String innerMostMessage = AtomTools.getInnerMostCause(t).getMessage();
 			ServerTools.log(Level.SEVERE, "ServerTools.saveDomainobject exception: " + innerMostMessage, this, t);
-			AtomEMFactory.closeDBConnection();
+//			AtomEMFactory.closeDBConnection();
 			throw new AtomException(innerMostMessage, t);
 		}
 	}
