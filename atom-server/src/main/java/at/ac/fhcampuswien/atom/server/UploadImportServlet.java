@@ -232,6 +232,7 @@ public class UploadImportServlet extends HttpServlet {
 
 	private void processData(ArrayList<ArrayList<HSSFCell>> data, ClientSession session, String className) {
 
+		HashSet<AtomException> importProblems = new HashSet<AtomException>();
 		EntityManager em = null;
 		EntityTransaction tx = null;
 		try {
@@ -243,36 +244,49 @@ public class UploadImportServlet extends HttpServlet {
 			ArrayList<String> headers = null;
 			int i = 0;
 			for (ArrayList<HSSFCell> row : data) {
-				if (i == 0) {
-					headers = new ArrayList<String>();
-					int emptyHeader = 1;
-					for (HSSFCell cell : row) {
-						if (cell != null)
-							headers.add(cell.toString());
-						else
-							headers.add("emptyHeader#" + emptyHeader++);
+				try {
+					if (i == 0) {
+						headers = new ArrayList<String>();
+						int emptyHeader = 1;
+						for (HSSFCell cell : row) {
+							if (cell != null)
+								headers.add(cell.toString());
+							else
+								headers.add("emptyHeader#" + emptyHeader++);
+						}
+					} else if (i == 1) {
+						// check if second row is displayNames or already data
+						int j = 0, matched = 0, empty = 0;
+						for (HSSFCell cell : row) {
+							DomainClassAttribute attribute = domainClass.getAttributeNamed(headers.get(j));
+							if(cell == null || cell.toString() == null || cell.toString().length() < 1)
+								empty++;
+							else if(cell.toString().equals(attribute.getDisplayName()))
+								matched++;
+							j++;
+						}
+						if(j > 0 && (matched < j/2 || (matched < j/4 && matched+empty < j*3/4)))
+							processRow(headers, row, session, className, em);
+						// otherwise more than half of the columns have the display name in them -> this is probably the display name row we have in the export in the second row, don't process as data row!
+					} else {
+						if(row.size() > 0) // ignore empty rows
+							processRow(headers, row, session, className, em);
 					}
-				} else if (i == 1) {
-					// check if second row is displayNames or already data
-					int j = 0, matched = 0, empty = 0;
-					for (HSSFCell cell : row) {
-						DomainClassAttribute attribute = domainClass.getAttributeNamed(headers.get(j));
-						if(cell == null || cell.toString() == null || cell.toString().length() < 1)
-							empty++;
-						else if(cell.toString().equals(attribute.getDisplayName()))
-							matched++;
-						j++;
-					}
-					if(j > 0 && (matched < j/2 || (matched < j/4 && matched+empty < j*3/4)))
-						processRow(headers, row, session, className, em);
-					// otherwise more than half of the columns have the display name in them -> this is probably the display name row we have in the export in the second row, don't process as data row!
-				} else {
-					if(row.size() > 0) // ignore empty rows
-						processRow(headers, row, session, className, em);
+				}
+				catch (AtomException ae) {
+					importProblems.add(ae);
 				}
 				i++;
 			}
-			tx.commit();
+			if(importProblems.size() == 0)
+				tx.commit();
+			else {
+				String allProblems = "";
+				for(AtomException ae : importProblems) {
+						allProblems += "\n" + ae.getMessage(); 
+				}
+				throw new AtomException(allProblems);
+			}
 		} catch (AtomException ae) {
 			throw ae;
 		} catch (Throwable t) {
