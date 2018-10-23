@@ -683,7 +683,15 @@ public class App implements EntryPoint {
 	}
 
 	public static void actionOpenProfile() {
-		openDetailView(RPCCaller.getSinglton().getClientSession().getUser(), null, false);
+		RPCCaller.getSinglton().getDomainTree(new WaitingFor<DomainClass>() {
+			@Override
+			public void recieve(DomainClass result) {
+				openDetailView(RPCCaller.getSinglton().getClientSession().getUser(), result.getDomainClassNamed("StoreableUser"), false);
+			}
+			@Override
+			public void requestFailed(String reason) {
+			}
+		});
 	}
 	
 	public static void actionHome() {
