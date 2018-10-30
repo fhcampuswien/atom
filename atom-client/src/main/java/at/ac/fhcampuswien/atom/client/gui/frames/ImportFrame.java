@@ -31,7 +31,7 @@ public class ImportFrame extends Frame {
 
     interface ImportFrameUiBinder extends UiBinder<Widget, ImportFrame> {
     }
-
+    
     private static String getTitlte(DomainClass domainClass) {
 	return "Import " + domainClass.getPluralName();
     }
@@ -54,7 +54,11 @@ public class ImportFrame extends Frame {
 		    if(result == null || result.length() < 1)
 		    	setError("import complete!");
 		    else
-		    	setError(result);
+		    	setError(result.replace(
+		    			 "<h1>HTTP Status 500 - </h1><hr size=\"1\" noshade=\"noshade\"><p><b>type</b> Exception report</p><p><b>message</b> <u></u></p><p><b>description</b> <u>The server encountered an internal error that prevented it from fulfilling this request.</u></p><p><b>exception</b> </p><pre>at.ac.fhcampuswien.atom.shared.exceptions.AtomException: \n"
+		    			,"<h1>Fehler beim Import</h1>\n</p><pre>").replace(
+		    			 "\n\tat.ac.fhcampuswien.atom.server.UploadImportServlet.processData(UploadImportServlet.java:288)\n\tat.ac.fhcampuswien.atom.server.UploadImportServlet.processXls(UploadImportServlet.java:224)\n\tat.ac.fhcampuswien.atom.server.UploadImportServlet.doPost(UploadImportServlet.java:164)\n\tjavax.servlet.http.HttpServlet.service(HttpServlet.java:647)\n\tjavax.servlet.http.HttpServlet.service(HttpServlet.java:728)\n\torg.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)"
+		    			, ""));
 	    	//
 			uploadButton.setEnabled(true);
 	    }
