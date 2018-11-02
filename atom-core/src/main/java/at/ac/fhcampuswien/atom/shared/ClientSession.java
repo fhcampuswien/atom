@@ -187,8 +187,8 @@ public class ClientSession implements java.io.Serializable {
 		return user;
 	}
 
-	public void setUser(StoreableUser portalPerson) {
-		this.user = portalPerson;
+	public void setUser(StoreableUser user) {
+		this.user = user;
 	}
 
 	public void clearSessionIds() {
