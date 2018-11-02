@@ -187,7 +187,8 @@ public class DomainObject implements Serializable {
 	@AttributeGroup("System")
 	@RelationEssential
 	public String getStringRepresentation() {
-		stringRepresentation = getConcreteClassShort() + " " + getObjectID();
+		if(stringRepresentation == null || stringRepresentation.length() < 1)
+			stringRepresentation = getConcreteClassShort() + " " + getObjectID();
 		return stringRepresentation;
 	}
 	
