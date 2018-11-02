@@ -20,6 +20,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Where;
@@ -448,6 +449,9 @@ public class DomainAnalyzer {
 		} else if (anAnnotation instanceof OneToMany) {
 			OneToMany oneToMany = (OneToMany) anAnnotation;
 			attribute.setMappedBy(oneToMany.mappedBy());
+		} else if (anAnnotation instanceof ManyToMany) {
+			ManyToMany manyToMany = (ManyToMany) anAnnotation;
+			attribute.setMappedBy(manyToMany.mappedBy());
 		} else if (anAnnotation instanceof Where) {
 			Where where = (Where) anAnnotation;
 			attribute.setWhere(where.clause());
