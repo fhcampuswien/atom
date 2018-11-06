@@ -51,38 +51,38 @@ public class GwtTestATOM extends GWTTestCase {
    * This test will send a request to the server using the greetServer method in
    * GreetingService and verify the response.
    */
-  public void testGreetingService() {
-    // Create the service that we will test.
-    AtomServiceAsync atomService = GWT.create(AtomService.class);
-    ServiceDefTarget target = (ServiceDefTarget) atomService;
-    target.setServiceEntryPoint(GWT.getModuleBaseURL() + "ATOM/rpc");
-
-    // Since RPC calls are asynchronous, we will need to wait for a response
-    // after this test method returns. This line tells the test runner to wait
-    // up to 10 seconds before timing out.
-    delayTestFinish(10000);
-
-    // Send a request to the server.
-//		atomService.greetServer("GWT User", new AsyncCallback<String>() {
-//			public void onFailure(Throwable caught) {
-//				// The request resulted in an unexpected error.
-//				fail("Request failure: " + caught.getMessage());
-//			}
+//  public void testGreetingService() {
+//    // Create the service that we will test.
+//    AtomServiceAsync atomService = GWT.create(AtomService.class);
+//    ServiceDefTarget target = (ServiceDefTarget) atomService;
+//    target.setServiceEntryPoint(GWT.getModuleBaseURL() + "ATOM/rpc");
 //
-//			public void onSuccess(String result) {
-//				// Verify that the response is correct.
-//				assertTrue(result.startsWith("Hello, GWT User!"));
+//    // Since RPC calls are asynchronous, we will need to wait for a response
+//    // after this test method returns. This line tells the test runner to wait
+//    // up to 10 seconds before timing out.
+//    delayTestFinish(10000);
 //
-//				// Now that we have received a response, we need to tell the
-//				// test runner
-//				// that the test is complete. You must call finishTest() after
-//				// an
-//				// asynchronous test finishes successfully, or the test will
-//				// time out.
-//				finishTest();
-//			}
-//		});
-  }
+//    // Send a request to the server.
+////		atomService.greetServer("GWT User", new AsyncCallback<String>() {
+////			public void onFailure(Throwable caught) {
+////				// The request resulted in an unexpected error.
+////				fail("Request failure: " + caught.getMessage());
+////			}
+////
+////			public void onSuccess(String result) {
+////				// Verify that the response is correct.
+////				assertTrue(result.startsWith("Hello, GWT User!"));
+////
+////				// Now that we have received a response, we need to tell the
+////				// test runner
+////				// that the test is complete. You must call finishTest() after
+////				// an
+////				// asynchronous test finishes successfully, or the test will
+////				// time out.
+////				finishTest();
+////			}
+////		});
+//  }
 
   public void testGetDomainTree() {
 		// Create the service that we will test.
