@@ -55,6 +55,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private String listBoxMSSeperator = null;
 	private boolean listBoxAllowOtherValues = false;
 	private boolean listBoxAnyExistingValue = false;
+	private boolean listBoxHideNonSelectedInReadMode = false;
 
 	private String linkPrefix = null;
 	private String linkSuffix = null;
@@ -328,7 +329,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 		this.relationEssential = relationEssential;
 	}
 
-	public void setListBox(String[] keys, String[] display, String sql, boolean useHql, ViewType viewType, String multiSelectSeperator, boolean allowOtherValues, boolean anyExistingValue) {
+	public void setListBox(String[] keys, String[] display, String sql, boolean useHql, ViewType viewType, String multiSelectSeperator, boolean allowOtherValues, boolean anyExistingValue, boolean hideNonSelectedInReadMode) {
 		listBoxKeys = keys;
 		listBoxDisplay = display;
 		listBoxSql = sql;
@@ -337,6 +338,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 		listBoxMSSeperator = multiSelectSeperator;
 		listBoxAllowOtherValues = allowOtherValues;
 		listBoxAnyExistingValue = anyExistingValue;
+		listBoxHideNonSelectedInReadMode = hideNonSelectedInReadMode;
 	}
 
 	public String[] getListBoxKeys() {
@@ -394,6 +396,10 @@ public class DomainClassAttribute implements java.io.Serializable {
 
 	public boolean getListBoxAnyExistingValue() {
 		return listBoxAnyExistingValue;
+	}
+
+	public boolean getListBoxHideNonSelectedInReadMode() {
+		return listBoxHideNonSelectedInReadMode;
 	}
 
 	public Boolean getHideFromListGui() {

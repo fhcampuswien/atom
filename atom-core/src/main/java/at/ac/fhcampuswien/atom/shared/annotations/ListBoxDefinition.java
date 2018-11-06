@@ -36,6 +36,8 @@ public @interface ListBoxDefinition {
 	 */
 	boolean anyExistingValue() default false;
 	
+	boolean hideNonSelectedInReadMode() default false;
+	
 	public enum ViewType implements java.io.Serializable {
 		DropDown, RadioButtons, RadioTable, FilterAbleDropDown
 	}

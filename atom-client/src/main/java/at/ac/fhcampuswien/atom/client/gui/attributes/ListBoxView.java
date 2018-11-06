@@ -47,17 +47,20 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	
 	private LinkedHashMap<String, String> keyDisplayMap = null;
 	private String multiSelectSeperator = null;
+	private boolean hideNonSelectedInReadMode = false;
 	
-	public ListBoxView(LinkedHashMap<String, String> keyDisplayMap, String multiSelectSeperator) {
+	public ListBoxView(LinkedHashMap<String, String> keyDisplayMap, String multiSelectSeperator, boolean hideNonSelectedInReadMode) {
 		super();
 		this.keyDisplayMap = keyDisplayMap;
 		this.multiSelectSeperator = multiSelectSeperator;
+		this.hideNonSelectedInReadMode = hideNonSelectedInReadMode;
 		
 		buildListBox();
 	}
 	
-	public ListBoxView(DomainClass representedClass, String attributeName, String multiSelectSeperator) {
+	public ListBoxView(DomainClass representedClass, String attributeName, String multiSelectSeperator, boolean hideNonSelectedInReadMode) {
 		this.multiSelectSeperator = multiSelectSeperator;
+		this.hideNonSelectedInReadMode = hideNonSelectedInReadMode;
 		
 		RPCCaller.getSinglton().loadListBoxChoices(representedClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
 			
@@ -139,19 +142,24 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 //			AtomTools.log(Level.SEVERE, "unkown ListBoxID:" + listBoxID, this);
 //		}
 		
-		listBox.clear();
 		
 		if(multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
 			listBox.setMultipleSelect(true);
 			listBox.getElement().getStyle().setHeight(60, Unit.PX);
 		}
 		
-		if(keyDisplayMap != null)
-		for (Map.Entry<String, String> entry : keyDisplayMap.entrySet()) {
-			listBox.addItem(entry.getValue(), entry.getKey());
-		}
 		
-		showValue();
+		if(hideNonSelectedInReadMode && multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
+			setReadOnly(this.readOnly);			
+		}
+		else {
+			listBox.clear();
+			if(keyDisplayMap != null)
+			for (Map.Entry<String, String> entry : keyDisplayMap.entrySet()) {
+				listBox.addItem(entry.getValue(), entry.getKey());
+			}
+			showValue();
+		}
 		
 		listBox.addChangeHandler(new ChangeHandler() {
 			
@@ -223,6 +231,10 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 				break;
 			}
 		}
+		if(!found) {
+			listBox.addItem(value, value);
+			listBox.setSelectedIndex(listBox.getItemCount()-1);
+		}
 		return found;
 	}
 
@@ -231,6 +243,20 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 		super.setReadOnly(readOnly);
 		this.readOnly = readOnly;
 		listBox.setEnabled(!readOnly);
+		
+		if(hideNonSelectedInReadMode && multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
+			if(readOnly) {
+				listBox.clear();
+			}
+			else {
+				listBox.clear();
+				if(keyDisplayMap != null)
+				for (Map.Entry<String, String> entry : keyDisplayMap.entrySet()) {
+					listBox.addItem(entry.getValue(), entry.getKey());
+				}
+			}
+			showValue();
+		}
 	}
 
 	@Override

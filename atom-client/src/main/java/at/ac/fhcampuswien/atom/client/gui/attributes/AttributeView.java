@@ -48,6 +48,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		String listBoxMSSeperator = attribute.getListBoxMSSeperator();
 		boolean listBoxAllowOtherValues = attribute.getListBoxAllowOtherValues();
 		boolean listBoxAnyExistingValue = attribute.getListBoxAnyExistingValue();
+		boolean listBoxHideNonSelectedInReadMode = attribute.getListBoxHideNonSelectedInReadMode();
 		ListBoxDefinition.ViewType listBoxViewType = attribute.getListBoxViewType();
 		
 		if(listBoxAnyExistingValue || (listBoxSql != null && !listBoxSql.equals(""))) {
@@ -56,7 +57,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 				returnValue = new ListOfPersistentStringsView(type, forFrame.getRepresentedClass(), attributeName);
 			// this is a listbox with options to load from sql
 			else if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
-				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator);
+				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator, listBoxHideNonSelectedInReadMode);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
 				returnValue = new SuggestBoxView(forFrame.getRepresentedClass(), attributeName, listBoxAllowOtherValues);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.RadioButtons || listBoxViewType == ListBoxDefinition.ViewType.RadioTable)
@@ -70,7 +71,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 				returnValue = new ListOfPersistentStringsView(type, attribute.getListBoxMapped());
 			// this is a listbox with static options
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
-				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator);
+				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator, listBoxHideNonSelectedInReadMode);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
 				returnValue = new SuggestBoxView(attribute.getListBoxMapped(), listBoxAllowOtherValues);
 			else
