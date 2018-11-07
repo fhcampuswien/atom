@@ -178,7 +178,8 @@ public class ServerSingleton {
 		AtomTools.log(Level.FINEST, "ServerSingelton.getDomainObject - getting entity from entityManager now", this);
 		DomainObject result = (DomainObject) em.find(classOfObject, id);
 		AtomTools.log(Level.FINEST, "ServerSingelton.getDomainObject - got entity, preparing for client", this);
-		ServerTools.fillAndDetachInstance(result, em, session, false);
+		if(!ServerTools.fillAndDetachInstance(result, em, session, false))
+			throw new AtomException("Failed to prepare Object for client, please ask dev to fix this!");
 		AtomTools.log(Level.FINEST, "ServerSingelton.getDomainObject - prepared for client, returning", this);
 		return result;
 	}
