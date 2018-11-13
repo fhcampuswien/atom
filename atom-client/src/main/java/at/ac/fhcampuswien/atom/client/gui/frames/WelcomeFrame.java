@@ -139,9 +139,10 @@ public class WelcomeFrame extends Frame {
 		Hyperlink hyperlink;
 		
 		boolean readAccess = AtomTools.isAccessAllowed(AtomConfig.accessReadOnly, at);
+		boolean accessListAll = AtomTools.isAccessAllowed(AtomConfig.accessListAll, at);
 		boolean readAccessRelated = domainClass.getAccessHandler().relationsExist();
 		
-		if(readAccess) {
+		if(readAccess || accessListAll) {
 			hyperlink = new Hyperlink(AtomTools.getMessages().Gesamtliste_anzeigen(), "LIST_ALL_" + domainClass.getName());
 			hyperlink.ensureDebugId("LIST_ALL_" + domainClass.getName());
 			linkPanel.add(prepareLink(hyperlink));

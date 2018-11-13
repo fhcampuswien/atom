@@ -20,6 +20,7 @@ public class AtomConfig {
 	public static final String accessMenue = "accessMenue";
 	public static final String accessReadWrite = "accessReadWrite";
 	public static final String accessReadOnly = "accessReadOnly";
+	public static final String accessListAll = "accessListAll";
 	
 	//"Some" - access is meant for activating attribute-based permissions, which are not (fully) implemented yet.
 	public static final String accessSomeReadWrite = "accessSomeReadWrite";
