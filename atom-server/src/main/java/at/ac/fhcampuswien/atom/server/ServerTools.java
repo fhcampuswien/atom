@@ -252,7 +252,7 @@ public class ServerTools {
 						
 						
 					} else if (collectionHibernate != null) {
-						for (Object object : collectionHibernate) {
+						try { for (Object object : collectionHibernate)
 							if (object != null && object instanceof DomainObject && !objectsISaw.contains(object)) {
 
 								DomainObject domainObject2 = (DomainObject) object;
@@ -269,6 +269,9 @@ public class ServerTools {
 										domainObject.addNullReasons(domainClassAttribute.getName(), AtomConfig.nullReasonNotRelationEssential);
 								}
 							}
+						}
+						catch(javax.persistence.EntityNotFoundException e) {
+							ServerTools.log(Level.SEVERE, "db messed up", domainObject, e);
 						}
 					}
 				} else {
