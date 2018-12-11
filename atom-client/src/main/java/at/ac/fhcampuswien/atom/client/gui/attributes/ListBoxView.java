@@ -220,8 +220,9 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 		}
 
 		boolean found = false;
+		if(!hideNonSelectedInReadMode || !readOnly)
 		for(int i=0 ; i < listBox.getItemCount() ; i++ ) {
-			if(listBox.getValue(i).equals(value.toString())) {
+			if(listBox.getValue(i).equals(value)) {
 				if(deselectOthers)
 					listBox.setSelectedIndex(i);
 				else
@@ -233,7 +234,11 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 		}
 		if(!found) {
 			listBox.addItem(value, value);
-			listBox.setSelectedIndex(listBox.getItemCount()-1);
+			if(!hideNonSelectedInReadMode && !readOnly)
+				if(multiSelectSeperator != null && !"".equals(multiSelectSeperator))
+					listBox.setSelectedIndex(listBox.getItemCount()-1);
+				else
+					listBox.setItemSelected(listBox.getItemCount()-1, true);
 		}
 		return found;
 	}
