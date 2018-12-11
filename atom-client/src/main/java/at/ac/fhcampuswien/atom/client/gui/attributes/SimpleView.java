@@ -54,6 +54,12 @@ public abstract class SimpleView<F extends Object> extends AttributeView<F, Text
 		else if(AtomConfig.nullReasonLazyLoading.equals(this.getNullReason())) {
 			textBox.setText("bitte warten.. noch nicht fertig geladen..");
 		}
+		else if(this.getNullReason() != null) {
+			textBox.setText("Unbekannte Null-Reason - Bitte an Entwickler melden: " + this.getNullReason().toString());
+		}
+		else {
+			textBox.setText("");
+		}
 	}
 	
 	@Override
