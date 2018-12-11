@@ -261,7 +261,7 @@ public class UploadImportServlet extends HttpServlet {
 							DomainClassAttribute attribute = domainClass.getAttributeNamed(headers.get(j));
 							if(cell == null || cell.toString() == null || cell.toString().length() < 1)
 								empty++;
-							else if(cell.toString().equals(attribute.getDisplayName()))
+							else if(attribute != null && cell.toString().equals(attribute.getDisplayName()))
 								matched++;
 							j++;
 						}
