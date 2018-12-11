@@ -5,12 +5,17 @@ import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+
+import at.ac.fhcampuswien.atom.client.gui.AtomClientBundle;
 
 public class LinkView extends AttributeView<String, LinkView, String> {
 
 	private String prefix, suffix;
 	private SimplePanel panel = null;
 	private Anchor a = null;
+	private TextBox textBox = null;
+	private Style panelStyle = null;
 	
 	public LinkView(String prefix, String suffix) {
 		this.prefix = prefix;
@@ -18,29 +23,29 @@ public class LinkView extends AttributeView<String, LinkView, String> {
 		
 		a = new Anchor();
 		a.setTarget("_blank");
-		
 		Style anchorStyle = a.getElement().getStyle();
 		anchorStyle.setLineHeight(26, Unit.PX);
 		
-		panel = new SimplePanel(a);
-		Style style = panel.getElement().getStyle();
+		textBox = new TextBox();
+		textBox.setValue(value);
+		textBox.addStyleName(AtomClientBundle.INSTANCE.css().attributeViewGeneral());
+		Style textBoxStyle = textBox.getElement().getStyle();
+		textBoxStyle.setHeight(26, Unit.PX);
+		textBoxStyle.setPaddingLeft(3, Unit.PX);		
+//		textBoxStyle.setWidth(100, Unit.PCT);
 		
-		style.setWidth(100, Unit.PCT);
-		style.setHeight(26, Unit.PX);
-		style.setPaddingLeft(3, Unit.PX);
-		style.setFontSize(11, Unit.PX);
-		style.setProperty("fontFamily", "Verdana, Arial, Helvetica");
-		style.setBorderWidth(1, Unit.PX);
-		style.setBorderStyle(BorderStyle.SOLID);
-		style.setBorderColor("rgb(204, 204, 204) rgb(153, 153, 153) rgb(153, 153, 153)");
-		style.setProperty("boxSizing", "border-box");
+		
+		panel = new SimplePanel(a);
+		panelStyle = panel.getElement().getStyle();
+	
 		
 		this.initWidget(panel);
+		
+		this.field = this;
 	}
 
 	@Override
 	protected boolean createFieldWidget() {
-		this.field = this;
 		return false;
 	}
 
@@ -49,10 +54,40 @@ public class LinkView extends AttributeView<String, LinkView, String> {
 		String link = prefix + value + suffix;
 		a.setHref(link);
 		a.setText(link);
+		textBox.setText(value);
 	}
 
 	@Override
 	protected void readValue() {
-		//current implementation is read only, so no need to read impossible changes by user
+		value = textBox.getText();
+		String link = prefix + value + suffix;
+		a.setHref(link);
+		a.setText(link);
+	}
+	
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		super.setReadOnly(readOnly);
+		panel.clear();
+		if(readOnly) {
+			panelStyle.setWidth(100, Unit.PCT);
+			panelStyle.setHeight(26, Unit.PX);
+			panelStyle.setPaddingLeft(3, Unit.PX);
+			panelStyle.setFontSize(11, Unit.PX);
+			panelStyle.setProperty("fontFamily", "Verdana, Arial, Helvetica");
+			panelStyle.setBorderWidth(1, Unit.PX);
+			panelStyle.setBorderStyle(BorderStyle.SOLID);
+			panelStyle.setBorderColor("rgb(204, 204, 204) rgb(153, 153, 153) rgb(153, 153, 153)");
+			panelStyle.setProperty("boxSizing", "border-box");
+			panel.add(a);
+		}
+		else {
+			panelStyle.clearPaddingLeft();
+			panelStyle.clearBorderWidth();
+			panelStyle.clearBorderStyle();
+			panelStyle.clearBorderColor();
+			panel.add(textBox);
+		}
+			
 	}
 }
