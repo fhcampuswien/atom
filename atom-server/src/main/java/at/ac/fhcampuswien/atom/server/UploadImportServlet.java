@@ -275,6 +275,8 @@ public class UploadImportServlet extends HttpServlet {
 				}
 				catch (AtomException ae) {
 					importProblems.add(ae);
+					tx.rollback();
+					tx.begin();
 				}
 				i++;
 			}
