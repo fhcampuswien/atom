@@ -311,7 +311,7 @@ public class UploadImportServlet extends HttpServlet {
 			if (existing != null) {
 				exVal = existing.toString();
 			}
-			// if there are more than one column with the same header, keep the value of the
+			// if there is more than one column with the same header, keep the value of the
 			// first if it is a "good" value, otherwise take the next value.
 			// --> similar to behavior of COALESCE
 			if (exVal == null || exVal.length() <= 0 || exVal.equals(" ") || exVal.startsWith("#ERR"))
