@@ -19,6 +19,7 @@ import java.util.logging.Level;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.RollbackException;
@@ -111,13 +112,24 @@ public class ServerSingleton {
 	}
 
 	public DomainObject getDomainObject(ClientSession session, String clue, String nameOfClass) {
-		if (nameOfClass == null || nameOfClass.length() < 1)
-			return getDomainObject(session, clue, DomainObject.class);
-		else
-			return getDomainObject(session, clue, ServerTools.getClassForName(nameOfClass));
+		EntityManager em = null;
+		try {
+			em = AtomEMFactory.getEntityManager();
+			return getDomainObject(session, clue, nameOfClass, em);
+		}
+		finally {
+			ServerTools.closeDBConnection(null, em);
+		}
 	}
 
-	public DomainObject getDomainObject(ClientSession session, String clue, Class<?> classOfObject) {
+	public DomainObject getDomainObject(ClientSession session, String clue, String nameOfClass, EntityManager em) {
+		if (nameOfClass == null || nameOfClass.length() < 1)
+			return getDomainObject(session, clue, DomainObject.class, em);
+		else
+			return getDomainObject(session, clue, ServerTools.getClassForName(nameOfClass), em);
+	}
+
+	public DomainObject getDomainObject(ClientSession session, String clue, Class<?> classOfObject, EntityManager em) {
 		if (clue != null && clue.length() > 0) {
 
 			Double linkedID = null;
@@ -140,7 +152,7 @@ public class ServerSingleton {
 			// find instance by string representation
 			ArrayList<DataFilter> filters = new ArrayList<DataFilter>(1);
 			filters.add(new DataFilter("stringRepresentation", clue, "contains", "text"));
-			DomainObjectList list = getListOfDomainObjects(session, classOfObject.getName(), 0, 20, filters, null, null, false, false);
+			DomainObjectList list = getListOfDomainObjects(session, classOfObject.getName(), 0, 20, filters, null, null, false, false, em);
 			if (list.getTotalSize() == 0) {
 				AtomTools.log(Level.WARNING, "could not find instance of \"" + classOfObject.getName() + "\" with stringRepresentation like %" + clue
 						+ "%", this);
@@ -214,16 +226,33 @@ public class ServerSingleton {
 
 	public DomainObjectList getListOfDomainObjects(ClientSession session, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
 			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated) {
+		return getListOfDomainObjects(session, nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated, AtomEMFactory.getEntityManager());
+	}
+	
+	public DomainObjectList getListOfDomainObjects(ClientSession session, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, EntityManager em) {
 		DomainClass requestedClass = DomainAnalyzer.getDomainClass(nameOfClass);
 		if (requestedClass == null) {
 			AtomTools.log(Level.WARNING, "DomainClass with name \"" + nameOfClass + "\" not found! will use DomainObject as class", this);
 			requestedClass = DomainAnalyzer.getDomainTree();
 		}
-		return getListOfDomainObject(requestedClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated);
+		return getListOfDomainObjects(requestedClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated, em);
 	}
 
-	private DomainObjectList getListOfDomainObject(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
+	private DomainObjectList getListOfDomainObjects(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
 			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated) {
+		EntityManager em = null;
+		try {
+			em = AtomEMFactory.getEntityManager();
+			return getListOfDomainObjects(domainClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated, em);
+		}
+		finally {
+			ServerTools.closeDBConnection(null, em);
+		}
+	}
+	
+	private DomainObjectList getListOfDomainObjects(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated, EntityManager em) {
 
 		AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject start - user " + session.getUsername() + " requesting list of " + domainClass.getName(), this);
 		
@@ -250,7 +279,6 @@ public class ServerSingleton {
 
 		List<DomainObject> resultList = new ArrayList<DomainObject>();
 		Long totalSize = null;
-		EntityManager em = null;
 		Query query = null;
 
 		try {
@@ -278,17 +306,16 @@ public class ServerSingleton {
 			
 			join = ServerTools.removeDuplicateJoins(join);
 
-			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - getting EntityManager now", this);
+			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - defined general stuff (built HQL query segments) - selecting count", this);
 
-			em = AtomEMFactory.getEntityManager();
-
-			AtomTools.log(Level.FINE, "ServerSingelton.getListOfDomainObject - got my EntityManger, selecting count", this);
 			if (countQuery != null && countQuery.length() > 0)
 				query = em.createNativeQuery(countQuery);
 			else {
 				query = em.createQuery("SELECT Count(" + (distinct ? "distinct " : "") + "obj.objectID) from " + domainClass.getName() + " obj " + join + " "
 						+ whereClause);
 			}
+			query.setHint("javax.persistence.query.timeout", 60000);
+			query.setLockMode(LockModeType.NONE);
 			totalSize = (Long) query.getSingleResult();
 
 			// query =
@@ -318,6 +345,8 @@ public class ServerSingleton {
 				}
 
 				query.setMaxResults(pageSize);
+				query.setHint("javax.persistence.query.timeout", 60000);
+				query.setLockMode(LockModeType.NONE);
 				
 				// WARNING: the Microsoft JDBC implementation seems to deter from the javax.persistence interface definition:
 				// parameter startPosition seems to start with 1 (and 0 is considered equal to it) and only 2 or higher will change the results startPosition
@@ -359,6 +388,9 @@ public class ServerSingleton {
 		} catch (NoResultException noResultException) {
 			ServerTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this, noResultException);
 			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
+		} catch (javax.persistence.QueryTimeoutException e) {
+			ServerTools.log(Level.SEVERE, "QueryTimeoutException even though I already increased timeout to 60 seconds! investigate this please! query = " + query.getHints().get("org.hibernate.comment"), this, e);
+			throw new AtomException("ServerSingelton.getListOfDomainObject QueryTimeoutException - ask devs for performance tuning!", e);
 		} catch (Throwable t) {
 			String queryString = "n.a.";
 			if(query != null && query instanceof org.hibernate.query.internal.QueryImpl)
@@ -366,11 +398,11 @@ public class ServerSingleton {
 			ServerTools.log(Level.SEVERE, "getListOfDomainObject error for query: " + queryString, this, t);
 			AtomEMFactory.closeDBConnection();
 			throw new AtomException("ServerSingelton.getListOfDomainObject unexpected Throwable happened, see cause", t);
-		} finally {
-			if (em != null) {
-				AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
-				ServerTools.closeDBConnection(null, em);
-			}	
+//		} finally {
+//			if (em != null) {
+//				AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - closing entitymanager in finally block", this);
+//				ServerTools.closeDBConnection(null, em);
+//			}	
 		}
 	}
 
@@ -533,6 +565,7 @@ public class ServerSingleton {
 			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session, dbVersion);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
 			domainObject = em.merge(domainObject);
+			em.lock(domainObject, LockModeType.NONE);
 			return domainObject;
 
 
@@ -848,7 +881,7 @@ public class ServerSingleton {
 
 		if (domainClass.isSearchable()) { // info: permission gets checked by the getList method // && AtomTools.isAccessAllowed(AtomConfig.accessLinkage, access)) {
 			try {
-				DomainObjectList subResult = getListOfDomainObject(domainClass, fromRow, pageSize, null, null, result.getSearchTerm(), result.isOnlyScanStringRepresentation(), session, result.isOnlyRelated());
+				DomainObjectList subResult = getListOfDomainObjects(domainClass, fromRow, pageSize, null, null, result.getSearchTerm(), result.isOnlyScanStringRepresentation(), session, result.isOnlyRelated());
 				if (subResult != null & subResult.getTotalSize() > 0) {
 					result.addList(subResult);
 				}

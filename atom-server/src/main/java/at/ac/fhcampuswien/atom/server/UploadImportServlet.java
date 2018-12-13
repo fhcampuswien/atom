@@ -331,31 +331,31 @@ public class UploadImportServlet extends HttpServlet {
 					server.deleteDomainObject(session, instance, em);
 				} else {
 					AtomTools.log(Level.INFO, "Importer: Updating DomainObject " + objectID, this);
-					updateFields(instance, fields, className, session);
+					updateFields(instance, fields, className, session, em);
 					server.saveDomainObject(session, instance, em);
 				}
 			}
 		} else {
 			instance = createInstance(className);
 			AtomTools.log(Level.INFO, "Importer: Created new DomainObject with ID " + instance.getObjectID(), this);
-			updateFields(instance, fields, className, session);
+			updateFields(instance, fields, className, session, em);
 			server.saveDomainObject(session, instance, em);
 		}
 	}
 
 	private void updateFields(DomainObject instance, HashMap<String, HSSFCell> fields, String className,
-			ClientSession session) {
+			ClientSession session, EntityManager em) {
 		DomainClass domainClass = DomainAnalyzer.getDomainClass(className);
 		for (Map.Entry<String, HSSFCell> entry : fields.entrySet()) {
 			String key = entry.getKey();
 			DomainClassAttribute attribute = domainClass.getAttributeNamed(key);
 			if (attribute != null && attribute.isWriteAble()) {
-				setValue(instance, attribute, entry.getValue(), session);
+				setValue(instance, attribute, entry.getValue(), session, em);
 			}
 		}
 	}
 
-	private void setValue(DomainObject instance, DomainClassAttribute attribute, HSSFCell cell, ClientSession session) {
+	private void setValue(DomainObject instance, DomainClassAttribute attribute, HSSFCell cell, ClientSession session, EntityManager em) {
 
 		if (cell == null)
 			return;
@@ -383,17 +383,17 @@ public class UploadImportServlet extends HttpServlet {
 				setAttribute.invoke(instance, new Object[] { r });
 			} else if (attributeClass.getName().startsWith("at.ac.fhcampuswien.atom.shared.domain.")) {
 				setAttribute.invoke(instance,
-						new Object[] { server.getDomainObject(session, getStringValueOfCell(cell), attributeClass) });
+						new Object[] { server.getDomainObject(session, getStringValueOfCell(cell), attributeClass, em) });
 
 			} else if (attribute.getType().contains("Set<at.ac.fhcampuswien.atom.shared.domain.")) {
 				HashSet<DomainObject> objects = new HashSet<DomainObject>();
-				processCollection(objects, getStringValueOfCell(cell), attribute, session);
+				processCollection(objects, getStringValueOfCell(cell), attribute, session, em);
 				if (objects.size() > 0)
 					setAttribute.invoke(instance, new Object[] { objects });
 
 			} else if (attribute.getType().contains("List<at.ac.fhcampuswien.atom.shared.domain.")) {
 				ArrayList<DomainObject> objects = new ArrayList<DomainObject>();
-				processCollection(objects, getStringValueOfCell(cell), attribute, session);
+				processCollection(objects, getStringValueOfCell(cell), attribute, session, em);
 				if (objects.size() > 0)
 					setAttribute.invoke(instance, new Object[] { objects });
 
@@ -414,7 +414,7 @@ public class UploadImportServlet extends HttpServlet {
 	}
 
 	private void processCollection(Collection<DomainObject> collection, String clues, DomainClassAttribute attribute,
-			ClientSession session) {
+			ClientSession session, EntityManager em) {
 		if (clues == null || clues.length() <= 0)
 			return;
 
@@ -425,7 +425,7 @@ public class UploadImportServlet extends HttpServlet {
 			if (clue.length() <= 0)
 				continue;
 
-			DomainObject found = server.getDomainObject(session, clue, AtomTools.getListedType(attribute.getType()));
+			DomainObject found = server.getDomainObject(session, clue, AtomTools.getListedType(attribute.getType()), em);
 			if (found != null)
 				collection.add(found);
 		}
