@@ -275,7 +275,9 @@ public class UploadImportServlet extends HttpServlet {
 				}
 				catch (AtomException ae) {
 					importProblems.add(ae);
-					tx.rollback();
+					ServerTools.closeDBConnection(tx, em);
+					em = AtomEMFactory.getEntityManager();
+					tx = em.getTransaction();
 					tx.begin();
 				}
 				i++;
