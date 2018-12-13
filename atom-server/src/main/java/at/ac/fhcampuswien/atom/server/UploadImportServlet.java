@@ -232,7 +232,7 @@ public class UploadImportServlet extends HttpServlet {
 
 	private void processData(ArrayList<ArrayList<HSSFCell>> data, ClientSession session, String className) {
 
-		HashSet<AtomException> importProblems = new HashSet<AtomException>();
+		List<AtomException> importProblems = new ArrayList<AtomException>();
 		EntityManager em = null;
 		EntityTransaction tx = null;
 		try {
