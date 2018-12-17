@@ -43,6 +43,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	private String[] validators = null;
 	private String mappedBy = null;
 	private String where = null;
+	private String otherSidePermissionRequired = null;
 
 	private Boolean hideFromListGui = null;
 	private Boolean hideFromDetailGui = null;
@@ -502,6 +503,14 @@ public class DomainClassAttribute implements java.io.Serializable {
 
 	public void setWhere(String where) {
 		this.where = where;
+	}
+
+	public String getOtherSidePermissionRequired() {
+		return otherSidePermissionRequired;
+	}
+
+	public void setOtherSidePermissionRequired(String otherSidePermissionRequired) {
+		this.otherSidePermissionRequired = otherSidePermissionRequired;
 	}
 
 //	/**

@@ -5,6 +5,7 @@
 package at.ac.fhcampuswien.atom.server;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -879,72 +880,101 @@ public class ServerTools {
 				Class<?> collectionClass = getAttribute.getReturnType();
 				Method setAttribute = reflClass.getMethod("set" + AtomTools.upperFirstChar(domainClassAttribute.getName()), new Class[] { collectionClass });
 
-				@SuppressWarnings("unchecked")
-				Iterable<Object> related = (Iterable<Object>) getAttribute.invoke(domainObject, new Object[] {});
+				if (clear) {
+					setAttribute.invoke(domainObject, new Object[] { null });
+				} else {
+					
+					if(dbVersion == null)
+						dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
 
-				if (related != null) {
-
-					if (clear) {
-						setAttribute.invoke(domainObject, new Object[] { null });
-					} else {
-						String mappedBy = domainClassAttribute.getMappedBy();
-						HashSet<DomainObject> targetSet = new HashSet<DomainObject>();
-						for (Object relObj : related) {
-							if (relObj instanceof DomainObject) {
-								DomainObject obj = (DomainObject) relObj;
-								if(relObj instanceof PersistentString) {
-									//handle PersistentStrings special, since we don't want those "DomainObjects" to be handled manually by the user but simply persisted with whatever other DomainObject they are linked to.
-									//those are also the only DomainObjects that can be linked to others without being saved first (intentional UI limitation by design)
-									PersistentString ps = (PersistentString) relObj;
-									ps.setOwner(domainObject);
-									ps.setOwnersAttribute(domainClassAttribute.getName());
-									ps.prepareSave(session);
-									if(ps.getObjectID() != null) {
-										//has been saved before, check if owner is the same, to prevent pirating
-										PersistentString psDB = em.find(ps.getClass(), ps.getObjectID());
-										if(!psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())
-												|| psDB.getOwnersAttribute() != null && !psDB.getOwnersAttribute().equals(ps.getOwnersAttribute())) {
-											throw new AtomException("User tried to hijack a PersistentString from another Object or attribute! DBowner = " + psDB.getOwner().getObjectID() + "; newOwner = " + ps.getOwner().getObjectID() + "; DBattribute = " + psDB.getOwnersAttribute() + "; newAttribute = " + ps.getOwnersAttribute());
-										}
-									}
+					@SuppressWarnings("unchecked")
+					Collection<? extends DomainObject> related = (Collection<? extends DomainObject>) getAttribute.invoke(domainObject, new Object[] {});
+					@SuppressWarnings("unchecked")
+					Collection<? extends DomainObject> dbRelated = (Collection<? extends DomainObject>) getAttribute.invoke(dbVersion, new Object[] {});
+					
+					String otherSidePermissionRequired = domainClassAttribute.getOtherSidePermissionRequired();
+					String mappedBy = domainClassAttribute.getMappedBy();
+					
+					Constructor<?> ctor = collectionClass.getConstructor();
+					@SuppressWarnings("unchecked")
+					Collection<DomainObject> target = (Collection<DomainObject>) ctor.newInstance();
+					
+					if (related != null) for (DomainObject obj : related) {
+						if(obj instanceof PersistentString) {
+							//handle PersistentStrings special, since we don't want those "DomainObjects" to be handled manually by the user but simply persisted with whatever other DomainObject they are linked to.
+							//those are also the only DomainObjects that can be linked to others without being saved first (intentional UI limitation by design)
+							PersistentString ps = (PersistentString) obj;
+							ps.setOwner(domainObject);
+							ps.setOwnersAttribute(domainClassAttribute.getName());
+							ps.prepareSave(session);
+							if(ps.getObjectID() != null) {
+								//has been saved before, check if owner is the same, to prevent pirating
+								PersistentString psDB = em.find(ps.getClass(), ps.getObjectID());
+								if(!psDB.getOwner().getObjectID().equals(ps.getOwner().getObjectID())
+										|| psDB.getOwnersAttribute() != null && !psDB.getOwnersAttribute().equals(ps.getOwnersAttribute())) {
+									throw new AtomException("User tried to hijack a PersistentString from another Object or attribute! DBowner = " + psDB.getOwner().getObjectID() + "; newOwner = " + ps.getOwner().getObjectID() + "; DBattribute = " + psDB.getOwnersAttribute() + "; newAttribute = " + ps.getOwnersAttribute());
+								}
+							}
 //									PersistentString psDB = em.merge(ps);
 //									fromDB.add(psDB);
-									targetSet.add(ps);
-								}
-								else {
-									DomainObject relatedElement = em.find(obj.getClass(), obj.getObjectID());
-									if(mappedBy != null && mappedBy.length() > 0) {
-										Class<?> collectedClass = relatedElement.getClass();
+							target.add(ps);
+						}
+						else {
+							DomainObject dbObj = em.find(obj.getClass(), obj.getObjectID());
+							if(dbRelated.contains(dbObj) || otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClassAttribute.getAccessHandler().getAccessTypes(session, dbObj))) {
+								if(mappedBy != null && mappedBy.length() > 0) {
+									Class<?> collectedClass = dbObj.getClass();
+									try {
 										Method setMappedBy = collectedClass.getMethod("set" + AtomTools.upperFirstChar(mappedBy), new Class[] { domainObject.getClass() });
-										setMappedBy.invoke(relatedElement, new Object[] { domainObject });
+										setMappedBy.invoke(dbObj, new Object[] { domainObject });
 									}
-									targetSet.add(relatedElement);
+									catch(NoSuchMethodException e) {
+										AtomTools.log(Level.INFO, "ServerTools.handleRelatedAttributes - mappedBy reverse side couldnt find set method, save relation! - " + domainClassAttribute.getName() + " -> " + collectedClass.getName() + "." + mappedBy, null);
+										// don't fuss about non writeable reverse sides.
+									}
 								}
-							} else {
-								AtomTools.log(Level.SEVERE, "this cannot happen, someone seriously messed with my code!", ServerTools.class);
+								target.add(dbObj);	
 							}
 						}
-						if(domainObject.getObjectID() != null && mappedBy != null && mappedBy.length() > 0) {
-							//if the object is pre-existing and the set is mappedBy reverse side, linked objects that might have been removed from the set need to be told of the disconnect.
-							if(dbVersion == null)
-								dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
-
-							@SuppressWarnings("unchecked")
-							Iterable<Object> linkedInDBIter = (Iterable<Object>) getAttribute.invoke(dbVersion, new Object[] {});
-							
-							if(linkedInDBIter != null)
-								for(Object linkedInDB : linkedInDBIter)
-									if(!targetSet.contains(linkedInDB)) {
-											Class<?> collectedClass = linkedInDB.getClass();
-											Method setMappedBy = collectedClass.getMethod("set" + AtomTools.upperFirstChar(mappedBy), new Class[] { domainObject.getClass() });
-											setMappedBy.invoke(linkedInDB, new Object[] { null });
-											em.merge(linkedInDB);
-										}
-						}
-						setAttribute.invoke(domainObject, new Object[] { targetSet });
 					}
+					if(domainObject.getObjectID() != null && (mappedBy != null && mappedBy.length() > 0 || otherSidePermissionRequired != null && otherSidePermissionRequired.length() > 0)) {
+						//if otherSidePermissionRequired is set to something non empty, check every removed related object for permissions for the acting user.
+						//if the object is pre-existing and the set is mappedBy reverse side, linked objects that might have been removed from the set need to be told of the disconnect - but only if the current user has write permissions to those disconnected objects!
+						
+						if(dbRelated != null) for(DomainObject linkedInDB : dbRelated)
+							if(!target.contains(linkedInDB)) {
+								// if user removed it
+								boolean allowed = (otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClassAttribute.getAccessHandler().getAccessTypes(session, linkedInDB)));
+								if(mappedBy != null && mappedBy.length() > 0 && allowed)
+									try {
+										Class<? extends DomainObject> linkedClass = linkedInDB.getClass();
+										Method getMappedBy = linkedClass.getMethod("get" + AtomTools.upperFirstChar(mappedBy), new Class[] {});
+										Class<?> mappedByClass = getMappedBy.getReturnType();
+										Method setMappedBy = linkedClass.getMethod("set" + AtomTools.upperFirstChar(mappedBy), new Class[] { mappedByClass });
+										
+										if(Collection.class.isAssignableFrom(mappedByClass)) {
+											@SuppressWarnings("unchecked")
+											Collection<? extends DomainObject> mappedByCollection = (Collection<? extends DomainObject>) getMappedBy.invoke(linkedInDB, new Object[] {});
+											mappedByCollection.remove(dbVersion);
+											setMappedBy.invoke(linkedInDB, new Object[] { mappedByCollection });
+										}
+										else //not a collection, simply clear OneToMany relationship:
+											setMappedBy.invoke(linkedInDB, new Object[] { null });
+										
+										em.merge(linkedInDB);
+									}
+									catch(NoSuchMethodException e) {
+										AtomTools.log(Level.INFO, "ServerTools.handleRelatedAttributes - mappedBy reverse side couldnt find set method, save relation! - " + domainClassAttribute.getName() + " -> " + collectionClass.getName() + "." + mappedBy, null);
+										// don't fuss about non writeable reverse sides.
+									}
+								if(!allowed) {
+									// user has no permission to unlink this. re-add it back!
+									target.add(linkedInDB);
+								}
+							}
+					}
+					setAttribute.invoke(domainObject, new Object[] { target });
 				}
-
 			} catch (SecurityException e) {
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {

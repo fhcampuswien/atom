@@ -51,6 +51,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.ObjectImage;
 import at.ac.fhcampuswien.atom.shared.annotations.OrderedAttributeGroups;
 import at.ac.fhcampuswien.atom.shared.annotations.OrderedAttributesList;
+import at.ac.fhcampuswien.atom.shared.annotations.OtherSidePermissionRequired;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinition;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationDefinitions;
 import at.ac.fhcampuswien.atom.shared.annotations.RelationEssential;
@@ -455,6 +456,10 @@ public class DomainAnalyzer {
 		} else if (anAnnotation instanceof Where) {
 			Where where = (Where) anAnnotation;
 			attribute.setWhere(where.clause());
+		} else if (anAnnotation instanceof OtherSidePermissionRequired) {
+			OtherSidePermissionRequired ospr = (OtherSidePermissionRequired) anAnnotation;
+			attribute.setOtherSidePermissionRequired(ospr.value());
+			//
 		} else {
 			attribute.addAnnotation(anAnnotation.toString());
 		}
