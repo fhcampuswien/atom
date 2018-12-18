@@ -11,6 +11,7 @@ public @interface AttributeValidators {
 	
 	public final static String email = "email";
 	public final static String telephone = "telephone";
+	public final static String postalAdress = "postalAdress";
 	public final static String socialsecurity = "socialsecurity";
 	public final static String money = "money";
 	public final static String notEmpty = "notempty";

@@ -203,11 +203,8 @@ public class AtomTools {
 	 * @throws at.ac.fhcampuswien.atom.shared.exceptions.ValidationError if validation failed
 	 */
 	public static boolean validateAttribute(String attributeName, Object value, String[] attributeValidators) {
-		if (attributeValidators == null || attributeValidators.length == 0)
-			return false;
-
 		boolean validated = false;
-		for(String validator : attributeValidators) {
+		if (attributeValidators != null) for(String validator : attributeValidators) {
 			validated = validated | validateAttribute(attributeName, value, validator);
 		}
 		return validated;
@@ -263,6 +260,15 @@ public class AtomTools {
 			if (!value.toString().matches("\\+[0-9]+ ?[\\(| ][0-9]+[\\)| ][0-9 ]+-? ?[0-9]+")) // "\\+ ?\\([0-9]+\\)[0-9 ]+-?[0-9 ]*"))
 				throw new ValidationError(
 						"Bitte Telefonnummern im Format +43 (1) 606 68 77 - 4319 eingeben! Durchwahl und Abstände sind optional.");
+			else
+				return true;
+		}
+		else if (AttributeValidators.postalAdress.equals(attributeValidator)) {
+			if (value == null || (value instanceof String && ((String) value).length() == 0))
+				return false;
+			if (!value.toString().matches("[a-zA-ZßöÖäÄüÜ0-9 -]+, ?[0-9A-Z ]+ [a-zA-ZßöÖäÄüÜ0-9 -]+, ?[a-zA-ZßöÖäÄüÜ0-9 -]+"))
+				throw new ValidationError(
+						"Bitte Adressen in diesem Format angeben: Straße 12, 1234 Ort, Staat");
 			else
 				return true;
 		}
