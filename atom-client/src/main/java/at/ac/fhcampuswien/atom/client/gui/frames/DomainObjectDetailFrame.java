@@ -118,6 +118,9 @@ public class DomainObjectDetailFrame extends Frame {
 	private boolean isEditable;
 	private boolean unsavedNew = false;
 	
+	private Integer scrollPosOnLastOut = null;
+	private boolean newlyBackOnScreen = false;
+	
 	private HashMap<String, FlexTable> groupPages = new HashMap<String, FlexTable>();
 	private LinkedHashMap<DomainClassAttribute, AttributeView<?, ?, ?>> attributeFields = new LinkedHashMap<DomainClassAttribute, AttributeView<?, ?, ?>>();
 	private HashMap<DomainClassAttribute, Label> attributeLables = new HashMap<DomainClassAttribute, Label>();
@@ -691,8 +694,14 @@ public class DomainObjectDetailFrame extends Frame {
 
 	@Override
 	public boolean goingInvisible() {
-		AtomTools
-				.log(Level.FINER, "DomainObjectDetailView '" + this.getLongTitle() + "' going invisible", this);
+		AtomTools.log(Level.FINER, "DomainObjectDetailView '" + this.getLongTitle() + "' going invisible", this);
+		
+		ScrollPanel activeTab = (ScrollPanel) tabPanel.getWidget(tabPanel.getSelectedIndex());
+		if(activeTab != null) {
+			scrollPosOnLastOut = activeTab.getVerticalScrollPosition();
+			AtomTools.log(Level.FINER, "DomainObjectDetailView '" + this.getLongTitle() + "' stored scrollPosition: " + scrollPosOnLastOut, this);
+		}
+		
 		for (AttributeView<?, ?, ?> attributeView : attributeFields.values()) {
 			attributeView.goingInvisible();
 		}
@@ -705,6 +714,13 @@ public class DomainObjectDetailFrame extends Frame {
 		for (AttributeView<?, ?, ?> attributeView : attributeFields.values()) {
 			attributeView.goingVisible();
 		}
+		
+		ScrollPanel activeTab = (ScrollPanel) tabPanel.getWidget(tabPanel.getSelectedIndex());
+		if(activeTab != null && scrollPosOnLastOut != null) {
+			newlyBackOnScreen = true;
+			activeTab.setVerticalScrollPosition(scrollPosOnLastOut);
+			AtomTools.log(Level.FINER, "DomainObjectDetailView '" + this.getLongTitle() + "' restored scrollPosition: " + scrollPosOnLastOut, this);
+		}
 	}
 
 	@Override
@@ -713,7 +729,12 @@ public class DomainObjectDetailFrame extends Frame {
 			attributeView.resize(event);
 		}
 		ScrollPanel activeTab = (ScrollPanel) tabPanel.getWidget(tabPanel.getSelectedIndex());
-		AtomTools.log(Level.FINER, "active ScrollPanel = " + activeTab.toString(), this);
+		if(newlyBackOnScreen) {
+			activeTab.setVerticalScrollPosition(scrollPosOnLastOut);
+			newlyBackOnScreen = false;
+		}
+		AtomTools.log(Level.FINER, "active scrollPosition = " + activeTab.getVerticalScrollPosition() + " of ScrollPanel = " + activeTab.toString(), this);
+		//activeTab.setVerticalScrollPosition(activeTab.getVerticalScrollPosition()+1);
 	}
 	
 	@Override
