@@ -31,6 +31,8 @@ public @interface ListBoxDefinition {
 	 */
 	boolean allowOtherValues() default false;
 	
+	int multiSelectSize() default 60;
+	
 	/**
 	 * any value that any instance of the containing object has in this attribute is used for the list
 	 */

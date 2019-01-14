@@ -47,19 +47,22 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 	
 	private LinkedHashMap<String, String> keyDisplayMap = null;
 	private String multiSelectSeperator = null;
+	private int multiSelectSize;
 	private boolean hideNonSelectedInReadMode = false;
 	
-	public ListBoxView(LinkedHashMap<String, String> keyDisplayMap, String multiSelectSeperator, boolean hideNonSelectedInReadMode) {
+	public ListBoxView(LinkedHashMap<String, String> keyDisplayMap, String multiSelectSeperator, int multiSelectSize, boolean hideNonSelectedInReadMode) {
 		super();
 		this.keyDisplayMap = keyDisplayMap;
 		this.multiSelectSeperator = multiSelectSeperator;
+		this.multiSelectSize = multiSelectSize;
 		this.hideNonSelectedInReadMode = hideNonSelectedInReadMode;
 		
 		buildListBox();
 	}
 	
-	public ListBoxView(DomainClass representedClass, String attributeName, String multiSelectSeperator, boolean hideNonSelectedInReadMode) {
+	public ListBoxView(DomainClass representedClass, String attributeName, String multiSelectSeperator, int multiSelectSize, boolean hideNonSelectedInReadMode) {
 		this.multiSelectSeperator = multiSelectSeperator;
+		this.multiSelectSize = multiSelectSize;
 		this.hideNonSelectedInReadMode = hideNonSelectedInReadMode;
 		
 		RPCCaller.getSinglton().loadListBoxChoices(representedClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
@@ -145,7 +148,7 @@ public class ListBoxView extends AttributeView<String, ListBoxView, String> {
 		
 		if(multiSelectSeperator != null && !"".equals(multiSelectSeperator)) {
 			listBox.setMultipleSelect(true);
-			listBox.getElement().getStyle().setHeight(60, Unit.PX);
+			listBox.getElement().getStyle().setHeight(multiSelectSize, Unit.PX);
 		}
 		
 		

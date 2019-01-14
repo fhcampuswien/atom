@@ -46,6 +46,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		String[] listBoxKeys = attribute.getListBoxKeys();
 		String listBoxSql = attribute.getListBoxSql();
 		String listBoxMSSeperator = attribute.getListBoxMSSeperator();
+		int listBoxMSSize = attribute.getListBoxMSSize();
 		boolean listBoxAllowOtherValues = attribute.getListBoxAllowOtherValues();
 		boolean listBoxAnyExistingValue = attribute.getListBoxAnyExistingValue();
 		boolean listBoxHideNonSelectedInReadMode = attribute.getListBoxHideNonSelectedInReadMode();
@@ -57,7 +58,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 				returnValue = new ListOfPersistentStringsView(type, forFrame.getRepresentedClass(), attributeName);
 			// this is a listbox with options to load from sql
 			else if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
-				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator, listBoxHideNonSelectedInReadMode);
+				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator, listBoxMSSize, listBoxHideNonSelectedInReadMode);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
 				returnValue = new SuggestBoxView(forFrame.getRepresentedClass(), attributeName, listBoxAllowOtherValues);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.RadioButtons || listBoxViewType == ListBoxDefinition.ViewType.RadioTable)
@@ -71,7 +72,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 				returnValue = new ListOfPersistentStringsView(type, attribute.getListBoxMapped());
 			// this is a listbox with static options
 			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
-				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator, listBoxHideNonSelectedInReadMode);
+				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator, listBoxMSSize, listBoxHideNonSelectedInReadMode);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
 				returnValue = new SuggestBoxView(attribute.getListBoxMapped(), listBoxAllowOtherValues);
 			else
