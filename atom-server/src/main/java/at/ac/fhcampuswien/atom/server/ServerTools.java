@@ -597,6 +597,7 @@ public class ServerTools {
 		}
 		
 		String whereClause = "";
+//		String requiredJoins = "";
 		boolean containsLetters = searchString.matches(".*[a-zA-Z]+.*");
 		HashMap<String, DomainClassAttribute> attributes = domainClass.getAllAttributes();
 		for (DomainClassAttribute attribute : attributes.values()) {
@@ -606,13 +607,25 @@ public class ServerTools {
 				whereClause += "obj." + attribute.getName() + " like '%" + searchString + "%' OR ";
 				// AtomTools.lowerFirstChar()
 			}
+			else if("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(attribute.getType())) {
+//				requiredJoins += " LEFT OUTER JOIN obj." + attribute.getName();
+//				whereClause += "obj." + attribute.getName() + ".value like '%" + searchString + "%' OR ";
+				whereClause += "EXISTS (FROM PersistentString lt WHERE lt MEMBER OF obj." + attribute.getName() + " AND lt.value like '%" + searchString + "%' ) OR ";
+				AtomTools.log(Level.INFO, "deepSearch handling PersistentString Set! -> " + attribute.getName(), ServerTools.class);
+			}
+			else {
+				AtomTools.log(Level.INFO, "deepSearch non handled attribute: " + attribute.getName(), ServerTools.class);
+			}
 		}
 		if (whereClause.equals("")) {
 			whereClause = "0 = 1";
 		} else {
 			whereClause = whereClause.substring(0, whereClause.length() - 4);
 		}
+//		if("".equals(requiredJoins))
 		return whereClause;
+//		else
+//			return requiredJoins + ";" + whereClause;
 	}
 
 	private static String getFilterWhereClause(DomainClass searchedClass, ArrayList<DataFilter> filters, HashSet<DataFilter> nonFieldFilters) {
@@ -634,7 +647,8 @@ public class ServerTools {
 					
 					String dbColumn;
 					if(AtomConfig.specialFilterDeepSearch.equals(columnName)) {
-						whereClause += "(" + getSearchWhereClause(searchedClass, filterValue, false) + ")";
+						String searchWhere = getSearchWhereClause(searchedClass, filterValue, false);
+						whereClause += "(" + searchWhere + ")";
 						continue;
 					}
 					else {
