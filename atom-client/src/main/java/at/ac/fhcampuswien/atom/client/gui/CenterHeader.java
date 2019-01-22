@@ -163,6 +163,7 @@ public class CenterHeader extends Composite {
 	
 	public enum State {
 		OBJECT_LIST_NORMAL(new String[] {msg.linkImport(), msg.linkExport(), msg.linkNew()}),
+		OBJECT_LIST_ONLYNEW(new String[] {msg.linkNew()}),
 		OBJECT_LIST_READONLY(new String[] {msg.linkExport()}),
 		OBJECT_DETAIL_VIEW_NORMAL(new String[] {msg.linkEdit(), msg.linkDelete(), msg.linkDuplicate()}),
 		OBJECT_DETAIL_VIEW_NO_DELETE(new String[] {msg.linkEdit(), msg.linkDelete()}),

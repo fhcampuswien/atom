@@ -53,12 +53,13 @@ public class DomainClass implements java.io.Serializable {
 	private String singularName = null;
 	
 	private boolean hideFromGui = false;
-	
+
 	private boolean searchable = true;
+	private boolean exportable = true;
 
 //	private transient String relatedWhere = null;
-	
-//	private transient String relatedJoin = null;
+
+	//	private transient String relatedJoin = null;
 //	
 //	private transient boolean relatedDistinct = false;
 	private String sortColumn = "";
@@ -773,6 +774,14 @@ public class DomainClass implements java.io.Serializable {
 
 	public boolean isSearchable() {
 		return searchable;
+	}
+
+	public void setExportable(boolean exportable) {
+		this.exportable = exportable;
+	}
+
+	public boolean isExportable() {
+		return exportable;
 	}
 
 	public AccessHandler getAccessHandler() {

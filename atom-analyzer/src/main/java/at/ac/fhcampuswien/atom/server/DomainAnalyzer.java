@@ -43,6 +43,7 @@ import at.ac.fhcampuswien.atom.shared.annotations.BooleanAttributeMeaning;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNamePlural;
 import at.ac.fhcampuswien.atom.shared.annotations.ClassNameSingular;
 import at.ac.fhcampuswien.atom.shared.annotations.DefaultAttributeGroupName;
+import at.ac.fhcampuswien.atom.shared.annotations.Exportable;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromDetailGui;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromGui;
 import at.ac.fhcampuswien.atom.shared.annotations.HideFromListGui;
@@ -323,6 +324,9 @@ public class DomainAnalyzer {
 			} else if (anAnnotation instanceof Searchable) {
 				Searchable searchable = (Searchable) anAnnotation;
 				domainClass.setSearchable(searchable.value());
+			} else if (anAnnotation instanceof Exportable) {
+				Exportable exportable = (Exportable) anAnnotation;
+				domainClass.setExportable(exportable.value());
 			} else if (anAnnotation instanceof AccessLists) {
 				AccessLists accessLists = (AccessLists) anAnnotation;
 				for (AccessListRoles list : accessLists.rolesLists()) {

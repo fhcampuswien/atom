@@ -167,10 +167,16 @@ public class DomainObjectListFrame extends Frame {
 		if (!domainClass.getIsAbstract()
 				&& AtomTools.isAccessAllowed(AtomConfig.accessCreateNew, at)) {
 			// if(!domainClass.getIsAbstract() && domainClass.isAccessAllowed(RPCCaller.getSinglton().getClientSession(), AtomConfig.accessReadWrite)) {
-			return CenterHeader.State.OBJECT_LIST_NORMAL;
+			if(domainClass.isExportable())
+				return CenterHeader.State.OBJECT_LIST_NORMAL;
+			else
+				return CenterHeader.State.OBJECT_LIST_ONLYNEW;
 		} else if (AtomTools.isAccessAllowed(AtomConfig.accessSomeReadOnly, at)) {
 			// else if(domainClass.isAccessAllowed(RPCCaller.getSinglton().getClientSession(), AtomConfig.accessLinkage)) {
-			return CenterHeader.State.OBJECT_LIST_READONLY;
+			if(domainClass.isExportable())
+				return CenterHeader.State.OBJECT_LIST_READONLY;
+			else
+				return CenterHeader.State.EMPTY;
 		} else {
 			throw new AtomException("User has no Permissions on the DomainClass '" + domainClass.getName() + "'");
 		}
