@@ -912,7 +912,14 @@ public class ServerTools {
 					String otherSidePermissionRequired = domainClassAttribute.getOtherSidePermissionRequired();
 					String mappedBy = domainClassAttribute.getMappedBy();
 					
-					Constructor<?> ctor = collectionClass.getConstructor();
+					Constructor<?> ctor = null;
+					if(collectionClass == java.util.Set.class)
+						ctor = HashSet.class.getConstructor();
+					else if(collectionClass == java.util.List.class)
+						ctor = ArrayList.class.getConstructor();
+					else
+						ctor = collectionClass.getConstructor();
+					
 					@SuppressWarnings("unchecked")
 					Collection<DomainObject> target = (Collection<DomainObject>) ctor.newInstance();
 					
