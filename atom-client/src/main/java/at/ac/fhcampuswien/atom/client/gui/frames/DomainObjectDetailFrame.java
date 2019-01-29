@@ -82,7 +82,7 @@ public class DomainObjectDetailFrame extends Frame {
 					if(AtomTools.isAccessAllowed(AtomConfig.accessDelete, at))
 						return CenterHeader.State.OBJECT_DETAIL_VIEW_NORMAL;
 					else
-						return CenterHeader.State.OBJECT_DETAIL_VIEW_NO_DELETE;
+						return CenterHeader.State.OBJECT_DETAIL_VIEW_ONLY_EDIT;
 				}
 			} else if (AtomTools.isAccessAllowed(AtomConfig.accessCreateNew, at)) {
 				return CenterHeader.State.OBJECT_DETAIL_VIEW_ONLY_DUPLICATE;

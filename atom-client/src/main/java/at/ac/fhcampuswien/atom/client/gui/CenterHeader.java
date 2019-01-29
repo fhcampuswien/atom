@@ -166,7 +166,7 @@ public class CenterHeader extends Composite {
 		OBJECT_LIST_ONLYNEW(new String[] {msg.linkNew()}),
 		OBJECT_LIST_READONLY(new String[] {msg.linkExport()}),
 		OBJECT_DETAIL_VIEW_NORMAL(new String[] {msg.linkEdit(), msg.linkDelete(), msg.linkDuplicate()}),
-		OBJECT_DETAIL_VIEW_NO_DELETE(new String[] {msg.linkEdit(), msg.linkDelete()}),
+		OBJECT_DETAIL_VIEW_ONLY_EDIT(new String[] {msg.linkEdit()}),
 		OBJECT_DETAIL_VIEW_ONLY_DUPLICATE(new String[] {msg.linkDuplicate()}),
 		OBJECT_EDIT_NORMAL(new String[] {msg.linkSave(), msg.linkCancel(), msg.linkDelete()}),
 		OBJECT_EDIT_NEW(new String[] {msg.linkSave(), msg.linkCancel()}),

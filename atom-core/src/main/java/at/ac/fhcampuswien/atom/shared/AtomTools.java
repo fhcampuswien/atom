@@ -341,15 +341,15 @@ public class AtomTools {
 				&& (accessTypes.contains(AtomConfig.accessReadWrite)))
 			return;
 		else if (AtomConfig.accessSomeReadOnly.equals(requiredPermission)
-				&& (accessTypes.contains(AtomConfig.accessReadOnly))
-						|| accessTypes.contains(AtomConfig.accessReadWrite))
+				&& (accessTypes.contains(AtomConfig.accessReadOnly)
+						|| accessTypes.contains(AtomConfig.accessReadWrite)))
 			return;
 		else if (AtomConfig.accessSomeLinkage.equals(requiredPermission)
 				&& (accessTypes.contains(AtomConfig.accessLinkage)))
 			return;
 		else if (AtomConfig.accessSomeLinkage.equals(requiredPermission) || (AtomConfig.accessLinkage.equals(requiredPermission) || AtomConfig.accessMenue.equals(requiredPermission))
-				&& (accessTypes.contains(AtomConfig.accessReadOnly))
-						|| accessTypes.contains(AtomConfig.accessReadWrite))
+				&& (accessTypes.contains(AtomConfig.accessReadOnly)
+						|| accessTypes.contains(AtomConfig.accessReadWrite)))
 			return;
 		else
 			throw new AuthenticationException("permission not assigned! (" + requiredPermission + ")");
