@@ -945,7 +945,7 @@ public class ServerTools {
 						}
 						else {
 							DomainObject dbObj = em.find(obj.getClass(), obj.getObjectID());
-							if(dbRelated.contains(dbObj) || otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClassAttribute.getAccessHandler().getAccessTypes(session, dbObj))) {
+							if(dbRelated.contains(dbObj) || otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClass.getAccessHandler().getAccessTypes(session, dbObj))) {
 								if(mappedBy != null && mappedBy.length() > 0) {
 									Class<?> collectedClass = dbObj.getClass();
 									try {
