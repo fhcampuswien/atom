@@ -61,7 +61,7 @@ public class HistoryPanel extends SidePanel<FrameVisit> {
 			this.showFrame(frame, sendToServer);
 		} else {
 
-			visit = showFrame(frame);
+			visit = showFrame(frame, sendToServer);
 
 			if (visit == null)
 				return; // currently active frame didn't want to leave, visit
