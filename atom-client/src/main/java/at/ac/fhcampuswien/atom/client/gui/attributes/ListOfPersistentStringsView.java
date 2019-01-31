@@ -13,6 +13,8 @@ import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
 import at.ac.fhcampuswien.atom.client.rpc.WaitingFor;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition;
+import at.ac.fhcampuswien.atom.shared.annotations.ListBoxDefinition.ViewType;
 import at.ac.fhcampuswien.atom.shared.domain.PersistentString;
 
 public class ListOfPersistentStringsView extends CollectionView<Collection<PersistentString>, PersistentString> {
@@ -21,19 +23,19 @@ public class ListOfPersistentStringsView extends CollectionView<Collection<Persi
 		NONE, SERVER, LOCAL
 	}
 	
-	private String type = null;
-	
+	private String collectionType = null;
 	@SuppressWarnings("unused")
 	private ListOfPersistentStringsView() {
 		//prevent creation without specifying type!
 	}
 	
-	public ListOfPersistentStringsView(String type) {
-		this.type = type;		
+	public ListOfPersistentStringsView(String collectionType) {
+		this.collectionType = collectionType;		
 	}
 	
-	public ListOfPersistentStringsView(String type, DomainClass domainClass, String attributeName) {
-		this.type = type;	
+	public ListOfPersistentStringsView(String collectionType, DomainClass domainClass, String attributeName, boolean allowOtherValues, ListBoxDefinition.ViewType viewType) {
+		this.collectionType = collectionType;
+		this.allowOtherValues = allowOtherValues;
 		RPCCaller.getSinglton().loadListBoxChoices(domainClass, attributeName, new WaitingFor<LinkedHashMap<String,String>>() {
 			
 			@Override
@@ -44,21 +46,22 @@ public class ListOfPersistentStringsView extends CollectionView<Collection<Persi
 			@Override
 			public void recieve(LinkedHashMap<String, String> result) {
 				dropDownValues = result.values().toArray(new String[] {});
-				useSuggestBox = true;
+				useSuggestBox = viewType == ViewType.FilterAbleDropDown;
 			}
 		});
 		
 	}
 	
-	public ListOfPersistentStringsView(String type, LinkedHashMap<String, String> choiceMap) {
-		this.type = type;
+	public ListOfPersistentStringsView(String collectionType, LinkedHashMap<String, String> choiceMap, boolean allowOtherValues, ListBoxDefinition.ViewType viewType) {
+		this.collectionType = collectionType;
+		this.allowOtherValues = allowOtherValues;
 		dropDownValues = choiceMap.values().toArray(new String[] {});
-		useSuggestBox = true;
+		useSuggestBox = viewType == ViewType.FilterAbleDropDown;
 	}
 	
 	protected void addNewItem(Object newItem) {
 		if (value == null) {
-			value = ClientTools.getPersistentStringsCollection(type);
+			value = ClientTools.getPersistentStringsCollection(collectionType);
 		}
 		super.addNewItem(newItem);
 	}

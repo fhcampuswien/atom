@@ -65,6 +65,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	
 	protected String[] dropDownValues = null;
 	protected boolean useSuggestBox = false;
+	protected boolean allowOtherValues = true;
 	
 
 	@UiHandler("searchButton")
@@ -197,7 +198,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	protected void findOrCreateItemAndAddToCollection(boolean search) {
 		AtomTools.log(Level.INFO, "show popup to enter a new entry", this);
 		
-		new InputDialogBox(null, dropDownValues, useSuggestBox, new InputDialogBox.Callback() {
+		new InputDialogBox(null, dropDownValues, useSuggestBox, allowOtherValues, new InputDialogBox.Callback() {
 			
 			@Override
 			public void processInput(Object oldValue, String newValue, Boolean checked) {
@@ -235,7 +236,7 @@ public class CollectionView<C extends Collection<T>, T extends Object> extends A
 	public void editItemAtIndex(int index) {
 		AtomTools.log(Level.FINER, "edit index " + index, this);
 		if (!this.readOnly) {
-			new InputDialogBox(index == -1 ? null : listBox.getItem(index), dropDownValues, index == -1 ? "Bitte geben Sie das neue Element ein:" : "Element kann nun geändert werden:", null, null, useSuggestBox, new Callback() {
+			new InputDialogBox(index == -1 ? null : listBox.getItem(index), dropDownValues, index == -1 ? "Bitte geben Sie das neue Element ein:" : "Element kann nun geändert werden:", null, null, useSuggestBox, allowOtherValues, new Callback() {
 				
 				@Override
 				public void processInput(Object oldValue, String newValue, Boolean checked) {

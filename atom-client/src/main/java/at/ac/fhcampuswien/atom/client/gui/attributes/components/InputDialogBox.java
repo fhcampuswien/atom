@@ -4,6 +4,7 @@
  */
 package at.ac.fhcampuswien.atom.client.gui.attributes.components;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -35,8 +36,8 @@ public class InputDialogBox extends DialogBox {
 		public void inputCanceled();
 	}
 	
-	public InputDialogBox(final Object oldValue, final String[] dropDownValues, boolean useSuggestBox, final Callback callback) {
-		this(oldValue, dropDownValues, "Bitte geben Sie das neue Element ein.", null, null, useSuggestBox, callback);
+	public InputDialogBox(final Object oldValue, final String[] dropDownValues, boolean useSuggestBox, boolean allowOtherValues, final Callback callback) {
+		this(oldValue, dropDownValues, "Bitte geben Sie das neue Element ein.", null, null, useSuggestBox, allowOtherValues, callback);
 	}
 	
 	private Widget inputBoxOrContainer;
@@ -44,11 +45,15 @@ public class InputDialogBox extends DialogBox {
 	private CheckBox checkBox;
 	private Callback callback;
 	private Object oldValue;
-
-	public InputDialogBox(Object oldValue, String[] dropDownValues, String title, Boolean checkBoxDefault, String checkBoxLabel, boolean useSuggestBox, Callback callback) {
+	private boolean allowOtherValues;
+	private String[] dropDownValues;
+	
+	public InputDialogBox(Object oldValue, String[] dropDownValues, String title, Boolean checkBoxDefault, String checkBoxLabel, boolean useSuggestBox, boolean allowOtherValues, Callback callback) {
 		super(false, true);
 		this.callback = callback;
 		this.oldValue = oldValue;
+		this.allowOtherValues = allowOtherValues;
+		this.dropDownValues = dropDownValues;
 
 		final String oldValueString = (oldValue != null) ? oldValue.toString() : null;
 
@@ -149,6 +154,13 @@ public class InputDialogBox extends DialogBox {
 		}
 		else {
 			String text = getValueOfInputBox(inputBox);
+			if(!(allowOtherValues || Arrays.stream(dropDownValues).anyMatch(text::equals))) {
+				if(AtomTools.getMessages().illegalValue().equals(getText()))
+					setText(AtomTools.getMessages().illegalValue() + " (1)");
+				else
+					setText(AtomTools.getMessages().illegalValue());
+				return;
+			}
 			callback.processInput(oldValue, text, checkBox == null ? null : checkBox.getValue());
 		}
 		InputDialogBox.this.hide();

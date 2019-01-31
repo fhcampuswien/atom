@@ -55,7 +55,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		if(listBoxAnyExistingValue || (listBoxSql != null && !listBoxSql.equals(""))) {
 			if ("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)
 					|| "java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
-				returnValue = new ListOfPersistentStringsView(type, forFrame.getRepresentedClass(), attributeName);
+				returnValue = new ListOfPersistentStringsView(type, forFrame.getRepresentedClass(), attributeName, listBoxAllowOtherValues, listBoxViewType);
 			// this is a listbox with options to load from sql
 			else if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(forFrame.getRepresentedClass(), attributeName, listBoxMSSeperator, listBoxMSSize, listBoxHideNonSelectedInReadMode);
@@ -69,9 +69,9 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 		else if(listBoxKeys != null) {
 			if ("java.util.List<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type)
 					|| "java.util.Set<at.ac.fhcampuswien.atom.shared.domain.PersistentString>".equals(type))
-				returnValue = new ListOfPersistentStringsView(type, attribute.getListBoxMapped());
+				returnValue = new ListOfPersistentStringsView(type, attribute.getListBoxMapped(), listBoxAllowOtherValues, listBoxViewType);
 			// this is a listbox with static options
-			if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
+			else if(listBoxViewType == ListBoxDefinition.ViewType.DropDown)
 				returnValue = new ListBoxView(attribute.getListBoxMapped(), listBoxMSSeperator, listBoxMSSize, listBoxHideNonSelectedInReadMode);
 			else if(listBoxViewType == ListBoxDefinition.ViewType.FilterAbleDropDown)
 				returnValue = new SuggestBoxView(attribute.getListBoxMapped(), listBoxAllowOtherValues);
