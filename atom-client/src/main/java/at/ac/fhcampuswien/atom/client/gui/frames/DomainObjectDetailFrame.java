@@ -177,7 +177,8 @@ public class DomainObjectDetailFrame extends Frame {
 			loadValues();
 
 			if (representedObject.getCompletelyLoaded() != true) {
-				App.setLoadingState(true, DomainObjectDetailFrame.this);
+				isLoading = true;
+				App.setLoadingState(isLoading, DomainObjectDetailFrame.this);
 				RPCCaller.getSinglton().loadDomainObject(representedObject.getObjectID(),
 						representedObject.getConcreteClass(), receiver);
 			}
@@ -530,12 +531,14 @@ public class DomainObjectDetailFrame extends Frame {
 			AtomTools.log(Level.SEVERE, "DomainObject request failed -> " + reason, this);
 			DomainObjectDetailFrame.this.deliverError(new ValidationError(reason));
 			setEditableAndRevertValues(true, false);
-			App.setLoadingState(false, DomainObjectDetailFrame.this);
+			isLoading = false;
+			App.setLoadingState(isLoading, DomainObjectDetailFrame.this);
 		}
 
 		@Override
 		public void recieve(DomainObject instance) {
-			App.setLoadingState(true, DomainObjectDetailFrame.this);
+			isLoading = true;
+			App.setLoadingState(isLoading, DomainObjectDetailFrame.this);
 
 			// change titles to represent the new instance state.
 			String name = getName(instance, representedClass);
@@ -577,7 +580,8 @@ public class DomainObjectDetailFrame extends Frame {
 			if (objectReciever != null)
 				objectReciever.recieve(instance);
 
-			App.setLoadingState(false, DomainObjectDetailFrame.this);
+			isLoading = false;
+			App.setLoadingState(isLoading, DomainObjectDetailFrame.this);
 		}
 
 	};
@@ -585,7 +589,8 @@ public class DomainObjectDetailFrame extends Frame {
 	@Override
 	public void actionSave() {
 		AtomTools.log(Level.FINER, "DomainObjectDetailFrame.actionSave() start", this);
-		App.setLoadingState(true, this);
+		isLoading = true;
+		App.setLoadingState(isLoading, this);
 		if (representedObject == null) {
 			// create
 			representedObject = ClientTools.createInstance(representedClass);
@@ -625,7 +630,8 @@ public class DomainObjectDetailFrame extends Frame {
 		
 		if(validationError != null) {
 			this.deliverError(validationError);
-			App.setLoadingState(false, this);
+			isLoading = false;
+			App.setLoadingState(isLoading, this);
 			return;
 		}
 
@@ -644,8 +650,9 @@ public class DomainObjectDetailFrame extends Frame {
 	public void actionCancel() {
 		if (Window.confirm(AtomTools.getMessages().confirm_cancel())) {
 			if (representedObject != null && representedObject.getObjectID() != null) {
-				setEditableAndRevertValues(false, true);
+				isLoading = true;
 				App.setLoadingState(true, this);
+				setEditableAndRevertValues(false, true);
 				RPCCaller.getSinglton().loadDomainObject(representedObject.getObjectID(),
 						representedObject.getConcreteClass(), receiver);
 			} else

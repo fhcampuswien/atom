@@ -6,6 +6,15 @@ package at.ac.fhcampuswien.atom.client.gui.frames;
 
 import java.util.LinkedHashMap;
 import java.util.Set;
+import java.util.logging.Level;
+
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.resources.client.CssResource;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import at.ac.fhcampuswien.atom.client.gui.CenterHeader;
 import at.ac.fhcampuswien.atom.client.gui.gxt.DomainObjectListWidget;
@@ -20,16 +29,7 @@ import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
 import at.ac.fhcampuswien.atom.shared.exceptions.AtomException;
 
-import java.util.logging.Level;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
-
-public class DomainObjectListFrame extends Frame {
+public class DomainObjectListFrame extends ExternalLoaderFrame {
 
 	private static DomainObjectListFrameUiBinder uiBinder = GWT.create(DomainObjectListFrameUiBinder.class);
 
@@ -51,6 +51,8 @@ public class DomainObjectListFrame extends Frame {
 
 	public DomainObjectListFrame(DomainClass domainClass, String searchTerm, boolean quickSearch, DataFilter[] filters, boolean relatedOnly) {
 		super();
+		
+		this.isLoading = true;
 		
 		this.representedClass = domainClass;
 		this.representedSearchTerm = searchTerm;

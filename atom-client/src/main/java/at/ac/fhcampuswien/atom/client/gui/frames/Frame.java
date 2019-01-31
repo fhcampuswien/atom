@@ -42,6 +42,7 @@ public class Frame extends Composite {
 	protected DomainClass representedClass;
 	protected String representedSearchTerm = null;
 	protected DataFilter[] dataFilters = null;
+	protected boolean isLoading = false;
 	
 	protected void setTitles(String longTitle, String shortTitle, boolean sendToServer) {
 		this.longTitle = longTitle;
@@ -142,6 +143,10 @@ public class Frame extends Composite {
 		if(frameType == null)
 			AtomTools.log(Level.SEVERE, "FrameType must never be null!", this);
 		return frameType;
+	}
+	
+	public boolean getIsLoading() {
+		return isLoading;
 	}
 	
 	public void setFrameLabel(SidePanelLabel<FrameVisit> sidePanelLabel) {

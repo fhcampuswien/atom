@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import java.util.logging.Level;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -52,7 +52,7 @@ import com.sencha.gxt.widget.core.client.grid.filters.StringFilter;
 
 import at.ac.fhcampuswien.atom.client.App;
 import at.ac.fhcampuswien.atom.client.gui.dnd.AtomDNDWidget;
-import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
+import at.ac.fhcampuswien.atom.client.gui.frames.ExternalLoaderFrame;
 import at.ac.fhcampuswien.atom.client.gui.gxt.MyRpcProxy.SettingsProvider;
 import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
@@ -111,12 +111,12 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 	private ActionMode selectedMode;
 	
 	private boolean insideTab;
-	private Frame owner;
+	private ExternalLoaderFrame owner;
 	
 	private DataFilter[] defaultFilters;
 
 	public DomainObjectListWidget(DomainClass theRepresentedClass, DomainObjectList preloadedList, String searchString, boolean onlyScanStringRepresentation,
-			DataFilter[] defaultFilters, boolean onlyRelated, boolean insideTab, ActionMode mode, Frame owner) {
+			DataFilter[] defaultFilters, boolean onlyRelated, boolean insideTab, ActionMode mode, ExternalLoaderFrame owner) {
 
 		AtomTools.log(Level.FINER, "DomainObjectListWidget.Constructor started", this);
 

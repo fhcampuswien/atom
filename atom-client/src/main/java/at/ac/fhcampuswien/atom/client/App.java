@@ -985,7 +985,7 @@ public class App implements EntryPoint {
 							App.openList(domainClass, onlyRelated);
 						else {
 							Window.alert("No class with name '" + className + "' found.");
-							singleton.history.addFrame(new WelcomeFrame());
+							actionHome();
 						}
 					}
 				});
@@ -1155,7 +1155,7 @@ public class App implements EntryPoint {
 		if(frame.getContent() != null)
 			frameSpace.add(frame.getContent());
 		centerHeader.setHeader(frame.getLongTitle());
-		centerHeader.setLoading(false);
+		centerHeader.setLoading(frame.getIsLoading());
 		resizeTimer.schedule(50);
 		return true;
 	}

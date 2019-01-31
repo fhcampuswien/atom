@@ -32,7 +32,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DomainObjectSelectorFrame extends Frame {
+public class DomainObjectSelectorFrame extends ExternalLoaderFrame {
 
 	private static DomainObjectSelectorFrameUiBinder uiBinder = GWT.create(DomainObjectSelectorFrameUiBinder.class);
 	
@@ -67,7 +67,7 @@ public class DomainObjectSelectorFrame extends Frame {
 	 */
 	public DomainObjectSelectorFrame(final String representedClassName, final boolean multiSelect, final String attributeName,
 			final DomainObjectList preloadedResult, final String searchString, final boolean simpleSearch, DomainObjectSelectionHandler resultHandler) {
-		super("Bitte wählen Sie " + representedClassName.substring(representedClassName.lastIndexOf(".")) + " für Attribut " + attributeName, "wähle "
+		init("Bitte wählen Sie " + representedClassName.substring(representedClassName.lastIndexOf(".")) + " für Attribut " + attributeName, "wähle "
 				+ attributeName, State.OBJECT_EDIT_NO_DELETE, me, null, null, AtomConfig.FrameType.OBJECT_SELECTOR);
 		// super(false, true);
 		// super(new Label("x"));

@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class DomainObjectSearchFrame extends Frame {
+public class DomainObjectSearchFrame extends ExternalLoaderFrame {
 
 	private static DomainObjectSearchViewUiBinder uiBinder = GWT.create(DomainObjectSearchViewUiBinder.class);
 
@@ -62,7 +62,7 @@ public class DomainObjectSearchFrame extends Frame {
 	private int pageSize = 5;
 
 	public DomainObjectSearchFrame(String searchTerm, boolean onlyScanStringRepresentation, boolean onlyRelated) {
-		super("Suche nach \"" + searchTerm + "\"", "Suche nach \"" + searchTerm + "\"", CenterHeader.State.EMPTY, me, null, null, onlyScanStringRepresentation ? AtomConfig.FrameType.SEARCH_SIMPLE : AtomConfig.FrameType.SEARCH);
+		init("Suche nach \"" + searchTerm + "\"", "Suche nach \"" + searchTerm + "\"", CenterHeader.State.EMPTY, me, null, null, onlyScanStringRepresentation ? AtomConfig.FrameType.SEARCH_SIMPLE : AtomConfig.FrameType.SEARCH);
 
 		initWidget(uiBinder.createAndBindUi(this));
 

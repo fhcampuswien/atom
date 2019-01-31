@@ -9,18 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-
-import at.ac.fhcampuswien.atom.client.App;
-import at.ac.fhcampuswien.atom.client.gui.frames.Frame;
-import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
-import at.ac.fhcampuswien.atom.shared.AtomTools;
-import at.ac.fhcampuswien.atom.shared.DataFilter;
-import at.ac.fhcampuswien.atom.shared.DataSorter;
-import at.ac.fhcampuswien.atom.shared.DomainClass;
-import at.ac.fhcampuswien.atom.shared.DomainObjectList;
-import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
-
 import java.util.logging.Level;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.SortDir;
@@ -28,6 +18,16 @@ import com.sencha.gxt.data.shared.SortInfo;
 import com.sencha.gxt.data.shared.loader.FilterConfig;
 import com.sencha.gxt.data.shared.loader.FilterPagingLoadConfig;
 import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+
+import at.ac.fhcampuswien.atom.client.App;
+import at.ac.fhcampuswien.atom.client.gui.frames.ExternalLoaderFrame;
+import at.ac.fhcampuswien.atom.client.rpc.RPCCaller;
+import at.ac.fhcampuswien.atom.shared.AtomTools;
+import at.ac.fhcampuswien.atom.shared.DataFilter;
+import at.ac.fhcampuswien.atom.shared.DataSorter;
+import at.ac.fhcampuswien.atom.shared.DomainClass;
+import at.ac.fhcampuswien.atom.shared.DomainObjectList;
+import at.ac.fhcampuswien.atom.shared.domain.DomainObject;
 
 public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResult<DomainObject>> {
 
@@ -41,7 +41,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 	private String searchString = null;
 	private boolean onlyScanStringRepresentation;
 	
-	private Frame owner;
+	private ExternalLoaderFrame owner;
 	
 	private DomainClass representedClass;
 	private boolean onlyRelated;
@@ -57,7 +57,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 	
 	private SettingsProvider settingsProvider;
 	
-	public MyRpcProxy(DomainObjectList preloadedList, int offset, DomainClass representedClass, boolean onlyRelated, String searchString, boolean onlyScanStringRepresentation, HashSet<String> columnNames, SettingsProvider sizeProvider, Frame owner) {
+	public MyRpcProxy(DomainObjectList preloadedList, int offset, DomainClass representedClass, boolean onlyRelated, String searchString, boolean onlyScanStringRepresentation, HashSet<String> columnNames, SettingsProvider sizeProvider, ExternalLoaderFrame owner) {
 
 		this.listToUse = preloadedList;
 		this.offsetPreloadedList = offset;
@@ -175,6 +175,8 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 							settingsProvider.setTotalSize(result.getTotalSize());
 							lastUsedList = result;
 							callback.onSuccess(new DomainObjectPagingLoadResult(result.getDomainObjects(), result.getFromRow(), settingsProvider.getTotalSize()));
+							owner.loadingFinished();
+							App.setLoadingState(false, owner);
 						}
 					});
 //			toolBar.enableEvents(true);
