@@ -968,7 +968,7 @@ public class ServerTools {
 						if(dbRelated != null) for(DomainObject linkedInDB : dbRelated)
 							if(!target.contains(linkedInDB)) {
 								// if user removed it
-								boolean allowed = (otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClassAttribute.getAccessHandler().getAccessTypes(session, linkedInDB)));
+								boolean allowed = (otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClass.getAccessHandler().getAccessTypes(session, linkedInDB)));
 								if(mappedBy != null && mappedBy.length() > 0 && allowed)
 									try {
 										Class<? extends DomainObject> linkedClass = linkedInDB.getClass();
