@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.exception.SQLGrammarException;
 
+import at.ac.fhcampuswien.atom.shared.AccessHandler;
 import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.ClientSession;
@@ -923,6 +924,8 @@ public class ServerTools {
 					@SuppressWarnings("unchecked")
 					Collection<DomainObject> target = (Collection<DomainObject>) ctor.newInstance();
 					
+					AccessHandler reverseAccess = DomainAnalyzer.getDomainClass(AtomTools.getListedType(domainClassAttribute.getType())).getAccessHandler();
+					
 					if (related != null) for (DomainObject obj : related) {
 						if(obj instanceof PersistentString) {
 							//handle PersistentStrings special, since we don't want those "DomainObjects" to be handled manually by the user but simply persisted with whatever other DomainObject they are linked to.
@@ -945,7 +948,7 @@ public class ServerTools {
 						}
 						else {
 							DomainObject dbObj = em.find(obj.getClass(), obj.getObjectID());
-							if(dbRelated.contains(dbObj) || otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClass.getAccessHandler().getAccessTypes(session, dbObj))) {
+							if(dbRelated.contains(dbObj) || otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, reverseAccess.getAccessTypes(session, dbObj))) {
 								if(mappedBy != null && mappedBy.length() > 0) {
 									Class<?> collectedClass = dbObj.getClass();
 									try {
@@ -968,7 +971,7 @@ public class ServerTools {
 						if(dbRelated != null) for(DomainObject linkedInDB : dbRelated)
 							if(!target.contains(linkedInDB)) {
 								// if user removed it
-								boolean allowed = (otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, domainClass.getAccessHandler().getAccessTypes(session, linkedInDB)));
+								boolean allowed = (otherSidePermissionRequired == null || otherSidePermissionRequired.length() < 1 || AtomTools.isAccessAllowed(otherSidePermissionRequired, reverseAccess.getAccessTypes(session, linkedInDB)));
 								if(mappedBy != null && mappedBy.length() > 0 && allowed)
 									try {
 										Class<? extends DomainObject> linkedClass = linkedInDB.getClass();
