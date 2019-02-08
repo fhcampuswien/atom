@@ -472,7 +472,7 @@ public class UploadImportServlet extends HttpServlet {
 		switch (cellType) {
 
 		case Cell.CELL_TYPE_BOOLEAN:
-			return cell.getBooleanCellValue() ? new Double(1) : new Double(0);
+			return cell.getBooleanCellValue() ? 1.0 : 0.0;
 
 		case Cell.CELL_TYPE_FORMULA:
 			return getDoubleValueOfCell(cell, cell.getCachedFormulaResultType());
@@ -591,7 +591,8 @@ public class UploadImportServlet extends HttpServlet {
 			if (Double.isInfinite(number) || Double.isNaN(number) || Math.floor(number) != number)
 				return Double.toString(number);
 			else
-				return String.valueOf(new Double(number).intValue());
+				// output "x" instead of "x.0" for doubles that are equal to their floor (= int values)
+				return String.valueOf(Double.valueOf(number).intValue());
 
 		case Cell.CELL_TYPE_STRING:
 			return cell.getStringCellValue();

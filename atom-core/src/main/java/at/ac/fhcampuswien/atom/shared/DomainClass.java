@@ -257,7 +257,7 @@ public class DomainClass implements java.io.Serializable {
 
 		for (DomainClassAttribute oneAttribute : DomainClass.this.getAllAttributes().values()) {
 
-			Boolean truu = new Boolean(true);
+			Boolean truu = Boolean.TRUE;
 			if (omitHidden && truu.equals(oneAttribute.getHideFromListGui()) && truu.equals(oneAttribute.getHideFromDetailGui())) {
 				// Don't mind those attributes anyhow, they are to be hidden from the GUI completely
 				continue;

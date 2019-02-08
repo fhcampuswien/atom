@@ -211,7 +211,7 @@ public class DomainClassAttribute implements java.io.Serializable {
 	
 
 	public void setPosition(double value) {
-		position = new Double(value);
+		position = Double.valueOf(value);
 	}
 
 	public Double getPosition() {
