@@ -487,7 +487,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 				genericColumn.setFixed(false);
 				columnConfigs.add(genericColumn);
 
-				if (new Boolean(true).equals(oneAttribute.getHideFromListGui()))
+				if (Boolean.TRUE.equals(oneAttribute.getHideFromListGui()))
 					genericColumn.setHidden(true);
 
 //			}

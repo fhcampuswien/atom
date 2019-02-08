@@ -161,6 +161,8 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 			/*********************** load DomainObjects ***********************/
 
 			AtomTools.log(Level.FINER, "DomainObjectListWidget.MyRpcProxy.load calling server for data", this);
+			owner.loading(true);
+			App.setLoadingState(true, owner);
 			RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, dataFilters, dataSorters, config.getOffset(), config.getLimit(), false,
 					searchString, onlyScanStringRepresentation, onlyRelated, settingsProvider.getForceRefresh(), new AsyncCallback<DomainObjectList>() {
 
@@ -175,7 +177,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 							settingsProvider.setTotalSize(result.getTotalSize());
 							lastUsedList = result;
 							callback.onSuccess(new DomainObjectPagingLoadResult(result.getDomainObjects(), result.getFromRow(), settingsProvider.getTotalSize()));
-							owner.loadingFinished();
+							owner.loading(false);
 							App.setLoadingState(false, owner);
 						}
 					});
