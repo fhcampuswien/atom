@@ -561,6 +561,8 @@ public class ServerSingleton {
 		
 			domainObject.prepareSave(session);
 			ServerTools.validateDomainObject(domainObject);
+			
+			ServerTools.checkNoChangeInReadOnlyAttributes(domainObject, dbVersion, requestedClass);
 
 			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session, dbVersion);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
