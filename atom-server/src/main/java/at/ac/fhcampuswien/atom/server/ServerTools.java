@@ -1110,6 +1110,10 @@ public class ServerTools {
 	}
 
 	public static void checkNoChangeInReadOnlyAttributes(DomainObject fromClient, DomainObject dbVersion, DomainClass domainClass) {
+		
+		if(dbVersion == null) //doesn't make sense to check for changes with new instances.
+			return;
+		
 		Class<?> reflClass = fromClient.getClass();
 		
 		for(DomainClassAttribute atr : domainClass.getAllAttributes().values()) {
@@ -1122,13 +1126,15 @@ public class ServerTools {
 						Class<?> attributeTypeClass = getAttribute.getReturnType();
 						Method setAttribute = reflClass.getMethod("set" + AtomTools.upperFirstChar(atr.getName()), new Class[] { attributeTypeClass });
 						setAttribute.invoke(fromClient, dbVal);
-						AtomTools.log(Level.INFO, "read only attribute " + atr.getName() + " changed on client side, will replace its value with the one from db.", fromClient);				
+						AtomTools.log(Level.WARNING, "read only attribute " + atr.getName() + " changed on client side, will replace its value with the one from db.", fromClient);				
 //						throw new AtomException("read only attribute " + atr.getName() + " changed on client side! won't save it!");
 					}
 				} catch (NoSuchMethodException | SecurityException e) {
 					throw new AtomException("could not get getter/setter for read-only attribute " + atr.getName() + ". Will not save instance because we cannot check read only value has not changed on client!", e);
 				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 					throw new AtomException("Could not invoke getter/setter for read-only attribute " + atr.getName() + ". Will not save instance because we cannot check read only value has not changed on client!", e);
+				} catch (NullPointerException e) {
+					throw new AtomException("NullPointerException while handling read-only attribute " + atr.getName() + ". Please ask the Developer to fix this!", e);
 				}
 			}
 		}
