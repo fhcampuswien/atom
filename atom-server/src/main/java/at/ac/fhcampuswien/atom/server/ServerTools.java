@@ -902,13 +902,18 @@ public class ServerTools {
 					setAttribute.invoke(domainObject, new Object[] { null });
 				} else {
 					
-					if(dbVersion == null)
+					if(dbVersion == null && domainObject.getObjectID() != null)
 						dbVersion = (DomainObject) em.find(domainObject.getClass(), domainObject.getObjectID());
 
 					@SuppressWarnings("unchecked")
 					Collection<? extends DomainObject> related = (Collection<? extends DomainObject>) getAttribute.invoke(domainObject, new Object[] {});
-					@SuppressWarnings("unchecked")
-					Collection<? extends DomainObject> dbRelated = (Collection<? extends DomainObject>) getAttribute.invoke(dbVersion, new Object[] {});
+					
+					Collection<? extends DomainObject> dbRelated = null;
+					if(dbVersion != null) {
+						@SuppressWarnings("unchecked")
+						Collection<? extends DomainObject> dbRelated1 = (Collection<? extends DomainObject>) getAttribute.invoke(dbVersion, new Object[] {});
+						dbRelated = dbRelated1;
+					}
 					
 					String otherSidePermissionRequired = domainClassAttribute.getOtherSidePermissionRequired();
 					String mappedBy = domainClassAttribute.getMappedBy();

@@ -558,11 +558,12 @@ public class ServerSingleton {
 					domainObject.setFrameVisits(dbVersion.getFrameVisits()); // FrameVisits are only saved on their own, not with their represented objects (which would only contain visits of the saving user)
 				}
 			}
+			
+			ServerTools.checkNoChangeInReadOnlyAttributes(domainObject, dbVersion, requestedClass);
 		
 			domainObject.prepareSave(session);
 			ServerTools.validateDomainObject(domainObject);
 			
-			ServerTools.checkNoChangeInReadOnlyAttributes(domainObject, dbVersion, requestedClass);
 
 			ServerTools.handleRelatedObjects(em, domainObject, requestedClass, false, session, dbVersion);
 			handleFileAttributesForSaveAction(em, domainObject, requestedClass);
