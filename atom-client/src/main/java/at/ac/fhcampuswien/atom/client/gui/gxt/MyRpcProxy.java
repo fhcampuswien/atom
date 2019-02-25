@@ -75,9 +75,6 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 			previousFilters.addAll(Arrays.asList(filtersGot));	
 	}
 
-	public void usePreloadedList(DomainObjectList list, int offset) {
-	}
-
 	@Override
 	public void load(FilterPagingLoadConfig loadConfig, final AsyncCallback<PagingLoadResult<DomainObject>> callback) {
 		AtomTools.log(Level.FINER, "DomainObjectListWidget.MyRpcProxy.load starting", this);
