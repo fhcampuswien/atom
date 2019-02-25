@@ -54,6 +54,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 	private DomainObjectDropController domainObjectDropController;
 	private String representedType;
 	private String name;
+	private boolean onlyWriteables;
 	private boolean madeDraggable = false;
 	private boolean madeDropable = false;
 	private DomainObjectDetailFrame owningFrame;
@@ -66,9 +67,10 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 	@UiField
 	protected PushButton searchButton;
 
-	public DomainObjectView(String representedType, String name, DomainObjectDetailFrame forFrame) {
+	public DomainObjectView(String representedType, String name, boolean onlyWriteables, DomainObjectDetailFrame forFrame) {
 		this.representedType = representedType;
 		this.name = name;
+		this.onlyWriteables = onlyWriteables;
 		this.owningFrame = forFrame;
 
 		searchButton.getElement().getStyle().setPaddingLeft(3, Unit.PX);
@@ -202,7 +204,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 						searchString = null;
 				}
 				
-				RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, filters, null, 0, 25, false, searchString, onlyScanStringRepresentation, false, true, new AsyncCallback<DomainObjectList>() {
+				RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, filters, null, 0, 25, false, searchString, onlyScanStringRepresentation, false, onlyWriteables, true, new AsyncCallback<DomainObjectList>() {
 					
 					@Override
 					public void onSuccess(DomainObjectList result) {
@@ -244,7 +246,7 @@ public class DomainObjectView extends AttributeView<DomainObject, DndTextBox, Do
 	}
 
 	private void getObjectFromSelectorFrame(DomainObjectList preloadedResult, String searchString, boolean simpleSearch) {
-		DomainObjectSelectorFrame frame = new DomainObjectSelectorFrame(getRepresentedType(), false, name, preloadedResult, searchString, simpleSearch, new DomainObjectSelectionHandler() {
+		DomainObjectSelectorFrame frame = new DomainObjectSelectorFrame(getRepresentedType(), false, name, preloadedResult, searchString, simpleSearch, onlyWriteables, new DomainObjectSelectionHandler() {
 
 			@Override
 			public void handleDomainObjectList(List<DomainObject> list) {

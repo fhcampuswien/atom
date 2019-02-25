@@ -19,6 +19,7 @@ public class DomainObjectSearchResult implements Serializable {
 	private String onlyScanClassWithName;
 
 	private boolean onlyRelated;
+	private boolean onlyWriteables;
 	private boolean onlyScanStringRepresentation;
 
 	private List<DomainObjectList> result;
@@ -30,10 +31,11 @@ public class DomainObjectSearchResult implements Serializable {
 	private DomainObjectSearchResult() {
 	}
 
-	public DomainObjectSearchResult(String searchTerm, boolean onlyRelated, boolean onlyScanStringRepresentation, String onlyScanClassWithName) {
+	public DomainObjectSearchResult(String searchTerm, boolean onlyRelated, boolean onlyWriteables, boolean onlyScanStringRepresentation, String onlyScanClassWithName) {
 		this.searchTerm = searchTerm;
 		this.onlyScanClassWithName = onlyScanClassWithName;
 		this.onlyRelated = onlyRelated;
+		this.onlyWriteables = onlyWriteables;
 		this.onlyScanStringRepresentation = onlyScanStringRepresentation;
 		result = new ArrayList<DomainObjectList>();
 	}
@@ -48,6 +50,10 @@ public class DomainObjectSearchResult implements Serializable {
 
 	public boolean isOnlyRelated() {
 		return onlyRelated;
+	}
+	
+	public boolean isOnlyWriteables() {
+		return onlyWriteables;
 	}
 
 	public boolean isOnlyScanStringRepresentation() {

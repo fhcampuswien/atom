@@ -45,6 +45,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 	
 	private DomainClass representedClass;
 	private boolean onlyRelated;
+	private boolean onlyWriteables;
 
 	public interface SettingsProvider {
 		public int getPageSize();
@@ -57,13 +58,14 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 	
 	private SettingsProvider settingsProvider;
 	
-	public MyRpcProxy(DomainObjectList preloadedList, int offset, DomainClass representedClass, boolean onlyRelated, String searchString, boolean onlyScanStringRepresentation, HashSet<String> columnNames, SettingsProvider sizeProvider, ExternalLoaderFrame owner) {
+	public MyRpcProxy(DomainObjectList preloadedList, int offset, DomainClass representedClass, boolean onlyRelated, boolean onlyWriteables, String searchString, boolean onlyScanStringRepresentation, HashSet<String> columnNames, SettingsProvider sizeProvider, ExternalLoaderFrame owner) {
 
 		this.listToUse = preloadedList;
 		this.offsetPreloadedList = offset;
 
 		this.representedClass = representedClass;
 		this.onlyRelated = onlyRelated;
+		this.onlyWriteables = onlyWriteables;
 		this.searchString = searchString;
 		this.onlyScanStringRepresentation = onlyScanStringRepresentation;
 		this.settingsProvider = sizeProvider;
@@ -161,7 +163,7 @@ public class MyRpcProxy extends RpcProxy<FilterPagingLoadConfig, PagingLoadResul
 			owner.loading(true);
 			App.setLoadingState(true, owner);
 			RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, dataFilters, dataSorters, config.getOffset(), config.getLimit(), false,
-					searchString, onlyScanStringRepresentation, onlyRelated, settingsProvider.getForceRefresh(), new AsyncCallback<DomainObjectList>() {
+					searchString, onlyScanStringRepresentation, onlyRelated, onlyWriteables, settingsProvider.getForceRefresh(), new AsyncCallback<DomainObjectList>() {
 
 						public void onFailure(Throwable caught) {
 							AtomTools.log(Level.SEVERE, "DomainObjectListWidget.MyRpcProxy.load could not load data from server", this);

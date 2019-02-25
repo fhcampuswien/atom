@@ -119,7 +119,7 @@ public class GwtTestATOM extends GWTTestCase {
 		final int pageSize = 20;
 
 		atomService.getListOfDomainObject(authBackDoor, domainObjectClassName, 0,
-				pageSize, null, null, null, false, false,
+				pageSize, null, null, null, false, false, false,
 				new AsyncCallback<DomainObjectList>() {
 
 					public void onSuccess(DomainObjectList result) {

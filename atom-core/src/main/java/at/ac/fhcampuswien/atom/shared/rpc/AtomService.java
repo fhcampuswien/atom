@@ -35,7 +35,7 @@ public interface AtomService extends RemoteService {
      */
     public DomainObject getDomainObject(String clientSession, Integer id, String nameOfClass) throws AtomException;
 
-    public DomainObjectSearchResult searchDomainObjects(String clientSession, String searchString, int pageSize, boolean onlyRelated, boolean onlyScanStringRepresentation, String onlyScanClassWithName) throws AtomException;
+    public DomainObjectSearchResult searchDomainObjects(String clientSession, String searchString, int pageSize, boolean onlyRelated, boolean onlyWriteables, boolean onlyScanStringRepresentation, String onlyScanClassWithName) throws AtomException;
 
     /**
      * If the given ClientSession is valid, and the parameter nameOfClass contains a valid name of a class derived from
@@ -47,7 +47,7 @@ public interface AtomService extends RemoteService {
      * @throws Exception
      *             is thrown if no class with that name is known.
      */
-    public DomainObjectList getListOfDomainObject(String clientSession, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters, ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated) throws AtomException;
+    public DomainObjectList getListOfDomainObject(String clientSession, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters, ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables) throws AtomException;
 
     /**
      * If the given ClientSession is valid, the given DomainObject instance will be persisted into the database and

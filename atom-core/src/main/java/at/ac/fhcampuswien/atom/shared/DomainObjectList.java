@@ -29,6 +29,7 @@ public class DomainObjectList implements java.io.Serializable {
 	private String searchString;
 	private Date creationDate;
 	private boolean onlyRelated;
+	private boolean onlyWriteables;
 
 	/**
 	 * Needed for GWT serialization
@@ -59,7 +60,7 @@ public class DomainObjectList implements java.io.Serializable {
 	}
 
 	public DomainObjectList(DomainClass domainClass2, List<DomainObject> resultList, int fromRow, int pageSize, int totalSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyRelated) {
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyRelated, boolean onlyWriteables) {
 		this(domainClass2, resultList, totalSize);
 		this.fromRow = fromRow;
 		this.pageSize = pageSize;
@@ -67,7 +68,7 @@ public class DomainObjectList implements java.io.Serializable {
 		this.sorters = sorters;
 		this.searchString = searchString;
 		this.onlyRelated = onlyRelated;
-
+		this.onlyWriteables = onlyWriteables;
 	}
 
 	public DomainClass getDomainClass() {
@@ -97,13 +98,14 @@ public class DomainObjectList implements java.io.Serializable {
 	}
 
 	public boolean useable(String domainClassName, DomainClass domainClass, int fromRow, int pageSize, Collection<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyRelated) {
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyRelated, boolean onlyWriteables) {
 		
 		if ((domainClassName != null &&  domainClassName.equals(this.domainClassName) || (domainClass != null && domainClass.equals(this.domainClass)))
 				&& ((filters == null && this.filters == null) || (filters != null && filters.equals(this.filters)))
 				&& ((sorters == null && this.sorters == null) || (sorters != null && sorters.equals(this.sorters)))
 				&& ((searchString == null && this.searchString == null) || (searchString != null && searchString.equals(this.searchString)))
 				&& (onlyRelated == this.onlyRelated)
+				&& (onlyWriteables == this.onlyWriteables)
 				&& (this.pageSize >= this.totalSize || (this.pageSize >= pageSize && this.fromRow == fromRow))
 				&& this.creationDate.after(new Date(new Date().getTime() - 1000*60*60))
 				) {

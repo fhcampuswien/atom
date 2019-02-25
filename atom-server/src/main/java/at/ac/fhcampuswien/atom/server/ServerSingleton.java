@@ -152,7 +152,7 @@ public class ServerSingleton {
 			// find instance by string representation
 			ArrayList<DataFilter> filters = new ArrayList<DataFilter>(1);
 			filters.add(new DataFilter("stringRepresentation", clue, "contains", "text"));
-			DomainObjectList list = getListOfDomainObjects(session, classOfObject.getName(), 0, 20, filters, null, null, false, false, em);
+			DomainObjectList list = getListOfDomainObjects(session, classOfObject.getName(), 0, 20, filters, null, null, false, false, false, em);
 			if (list.getTotalSize() == 0) {
 				AtomTools.log(Level.WARNING, "could not find instance of \"" + classOfObject.getName() + "\" with stringRepresentation like %" + clue
 						+ "%", this);
@@ -213,10 +213,10 @@ public class ServerSingleton {
 	}
 
 	public DomainObjectList getListOfDomainObjects(HttpServletRequest request, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated) {
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables) {
 
 		ClientSession session = auth.getSessionFromCookie(request, false);
-		return getListOfDomainObjects(session, nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated);
+		return getListOfDomainObjects(session, nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated, onlyWriteables);
 		// DomainClass requestedClass = DomainAnalyzer.getDomainClass(nameOfClass);
 		//
 		// Set<String> accessTypes = requestedClass.getAccessTypes(session);
@@ -225,26 +225,26 @@ public class ServerSingleton {
 	}
 
 	public DomainObjectList getListOfDomainObjects(ClientSession session, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated) {
-		return getListOfDomainObjects(session, nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated, AtomEMFactory.getEntityManager());
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables) {
+		return getListOfDomainObjects(session, nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated, onlyWriteables, AtomEMFactory.getEntityManager());
 	}
 	
 	public DomainObjectList getListOfDomainObjects(ClientSession session, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, EntityManager em) {
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables, EntityManager em) {
 		DomainClass requestedClass = DomainAnalyzer.getDomainClass(nameOfClass);
 		if (requestedClass == null) {
 			AtomTools.log(Level.WARNING, "DomainClass with name \"" + nameOfClass + "\" not found! will use DomainObject as class", this);
 			requestedClass = DomainAnalyzer.getDomainTree();
 		}
-		return getListOfDomainObjects(requestedClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated, em);
+		return getListOfDomainObjects(requestedClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated, onlyWriteables, em);
 	}
 
 	private DomainObjectList getListOfDomainObjects(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated) {
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated, boolean onlyWriteables) {
 		EntityManager em = null;
 		try {
 			em = AtomEMFactory.getEntityManager();
-			return getListOfDomainObjects(domainClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated, em);
+			return getListOfDomainObjects(domainClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, session, onlyRelated, onlyWriteables, em);
 		}
 		finally {
 			ServerTools.closeDBConnection(null, em);
@@ -252,11 +252,12 @@ public class ServerSingleton {
 	}
 	
 	private DomainObjectList getListOfDomainObjects(DomainClass domainClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated, EntityManager em) {
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, ClientSession session, boolean onlyRelated, boolean onlyWriteables, EntityManager em) {
 
 		AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject start - user " + session.getUsername() + " requesting list of " + domainClass.getName(), this);
 		
-		Set<String> requiredRelations = AtomTools.getRequiredRelations(AtomConfig.accessLinkage, domainClass.getAccessHandler().getAccess(session));
+		
+		Set<String> requiredRelations = AtomTools.getRequiredRelations(onlyWriteables ? AtomConfig.accessReadWrite : AtomConfig.accessLinkage, domainClass.getAccessHandler().getAccess(session));
 		Collection<RelationDefinition> reqRelDefs = null;
 		
 		if(requiredRelations.contains(RelationDefinition.noRelationRequired)) {
@@ -383,11 +384,11 @@ public class ServerSingleton {
 
 			AtomTools.log(Level.FINER, "ServerSingelton.getListOfDomainObject - returning list to client now", this);
 			return new DomainObjectList(domainClass, resultList, fromRow, pageSize, totalSize == null ? 0 : totalSize.intValue(), filters, sorters,
-					searchString, onlyRelated);
+					searchString, onlyRelated, onlyWriteables);
 
 		} catch (NoResultException noResultException) {
 			ServerTools.log(Level.WARNING, "ServerSingelton.getListOfDomainObject - javax.persistence.NoResultException", this, noResultException);
-			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated);
+			return new DomainObjectList(domainClass, new ArrayList<DomainObject>(), fromRow, pageSize, 0, filters, sorters, searchString, onlyRelated, onlyWriteables);
 		} catch (javax.persistence.QueryTimeoutException e) {
 			ServerTools.log(Level.SEVERE, "QueryTimeoutException even though I already increased timeout to 60 seconds! investigate this please! query = " + query.getHints().get("org.hibernate.comment"), this, e);
 			throw new AtomException("ServerSingelton.getListOfDomainObject QueryTimeoutException - ask devs for performance tuning!", e);
@@ -866,12 +867,12 @@ public class ServerSingleton {
 		return null;
 	}
 
-	public DomainObjectSearchResult searchDomainObjects(HttpServletRequest request, String searchString, int pageSize, boolean onlyRelated, boolean onlyScanStringRepresentation, String onlyScanClassWithName)
+	public DomainObjectSearchResult searchDomainObjects(HttpServletRequest request, String searchString, int pageSize, boolean onlyRelated, boolean onlyWriteables, boolean onlyScanStringRepresentation, String onlyScanClassWithName)
 			throws AtomException {
 
 		ClientSession session = auth.getSessionFromCookie(request, false);
 		DomainClass domainClass = DomainAnalyzer.getUsersDomainTree(session);
-		DomainObjectSearchResult result = new DomainObjectSearchResult(searchString, onlyRelated, onlyScanStringRepresentation, onlyScanClassWithName);
+		DomainObjectSearchResult result = new DomainObjectSearchResult(searchString, onlyRelated, onlyWriteables, onlyScanStringRepresentation, onlyScanClassWithName);
 		if(onlyScanClassWithName != null && onlyScanClassWithName.length() > 0 && !onlyScanClassWithName.equals(" ")) {
 			domainClass = domainClass.getDomainClassNamed(onlyScanClassWithName);
 		}
@@ -884,7 +885,7 @@ public class ServerSingleton {
 
 		if (domainClass.isSearchable()) { // info: permission gets checked by the getList method // && AtomTools.isAccessAllowed(AtomConfig.accessLinkage, access)) {
 			try {
-				DomainObjectList subResult = getListOfDomainObjects(domainClass, fromRow, pageSize, null, null, result.getSearchTerm(), result.isOnlyScanStringRepresentation(), session, result.isOnlyRelated());
+				DomainObjectList subResult = getListOfDomainObjects(domainClass, fromRow, pageSize, null, null, result.getSearchTerm(), result.isOnlyScanStringRepresentation(), session, result.isOnlyRelated(), result.isOnlyWriteables());
 				if (subResult != null & subResult.getTotalSize() > 0) {
 					result.addList(subResult);
 				}

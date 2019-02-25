@@ -55,14 +55,14 @@ public class AtomServiceImpl extends RemoteServiceServlet implements AtomService
 	}
 
 	@Override
-	public DomainObjectSearchResult searchDomainObjects(String clientSession, String searchString, int pageSize, boolean onlyRelated, boolean onlyScanStringRepresentation, String onlyScanClassWithName) throws AtomException {
-		return server.searchDomainObjects(getThreadLocalRequest(), searchString, pageSize, onlyRelated, onlyScanStringRepresentation, onlyScanClassWithName);
+	public DomainObjectSearchResult searchDomainObjects(String clientSession, String searchString, int pageSize, boolean onlyRelated, boolean onlyWriteables, boolean onlyScanStringRepresentation, String onlyScanClassWithName) throws AtomException {
+		return server.searchDomainObjects(getThreadLocalRequest(), searchString, pageSize, onlyRelated, onlyWriteables, onlyScanStringRepresentation, onlyScanClassWithName);
 	}
 
 	@Override
 	public DomainObjectList getListOfDomainObject(String clientSession, String nameOfClass, int fromRow, int pageSize, ArrayList<DataFilter> filters,
-			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated) throws AtomException {
-		return server.getListOfDomainObjects(getThreadLocalRequest(), nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated);
+			ArrayList<DataSorter> sorters, String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables) throws AtomException {
+		return server.getListOfDomainObjects(getThreadLocalRequest(), nameOfClass, fromRow, pageSize, filters, sorters, searchString, onlyScanStringRepresentation, onlyRelated, onlyWriteables);
 	}
 
 	@Override

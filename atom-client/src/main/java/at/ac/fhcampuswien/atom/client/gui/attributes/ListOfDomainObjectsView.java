@@ -39,6 +39,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 	private DomainObjectDropController domainObjectDropController;
 	private String representedType;
 	private String attributeName;
+	private boolean onlyWriteables;
 	private boolean madeDraggable = false;
 	private DomainObjectDetailFrame owningFrame;
 	private boolean theMouseIsOverMe = false;
@@ -129,9 +130,10 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 		}
 	}
 
-	public ListOfDomainObjectsView(String type, String attributeName, DomainObjectDetailFrame forFrame) {
+	public ListOfDomainObjectsView(String type, String attributeName, boolean onlyWriteables, DomainObjectDetailFrame forFrame) {
 		representedType = type;
 		this.attributeName = attributeName;
+		this.onlyWriteables = onlyWriteables;
 		this.owningFrame = forFrame;
 		domainObjectDropController = new DomainObjectDropController(this, new MyDropHandler());
 		searchButton.setVisible(true);
@@ -203,7 +205,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 					if(showResultAsList)
 						filters.remove(AtomConfig.showResultAsListBooleanTransport);
 					
-					RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, filters, null, 0, 25, false, null, false, false, true, new AsyncCallback<DomainObjectList>() {
+					RPCCaller.getSinglton().loadListOfDomainObjects(representedClass, filters, null, 0, 25, false, null, false, false, onlyWriteables, true, new AsyncCallback<DomainObjectList>() {
 						
 						@Override
 						public void onSuccess(DomainObjectList result) {
@@ -247,7 +249,7 @@ public class ListOfDomainObjectsView extends CollectionView<Collection<DomainObj
 	
 	private void getObjectsFromSelectorFrame(DomainObjectList preloadedResult, String searchString, boolean simpleSearch) {
 		DomainObjectSelectorFrame frame = new DomainObjectSelectorFrame(AtomTools.getListedType(ListOfDomainObjectsView.this.representedType), true,
-				attributeName, preloadedResult, searchString, simpleSearch, new DomainObjectSelectionHandler() {
+				attributeName, preloadedResult, searchString, simpleSearch, onlyWriteables, new DomainObjectSelectionHandler() {
 
 					@Override
 					public void handleDomainObjectList(List<DomainObject> list) {

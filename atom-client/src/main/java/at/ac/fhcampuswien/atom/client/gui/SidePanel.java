@@ -168,7 +168,7 @@ public abstract class SidePanel<E extends DomainObject> extends Composite {
 		else
 			loadingEntriesFromServerFinished = false;
 
-		RPCCaller.getSinglton().loadListOfDomainObjects(classOfList, null, null, 0, 30, false, null, true, true, false,
+		RPCCaller.getSinglton().loadListOfDomainObjects(classOfList, null, null, 0, 30, false, null, true, true, false, false,
 				new AsyncCallback<DomainObjectList>() {
 
 					@Override

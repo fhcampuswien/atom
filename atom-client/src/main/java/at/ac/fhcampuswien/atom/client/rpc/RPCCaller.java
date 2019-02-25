@@ -263,9 +263,9 @@ public class RPCCaller {
 				+ attributeName + ")", this);
 	}
 
-	public void searchDomainObjects(String searchString, boolean onlyScanStringRepresentation, int pageSize, boolean onlyRelated, String onlyScanClassWithName,
+	public void searchDomainObjects(String searchString, boolean onlyScanStringRepresentation, int pageSize, boolean onlyRelated, boolean onlyWriteables, String onlyScanClassWithName,
 			final AsyncCallback<DomainObjectSearchResult> outerCallback) {
-		atomRPCAsync.searchDomainObjects(clientSession.getCookieValue(), searchString, pageSize, onlyRelated, onlyScanStringRepresentation, onlyScanClassWithName, 
+		atomRPCAsync.searchDomainObjects(clientSession.getCookieValue(), searchString, pageSize, onlyRelated, onlyWriteables, onlyScanStringRepresentation, onlyScanClassWithName, 
 				new AsyncCallback<DomainObjectSearchResult>() {
 
 					public void onFailure(Throwable caught) {
@@ -341,14 +341,14 @@ public class RPCCaller {
 	}
 
 	public void loadListOfDomainObjects(final DomainClass classOfList, Collection<DataFilter> filters, ArrayList<DataSorter> sorters,
-			int fromRow, int pageSize, final boolean secondaryUpdate, final String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated,
+			int fromRow, int pageSize, final boolean secondaryUpdate, final String searchString, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables,
 			boolean forceRefresh, final AsyncCallback<DomainObjectList> callback) {
 
 		AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - method start", this);
 
 		if (!forceRefresh)
 			for (DomainObjectList list : getLoadedLists(classOfList)) {
-				if (list.useable(classOfList.getName(), classOfList, fromRow, pageSize, filters, sorters, searchString, onlyRelated)) {
+				if (list.useable(classOfList.getName(), classOfList, fromRow, pageSize, filters, sorters, searchString, onlyRelated, onlyWriteables)) {
 					AtomTools.log(Level.FINER, "RPCCaller.loadListOfDomainObjects - using old list for new request (=end)",
 							this);
 					callback.onSuccess(list);
@@ -360,7 +360,7 @@ public class RPCCaller {
 		ArrayList<DataSorter> newSorters = sorters == null ? null : new ArrayList<DataSorter>(sorters);
 
 		atomRPCAsync.getListOfDomainObject(clientSession.getCookieValue(), classOfList.getName(), fromRow, pageSize, newFilters,
-				newSorters, searchString, onlyScanStringRepresentation, onlyRelated, new AsyncCallback<DomainObjectList>() {
+				newSorters, searchString, onlyScanStringRepresentation, onlyRelated, onlyWriteables, new AsyncCallback<DomainObjectList>() {
 					public void onFailure(Throwable caught) {
 
 						if (caught instanceof AuthenticationException)

@@ -57,7 +57,7 @@ public class DownloadExportServlet extends HttpServlet {
 		// Set<String> accessTypes = requestedClass.getAccessTypes(session);
 
 		DomainObjectList list = server.getListOfDomainObjects(req, nameOfClass,
-				0, Integer.MAX_VALUE, filters, null, null, false, false);
+				0, Integer.MAX_VALUE, filters, null, null, false, false, false);
 
 		// getListOfDomainObject(session, exportClass, 0, Integer.MAX_VALUE,
 		// null, null, null, false);

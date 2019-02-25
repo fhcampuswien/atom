@@ -66,7 +66,7 @@ public class DomainObjectSelectorFrame extends ExternalLoaderFrame {
 	 * 
 	 */
 	public DomainObjectSelectorFrame(final String representedClassName, final boolean multiSelect, final String attributeName,
-			final DomainObjectList preloadedResult, final String searchString, final boolean simpleSearch, DomainObjectSelectionHandler resultHandler) {
+			final DomainObjectList preloadedResult, final String searchString, final boolean simpleSearch, final boolean onlyWriteables, DomainObjectSelectionHandler resultHandler) {
 		init("Bitte wählen Sie " + representedClassName.substring(representedClassName.lastIndexOf(".")) + " für Attribut " + attributeName, "wähle "
 				+ attributeName, State.OBJECT_EDIT_NO_DELETE, me, null, null, AtomConfig.FrameType.OBJECT_SELECTOR);
 		// super(false, true);
@@ -133,7 +133,7 @@ public class DomainObjectSelectorFrame extends ExternalLoaderFrame {
 					mode = ActionMode.SINGLE_SELECT;
 				}
 				
-				domainObjectListWidget = new DomainObjectListWidget(representedClass, preloadedResult, searchString, simpleSearch, null, false, false, mode, DomainObjectSelectorFrame.this);
+				domainObjectListWidget = new DomainObjectListWidget(representedClass, preloadedResult, searchString, simpleSearch, null, false, onlyWriteables, false, mode, DomainObjectSelectorFrame.this);
 				root.add(domainObjectListWidget);
 				domainObjectListWidget.resize(lastEvent);
 			}

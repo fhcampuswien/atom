@@ -116,7 +116,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 	private DataFilter[] defaultFilters;
 
 	public DomainObjectListWidget(DomainClass theRepresentedClass, DomainObjectList preloadedList, String searchString, boolean onlyScanStringRepresentation,
-			DataFilter[] defaultFilters, boolean onlyRelated, boolean insideTab, ActionMode mode, ExternalLoaderFrame owner) {
+			DataFilter[] defaultFilters, boolean onlyRelated, boolean onlyWriteables, boolean insideTab, ActionMode mode, ExternalLoaderFrame owner) {
 
 		AtomTools.log(Level.FINER, "DomainObjectListWidget.Constructor started", this);
 
@@ -139,7 +139,7 @@ public class DomainObjectListWidget extends FocusPanel implements AtomDNDWidget 
 			pageSize = preloadedList.getDomainObjects().size();
 		}
 
-		proxy = new MyRpcProxy(preloadedList, 0, representedClass, onlyRelated, representedSearchString, onlyScanStringRepresentation, getColumnNames(),
+		proxy = new MyRpcProxy(preloadedList, 0, representedClass, onlyRelated, onlyWriteables, representedSearchString, onlyScanStringRepresentation, getColumnNames(),
 				new SettingsProvider() {
 
 					@Override

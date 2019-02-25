@@ -47,9 +47,9 @@ public class DomainObjectListFrame extends ExternalLoaderFrame {
 
 	private DomainObjectListWidget domainObjectListWidget;
 	
-	private boolean relatedOnly, quickSearch;
+	private boolean relatedOnly, onlyWriteables, quickSearch;
 
-	public DomainObjectListFrame(DomainClass domainClass, String searchTerm, boolean quickSearch, DataFilter[] filters, boolean relatedOnly) {
+	public DomainObjectListFrame(DomainClass domainClass, String searchTerm, boolean quickSearch, DataFilter[] filters, boolean relatedOnly, boolean onlyWriteables) {
 		super();
 		
 		this.isLoading = true;
@@ -58,6 +58,7 @@ public class DomainObjectListFrame extends ExternalLoaderFrame {
 		this.representedSearchTerm = searchTerm;
 		this.quickSearch = quickSearch;
 		this.relatedOnly = relatedOnly;
+		this.onlyWriteables = onlyWriteables;
 		this.dataFilters = filters;
 		
 		updateTitles();
@@ -160,7 +161,7 @@ public class DomainObjectListFrame extends ExternalLoaderFrame {
 	}
 
 	private void createWidget() {
-		domainObjectListWidget = new DomainObjectListWidget(representedClass, null, representedSearchTerm, quickSearch, dataFilters, relatedOnly, false, ActionMode.DEFAULT_OPEN, DomainObjectListFrame.this);
+		domainObjectListWidget = new DomainObjectListWidget(representedClass, null, representedSearchTerm, quickSearch, dataFilters, relatedOnly, onlyWriteables, false, ActionMode.DEFAULT_OPEN, DomainObjectListFrame.this);
 		root.add(domainObjectListWidget);
 	}
 

@@ -884,7 +884,7 @@ public class App implements EntryPoint {
 	public static void openList(DomainClass classToOpen, boolean onlyRelated) {
 		if (singleton.loggedIn) {
 			if (!singleton.history.activateFrameIfExists(null, classToOpen, null, null, onlyRelated ? AtomConfig.FrameType.LIST_RELATED : AtomConfig.FrameType.LIST_ALL)) {
-				singleton.history.addFrame(new DomainObjectListFrame(classToOpen, null, true, null, onlyRelated));
+				singleton.history.addFrame(new DomainObjectListFrame(classToOpen, null, true, null, onlyRelated, false));
 			}
 		}
 	}
@@ -1030,7 +1030,7 @@ public class App implements EntryPoint {
 				FrameType frameType = simple ? FrameType.SEARCH_SIMPLE : FrameType.SEARCH;
 				final String searchTerm = command.substring(frameType.toString().length() + 1);
 				if (!singleton.history.activateFrameIfExists(null, null, searchTerm, null, frameType))
-					singleton.history.addFrame(new DomainObjectSearchFrame(searchTerm, simple, false));
+					singleton.history.addFrame(new DomainObjectSearchFrame(searchTerm, simple, false, false));
 				return true;
 			} else if ("WELCOME".equals(command)) {
 				if (!singleton.history.activateFrameIfExists(null, null, null, null, FrameType.WELCOME))
@@ -1113,7 +1113,7 @@ public class App implements EntryPoint {
 				DomainClass domainClass = domainTree.getDomainClassNamed(className);
 				if (domainClass != null) {
 					if (!singleton.history.activateFrameIfExists(null, domainClass, null, filters, FrameType.FILTERCLASS))
-						singleton.history.addFrame(new DomainObjectListFrame(domainClass, null, false, filters.toArray(new DataFilter[filters.size()]), false));
+						singleton.history.addFrame(new DomainObjectListFrame(domainClass, null, false, filters.toArray(new DataFilter[filters.size()]), false, false));
 				} else {
 					Window.alert("No class with name '" + className + "' found.");
 					singleton.history.addFrame(new WelcomeFrame());

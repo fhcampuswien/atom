@@ -57,11 +57,11 @@ public class DomainObjectSearchFrame extends ExternalLoaderFrame {
 	private AtomTabPanel tabPanel;
 	private Label loadingLabel;
 	private ArrayList<DomainObjectListWidget> lists;
-	private final boolean onlyScanStringRepresentation, onlyRelated;
+	private final boolean onlyScanStringRepresentation, onlyRelated, onlyWriteables;
 
 	private int pageSize = 5;
 
-	public DomainObjectSearchFrame(String searchTerm, boolean onlyScanStringRepresentation, boolean onlyRelated) {
+	public DomainObjectSearchFrame(String searchTerm, boolean onlyScanStringRepresentation, boolean onlyRelated, boolean onlyWriteables) {
 		init("Suche nach \"" + searchTerm + "\"", "Suche nach \"" + searchTerm + "\"", CenterHeader.State.EMPTY, me, null, null, onlyScanStringRepresentation ? AtomConfig.FrameType.SEARCH_SIMPLE : AtomConfig.FrameType.SEARCH);
 
 		initWidget(uiBinder.createAndBindUi(this));
@@ -69,6 +69,7 @@ public class DomainObjectSearchFrame extends ExternalLoaderFrame {
 		this.representedSearchTerm = searchTerm;
 		this.onlyScanStringRepresentation = onlyScanStringRepresentation;
 		this.onlyRelated = onlyRelated;
+		this.onlyWriteables = onlyWriteables;
 
 		tabPanel = new AtomTabPanel();
 		tabPanel.setStyleName(panelStyle.space());
@@ -103,7 +104,7 @@ public class DomainObjectSearchFrame extends ExternalLoaderFrame {
 		pageSize = DomainObjectListWidget.getRowsFitting(Window.getClientHeight(), true);
 
 		//FIXME: acquire value for onlyScanClassWithName from GUI
-		RPCCaller.getSinglton().searchDomainObjects(searchTerm, onlyScanStringRepresentation, pageSize, onlyRelated, null, new AsyncCallback<DomainObjectSearchResult>() {
+		RPCCaller.getSinglton().searchDomainObjects(searchTerm, onlyScanStringRepresentation, pageSize, onlyRelated, onlyWriteables, null, new AsyncCallback<DomainObjectSearchResult>() {
 
 			public void onFailure(Throwable caught) {
 				loadingLabel.setText("Fehler beim laden des Suchergebnisses vom Server: " + caught);
@@ -121,7 +122,7 @@ public class DomainObjectSearchFrame extends ExternalLoaderFrame {
 							AttributeGroupTabHeader attributeGroupTabHeader = new AttributeGroupTabHeader(classOfList.getPluralName() + " ("
 									+ subResult.getTotalSize() + ")");
 							attributeGroupTabHeader.setStyleName(panelStyle.space());
-							DomainObjectListWidget domainObjectListWidget = new DomainObjectListWidget(classOfList, subResult, resultHolder.getSearchTerm(), DomainObjectSearchFrame.this.onlyScanStringRepresentation, null, DomainObjectSearchFrame.this.onlyRelated, true, ActionMode.DEFAULT_OPEN, DomainObjectSearchFrame.this);
+							DomainObjectListWidget domainObjectListWidget = new DomainObjectListWidget(classOfList, subResult, resultHolder.getSearchTerm(), DomainObjectSearchFrame.this.onlyScanStringRepresentation, null, DomainObjectSearchFrame.this.onlyRelated, DomainObjectSearchFrame.this.onlyWriteables, true, ActionMode.DEFAULT_OPEN, DomainObjectSearchFrame.this);
 							lists.add(domainObjectListWidget);
 							DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Unit.PX);
 							dockLayoutPanel.setStyleName(panelStyle.whiteSpace());

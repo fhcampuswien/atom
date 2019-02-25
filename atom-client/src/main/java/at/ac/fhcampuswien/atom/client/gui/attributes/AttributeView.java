@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import at.ac.fhcampuswien.atom.client.gui.AtomClientBundle;
 import at.ac.fhcampuswien.atom.client.gui.frames.DomainObjectDetailFrame;
+import at.ac.fhcampuswien.atom.shared.AtomConfig;
 import at.ac.fhcampuswien.atom.shared.AtomTools;
 import at.ac.fhcampuswien.atom.shared.DomainClass;
 import at.ac.fhcampuswien.atom.shared.DomainClassAttribute;
@@ -98,7 +99,7 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 //					AtomTools.log(Level.SEVERE, "Unknown ListBoxViewType: " + viewType, null); 
 				
 		} else if (type.startsWith("at.ac.fhcampuswien.atom.shared.domain")) {
-			returnValue = new DomainObjectView(type, attributeName, forFrame);
+			returnValue = new DomainObjectView(type, attributeName, attribute.getOtherSidePermissionRequired() == AtomConfig.accessReadWrite, forFrame);
 		} else if ("java.lang.String".equals(type)) {
 			if (attribute.getAnnotation("FileAttribute") != null) {
 				returnValue = new FileView(forFrame.getRepresentedClass().getName(), attributeName, forFrame.getRepresentedObject().getObjectID());
@@ -135,7 +136,8 @@ public abstract class AttributeView<D extends Object, E extends Widget, F extend
 //			returnValue = new SetOfPermittedRolesView(attributeName, forFrame);
 		} else if (type.startsWith("java.util.List<at.ac.fhcampuswien.atom.shared.domain.")
 				|| type.startsWith("java.util.Set<at.ac.fhcampuswien.atom.shared.domain.")) {
-			returnValue = new ListOfDomainObjectsView(type, attributeName, forFrame);
+			
+			returnValue = new ListOfDomainObjectsView(type, attributeName, attribute.getOtherSidePermissionRequired() == AtomConfig.accessReadWrite, forFrame);
 			// } else if ("java.util.ArrayList<java.lang.String>".equals(type))
 			// {
 			// return new ArrayListOfStringsView();
